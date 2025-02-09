@@ -1,4 +1,18 @@
-export const font = {
+import { Cairo_700Bold, Cairo_600SemiBold,Cairo_400Regular,useFonts } from '@expo-google-fonts/cairo';
+
+
+export function useLoadFonts() {
+  const [fontsLoaded] = useFonts({
+    Cairo_400Regular,
+    Cairo_600SemiBold,
+    Cairo_700Bold,
+  });
+
+  return fontsLoaded;
+}
+
+
+export  const font = {
   headline: {
     fontFamily: 'Cairo_700Bold',
     fontSize: 18,

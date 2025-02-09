@@ -8,7 +8,7 @@ export const font = {
     fontSize: 14,
   },
   subtitle: {
-    fontFamily: 'CairoRegular',
+    fontFamily: 'Cairo_400Regular',
     fontSize: 12,
   },
   body: {

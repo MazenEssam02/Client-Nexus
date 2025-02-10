@@ -1,6 +1,3 @@
-export default function ProfileScreen(){
-  return(
-    <>
-    </>
-  );
+export default function ProfileScreen() {
+  return <></>;
 }

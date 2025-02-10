@@ -5,12 +5,17 @@ import QuickButton from "../components/QuickButton/QuickButton";
 import SearchBlock from "../components/SearchBlock/SearchBlock";
 import AskQuestionBlock from "../components/AskQuestionBlock/AskQuestionBlock";
 import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
+import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
 
 export default function HomeScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.container} bounces={false}>
+        <ScrollView
+          style={styles.container}
+          bounces={false}
+          stickyHeaderIndices={[-1]}
+        >
           <View style={styles.header}>
             <NotificationButton />
             <Image
@@ -28,6 +33,9 @@ export default function HomeScreen() {
           <AskQuestionBlock />
           <ArticlesSection />
         </ScrollView>
+        <View style={styles.chatBotContainer}>
+          <ChatBotIcon />
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -52,5 +60,10 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     justifyContent: "space-between",
     marginVertical: 11,
+  },
+  chatBotContainer: {
+    position: "absolute",
+    bottom: 12,
+    right: 15,
   },
 });

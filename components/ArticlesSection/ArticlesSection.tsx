@@ -1,9 +1,9 @@
-import { StyleSheet, ScrollView, View, Text } from "react-native";
+import { StyleSheet, ScrollView, View, Text, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import ArticleItem from "../ArticleItem/ArticleItem";
 import { useEffect, useRef } from "react";
-
+import Data from "../../api-mock/articles.json";
 export default function ArticlesSection() {
   const scrollViewRef = useRef(null);
   useEffect(() => {
@@ -12,30 +12,16 @@ export default function ArticlesSection() {
   return (
     <View style={styles.container}>
       <Text style={[font.headline, styles.titleText]}>مقالات</Text>
-      <ScrollView
+      <FlatList
         ref={scrollViewRef}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-      >
-        <ArticleItem
-          title={
-            "الآثار المترتبة على تعديل قانون المحاكم الاقتصادية وقانون المرافعات"
-          }
-          imageLink={"../../assets/BalaneImage.png"}
-        />
-        <ArticleItem
-          title={
-            "الآثار المترتبة على تعديل قانون المحاكم الاقتصادية وقانون المرافعات"
-          }
-          imageLink={"../../assets/BalaneImage.png"}
-        />
-        <ArticleItem
-          title={
-            "الآثار المترتبة على تعديل قانون المحاكم الاقتصادية وقانون المرافعات"
-          }
-          imageLink={"../../assets/BalaneImage.png"}
-        />
-      </ScrollView>
+        data={Data}
+        keyExtractor={(item) => item.article_id}
+        renderItem={({ item }) => (
+          <ArticleItem title={item.title} imageLink={item.image_url} />
+        )}
+      />
     </View>
   );
 }

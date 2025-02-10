@@ -6,8 +6,11 @@ import SearchBlock from "../components/SearchBlock/SearchBlock";
 import AskQuestionBlock from "../components/AskQuestionBlock/AskQuestionBlock";
 import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
 import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -25,9 +28,21 @@ export default function HomeScreen() {
             />
           </View>
           <View style={styles.QuickButtonContainer}>
-            <QuickButton title={"محامى عاجل"} iconName={"On_time"} />
-            <QuickButton title={"استشارة مكتبية"} iconName={"Consult"} />
-            <QuickButton title={"مكالمة محامى"} iconName={"Call"} />
+            <QuickButton
+              title={"محامى عاجل"}
+              iconName={"On_time"}
+              onPress={() => navigation.navigate("Search" as never)}
+            />
+            <QuickButton
+              title={"استشارة مكتبية"}
+              iconName={"Consult"}
+              onPress={() => navigation.navigate("Search" as never)}
+            />
+            <QuickButton
+              title={"مكالمة محامى"}
+              iconName={"Call"}
+              onPress={() => navigation.navigate("Search" as never)}
+            />
           </View>
           <SearchBlock />
           <AskQuestionBlock />

@@ -9,9 +9,9 @@ const icons = {
   On_time: require("../../assets/icons/On_time.png"),
 };
 ////////////////////////////////////////////////////////
-export default function NotificationButton({ title, iconName }) {
+export default function NotificationButton({ title, iconName, onPress }) {
   return (
-    <Pressable style={styles.container} onPress={() => {}}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Image source={icons[iconName]} />
       <Text style={[font.Caption, styles.titleText]}>{title}</Text>
     </Pressable>

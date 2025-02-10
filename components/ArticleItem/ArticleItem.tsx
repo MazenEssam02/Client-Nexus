@@ -6,7 +6,9 @@ export default function NotificationButton({ title, imageLink }) {
   return (
     <Pressable style={styles.container} onPress={() => {}}>
       <Image
-        source={require("../../assets/BalanceImage.png")}
+        source={{
+          uri: imageLink,
+        }}
         style={styles.imagecontainer}
       />
       <Text numberOfLines={2} style={[font.Caption, styles.titleText]}>

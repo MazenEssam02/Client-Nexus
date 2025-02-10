@@ -1,18 +1,27 @@
-import { StyleSheet, View, Text, Image, TextInput } from "react-native";
+import { StyleSheet, Image, TextInput, Pressable } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
-export default function SearchBar({ placeHolder, backgroundColor }) {
+export default function SearchBar({
+  placeHolder,
+  backgroundColor,
+  onPress = null,
+  iseditable = true,
+}) {
   return (
-    <View style={[{ backgroundColor: backgroundColor }, styles.container]}>
+    <Pressable
+      style={[{ backgroundColor: backgroundColor }, styles.container]}
+      onPress={onPress} //work only on android
+    >
       <Image source={require("../../assets/icons/Icon_Search.png")} />
       <TextInput
         style={[font.subtitle, styles.placeHolderText]}
         placeholder={placeHolder}
         placeholderTextColor={Colors.SecondaryColor}
-        onPress={() => {}}
+        editable={iseditable}
+        onPress={onPress} //work only on ios
       />
-    </View>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({
@@ -32,7 +41,7 @@ const styles = StyleSheet.create({
     height: 40,
     color: Colors.SecondaryColor,
     paddingRight: 6,
-    width: "100%",
+    width: "90%",
     textAlign: "right",
   },
 });

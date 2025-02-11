@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: Colors.SecondaryColor,
     borderWidth: 1,
-    paddingVertical: 15,
     paddingHorizontal: 10,
     borderRadius: 18,
     height: 40,

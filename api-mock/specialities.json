@@ -1,0 +1,102 @@
+{
+  "specialities": [
+    {
+      "speciality_id": "000",
+      "speciality_name": "التخصصات الاكثر اختيارا",
+      "isHeader": true
+    },
+    {
+      "speciality_id": "001",
+      "speciality_name": "مدنى"
+    },
+    {
+      "speciality_id": "002",
+      "speciality_name": "جنائى"
+    },
+    {
+      "speciality_id": "003",
+      "speciality_name": "عسكرى"
+    },
+    {
+      "speciality_id": "004",
+      "speciality_name": "تجارى"
+    },
+    {
+      "speciality_id": "005",
+      "speciality_name": "عام"
+    },
+    {
+      "speciality_id": "006",
+      "speciality_name": "الأحوال الشخصية"
+    },
+    {
+      "speciality_id": "007",
+      "speciality_name": "العمل والتوظيف"
+    },
+    {
+      "speciality_id": "008",
+      "speciality_name": "كل التخصصات",
+      "isHeader": true
+    },
+    {
+      "speciality_id": "009",
+      "speciality_name": "القوانين الدولية"
+    },
+    {
+      "speciality_id": "010",
+      "speciality_name": "التأمين"
+    },
+    {
+      "speciality_id": "011",
+      "speciality_name": "العقارات"
+    },
+    {
+      "speciality_id": "012",
+      "speciality_name": "الشركات"
+    },
+    {
+      "speciality_id": "013",
+      "speciality_name": "الجرائم الإلكترونية"
+    },
+    {
+      "speciality_id": "014",
+      "speciality_name": "الملكية الفكرية"
+    },
+    {
+      "speciality_id": "015",
+      "speciality_name": "القوانين البحرية"
+    },
+    {
+      "speciality_id": "016",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "017",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "018",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "020",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "021",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "022",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "023",
+      "speciality_name": "القوانين البيئية"
+    },
+    {
+      "speciality_id": "024",
+      "speciality_name": "القوانين البيئية"
+    }
+  ]
+}

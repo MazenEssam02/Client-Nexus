@@ -9,17 +9,49 @@ import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ScheduleScreen from "./screens/ScheduleScreen";
 import { font, useLoadFonts } from "./constants/Font";
+import NotificationScreen from "./screens/NotificationScreen";
 import SearchScreen from "./screens/SearchScreen";
-import { useEffect } from "react";
+import SearchResultScreen from "./screens/SearchResultScreen";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{ title: "اختر التخصص" }}
+      />
+      <Stack.Screen
+        name="SearchResult"
+        component={SearchResultScreen}
+        options={{ title: "نتائج البحث" }}
+      />
+    </Stack.Navigator>
+  );
+}
 function UserTabs() {
   return (
     <Tab.Navigator
       id={undefined}
-      initialRouteName="Home"
+      initialRouteName="HomeStack"
       screenOptions={() => ({
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
@@ -56,8 +88,8 @@ function UserTabs() {
       />
 
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeStack"
+        component={HomeStack}
         options={{
           headerShown: false,
           title: "الرئيسية",
@@ -81,6 +113,7 @@ function AuthenticatedStack() {
         headerTitleStyle: font.headline,
         headerTitleAlign: "center",
         headerTintColor: "white",
+        contentStyle: { backgroundColor: "#282c34" },
       }}
     >
       <Stack.Screen
@@ -89,9 +122,9 @@ function AuthenticatedStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{ title: "اختر التخصص" }}
+        name="Notification"
+        component={NotificationScreen}
+        options={{ title: "التنبيهات" }}
       />
     </Stack.Navigator>
   );
@@ -103,20 +136,17 @@ export default function App() {
   }
 
   return (
-    <>
+    <SafeAreaProvider>
       <StatusBar style="auto" />
       <NavigationContainer>
         <AuthenticatedStack />
       </NavigationContainer>
-    </>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });

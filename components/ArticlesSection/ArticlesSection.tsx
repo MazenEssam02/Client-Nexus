@@ -1,19 +1,19 @@
-import { StyleSheet, ScrollView, View, Text, FlatList } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import ArticleItem from "../ArticleItem/ArticleItem";
 import { useEffect, useRef } from "react";
 import Data from "../../api-mock/articles.json";
 export default function ArticlesSection() {
-  const scrollViewRef = useRef(null);
+  const scrollRef = useRef(null);
   useEffect(() => {
-    scrollViewRef.current?.scrollToEnd({ animated: false }); // Scroll to the end on mount
+    scrollRef.current?.scrollToEnd({ animated: false });
   }, []);
   return (
     <View style={styles.container}>
       <Text style={[font.headline, styles.titleText]}>مقالات</Text>
       <FlatList
-        ref={scrollViewRef}
+        ref={scrollRef}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         data={Data}

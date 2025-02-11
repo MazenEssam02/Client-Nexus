@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, ScrollView } from "react-native";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import NotificationButton from "../components/NotificationButton/NotificationButton";
 import QuickButton from "../components/QuickButton/QuickButton";
 import SearchBlock from "../components/SearchBlock/SearchBlock";
@@ -7,52 +7,51 @@ import AskQuestionBlock from "../components/AskQuestionBlock/AskQuestionBlock";
 import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
 import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
 import { useNavigation } from "@react-navigation/native";
+import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          bounces={false}
-          stickyHeaderIndices={[-1]}
-        >
-          <View style={styles.header}>
-            <NotificationButton />
-            <Image
-              source={require("../assets/icons/Main-Logo.png")}
-              style={styles.logoImage}
-              resizeMethod="resize"
-            />
-          </View>
-          <View style={styles.QuickButtonContainer}>
-            <QuickButton
-              title={"محامى عاجل"}
-              iconName={"On_time"}
-              onPress={() => navigation.navigate("Search" as never)}
-            />
-            <QuickButton
-              title={"استشارة مكتبية"}
-              iconName={"Consult"}
-              onPress={() => navigation.navigate("Search" as never)}
-            />
-            <QuickButton
-              title={"مكالمة محامى"}
-              iconName={"Call"}
-              onPress={() => navigation.navigate("Search" as never)}
-            />
-          </View>
-          <SearchBlock />
-          <AskQuestionBlock />
-          <ArticlesSection />
-        </ScrollView>
-        <View style={styles.chatBotContainer}>
-          <ChatBotIcon />
+    <ScreensWrapper>
+      <ScrollView
+        style={styles.container}
+        bounces={false}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <NotificationButton />
+          <Image
+            source={require("../assets/icons/Main-Logo.png")}
+            style={styles.logoImage}
+            resizeMethod="resize"
+          />
         </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        <View style={styles.QuickButtonContainer}>
+          <QuickButton
+            title={"محامى عاجل"}
+            iconName={"On_time"}
+            onPress={() => {}}
+          />
+          <QuickButton
+            title={"استشارة مكتبية"}
+            iconName={"Consult"}
+            onPress={() => navigation.navigate("Search" as never)}
+          />
+          <QuickButton
+            title={"مكالمة محامى"}
+            iconName={"Call"}
+            onPress={() => navigation.navigate("Search" as never)}
+          />
+        </View>
+        <SearchBlock />
+        <AskQuestionBlock />
+        <ArticlesSection />
+      </ScrollView>
+      <View style={styles.chatBotContainer}>
+        <ChatBotIcon />
+      </View>
+    </ScreensWrapper>
   );
 }
 const styles = StyleSheet.create({
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
   },
   chatBotContainer: {
     position: "absolute",
-    bottom: 12,
+    bottom: 10,
     right: 15,
   },
 });

@@ -38,8 +38,8 @@ function HomeStack() {
         name="Search"
         component={SearchScreen}
         options={{ title: "اختر التخصص" }}
-      />
-      <Stack.Screen
+        />
+        <Stack.Screen
         name="SearchResult"
         component={SearchResultScreen}
         options={{ title: "نتائج البحث" }}

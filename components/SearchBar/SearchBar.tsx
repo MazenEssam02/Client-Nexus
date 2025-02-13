@@ -7,6 +7,8 @@ export default function SearchBar({
   backgroundColor,
   onPress = null,
   iseditable = true,
+  onSubmitEditing = null,
+  onChangeText = null,
 }) {
   return (
     <Pressable
@@ -20,6 +22,8 @@ export default function SearchBar({
         placeholderTextColor={Colors.SecondaryColor}
         editable={iseditable}
         onPress={onPress} //work only on ios
+        onSubmitEditing={onSubmitEditing}
+        onChangeText={onChangeText}
       />
     </Pressable>
   );

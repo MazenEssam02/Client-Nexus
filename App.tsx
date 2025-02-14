@@ -13,6 +13,7 @@ import NotificationScreen from "./screens/NotificationScreen";
 import SearchScreen from "./screens/SearchScreen";
 import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import FilterResultModal from "./components/FilterResultModal/FilterResultModal";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -38,8 +39,8 @@ function HomeStack() {
         name="Search"
         component={SearchScreen}
         options={{ title: "اختر التخصص" }}
-        />
-        <Stack.Screen
+      />
+      <Stack.Screen
         name="SearchResult"
         component={SearchResultScreen}
         options={{ title: "نتائج البحث" }}

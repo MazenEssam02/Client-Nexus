@@ -2,9 +2,9 @@ import { StyleSheet, Pressable, Image, Text } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
-export default function FilterIcon({ style = null }) {
+export default function FilterIcon({ style = null, onPress = null }) {
   return (
-    <Pressable style={[styles.container, style]} onPress={() => {}}>
+    <Pressable style={[styles.container, style]} onPress={onPress}>
       <Image source={require(`../../assets/icons/Icon_Add.png`)} />
       <Text style={styles.subtitle}>تحديد النتائج</Text>
     </Pressable>

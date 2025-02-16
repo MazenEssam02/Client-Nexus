@@ -2,7 +2,7 @@ import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
-import Rating from "../../constants/Rating";
+import Rating from "../../constants/imageRequires";
 import { useNavigation } from "@react-navigation/native";
 const LawyerCard = ({
   name = "المحامي عبدالكريم غفار",

@@ -14,12 +14,12 @@ import SearchScreen from "./screens/SearchScreen";
 import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuthStore } from "./store/Auth";
-import { useEffect } from "react";
+import LoginScreen from "./screens/LoginScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function HomeStack() {
-  const { user, login } = useAuthStore();
+  const { user } = useAuthStore();
 
   return (
     <Stack.Navigator
@@ -33,21 +33,31 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{ title: "اختر التخصص" }}
-        />
+      {user ? (
+        <>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Search"
+            component={SearchScreen}
+            options={{ title: "اختر التخصص" }}
+          />
+            <Stack.Screen
+            name="SearchResult"
+            component={SearchResultScreen}
+            options={{ title: "نتائج البحث" }}
+          />
+        </>
+      ) : (
         <Stack.Screen
-        name="SearchResult"
-        component={SearchResultScreen}
-        options={{ title: "نتائج البحث" }}
-      />
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
+      )}
     </Stack.Navigator>
   );
 }

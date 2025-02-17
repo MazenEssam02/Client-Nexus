@@ -2,9 +2,9 @@ import { StyleSheet, Pressable, Text, Image } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
-export default function NotificationButton({ title, imageLink }) {
+export default function ArticleItem({ title, imageLink, onPress }) {
   return (
-    <Pressable style={styles.container} onPress={() => {}}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Image
         source={{
           uri: imageLink,

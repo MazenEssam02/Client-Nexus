@@ -1,5 +1,5 @@
 import { Button, StyleSheet, Text, View } from "react-native";
-import { useAuthStore } from "../store/Auth";
+import { useAuthStore } from "../store/auth";
 
 export default function LoginScreen() {
   const { login } = useAuthStore();

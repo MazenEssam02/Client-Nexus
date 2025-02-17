@@ -3,7 +3,7 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import specialities from "../../api-mock/specialities.json";
 import SpecialitiyItem from "../SpecialityItem/SpecialityItem";
-export default function MostPickedSpecialities() {
+export default function AllSpecialities() {
   return (
     <View style={styles.container}>
       {/* <Text style={[font.title, styles.titleText]}>

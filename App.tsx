@@ -13,14 +13,12 @@ import NotificationScreen from "./screens/NotificationScreen";
 import SearchScreen from "./screens/SearchScreen";
 import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useAuthStore } from "./store/Auth";
+import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function HomeStack() {
-  const { user } = useAuthStore();
-
   return (
     <Stack.Navigator
       id={undefined}
@@ -33,31 +31,21 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      {user ? (
-        <>
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Search"
-            component={SearchScreen}
-            options={{ title: "اختر التخصص" }}
-          />
-            <Stack.Screen
-            name="SearchResult"
-            component={SearchResultScreen}
-            options={{ title: "نتائج البحث" }}
-          />
-        </>
-      ) : (
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-      )}
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{ title: "اختر التخصص" }}
+      />
+      <Stack.Screen
+        name="SearchResult"
+        component={SearchResultScreen}
+        options={{ title: "نتائج البحث" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -143,7 +131,29 @@ function AuthenticatedStack() {
     </Stack.Navigator>
   );
 }
+function UnAuthenticatedStack() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
+  const { user } = useAuthStore();
   const fontsLoaded = useLoadFonts();
   if (!fontsLoaded) {
     return <ActivityIndicator size="small" color="#0000ff" />;
@@ -153,7 +163,7 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <AuthenticatedStack />
+        {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
       </NavigationContainer>
     </SafeAreaProvider>
   );

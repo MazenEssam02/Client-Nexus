@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
-import MostPickedSpecialities from "../components/MostPickedSpecialities/MostPickedSpecialities";
+import AllSpecialities from "../components/AllSpecialities/AllSpecialities";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 export default function SearchScreen() {
@@ -19,7 +19,7 @@ export default function SearchScreen() {
           backgroundColor={"white"}
           onSubmitEditing={submitHandler}
         />
-        <MostPickedSpecialities />
+        <AllSpecialities />
       </View>
     </View>
   );

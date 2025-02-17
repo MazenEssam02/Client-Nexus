@@ -13,10 +13,14 @@ import NotificationScreen from "./screens/NotificationScreen";
 import SearchScreen from "./screens/SearchScreen";
 import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useAuthStore } from "./store/Auth";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function HomeStack() {
+  const { user, login } = useAuthStore();
+
   return (
     <Stack.Navigator
       id={undefined}

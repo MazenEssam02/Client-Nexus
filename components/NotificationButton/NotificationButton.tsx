@@ -2,9 +2,9 @@ import { StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/Color";
 
-export default function NotificationButton() {
+export default function NotificationButton({ onPress }) {
   return (
-    <Pressable style={styles.container} onPress={() => {}}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Ionicons name="notifications" size={20} color={Colors.mainColor} />
     </Pressable>
   );

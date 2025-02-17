@@ -20,7 +20,11 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <NotificationButton />
+          <NotificationButton
+            onPress={() => {
+              navigation.navigate("Notification" as never);
+            }}
+          />
           <Image
             source={require("../assets/icons/Main-Logo.png")}
             style={styles.logoImage}
@@ -46,7 +50,7 @@ export default function HomeScreen() {
         </View>
         <SearchBlock />
         <AskQuestionBlock />
-        <ArticlesSection />
+        <ArticlesSection navigation={navigation} />
       </ScrollView>
       <View style={styles.chatBotContainer}>
         <ChatBotIcon />

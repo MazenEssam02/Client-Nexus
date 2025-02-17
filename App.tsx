@@ -15,6 +15,7 @@ import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
+import ArticlesScreen from "./screens/ArticlesScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -123,6 +124,12 @@ function AuthenticatedStack() {
         component={UserTabs}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="Articles"
+        component={ArticlesScreen}
+        options={{ title: "المقالات" }}
+      />
+
       <Stack.Screen
         name="Notification"
         component={NotificationScreen}

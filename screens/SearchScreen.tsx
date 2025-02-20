@@ -1,15 +1,14 @@
 import { StyleSheet, View } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
-import MostPickedSpecialities from "../components/MostPickedSpecialities/MostPickedSpecialities";
+import AllSpecialities from "../components/AllSpecialities/AllSpecialities";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 export default function SearchScreen() {
-  const [input , setInput] = useState('')
-  const navigation = useNavigation()
-  function submitHandler(){
-    console.log('navigate')
-    navigation.navigate('SearchResult' as never);
+  const [input, setInput] = useState("");
+  const navigation = useNavigation();
+  function submitHandler() {
+    navigation.navigate("SearchResult" as never);
   }
   return (
     <View style={styles.container}>
@@ -19,7 +18,7 @@ export default function SearchScreen() {
           backgroundColor={"white"}
           onSubmitEditing={submitHandler}
         />
-        <MostPickedSpecialities />
+        <AllSpecialities />
       </View>
     </View>
   );

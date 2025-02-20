@@ -13,7 +13,9 @@ import NotificationScreen from "./screens/NotificationScreen";
 import SearchScreen from "./screens/SearchScreen";
 import SearchResultScreen from "./screens/SearchResultScreen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import FilterResultModal from "./components/FilterResultModal/FilterResultModal";
+import { useAuthStore } from "./store/auth";
+import LoginScreen from "./screens/LoginScreen";
+import ArticlesScreen from "./screens/ArticlesScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -123,6 +125,12 @@ function AuthenticatedStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="Articles"
+        component={ArticlesScreen}
+        options={{ title: "المقالات" }}
+      />
+
+      <Stack.Screen
         name="Notification"
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
@@ -130,7 +138,29 @@ function AuthenticatedStack() {
     </Stack.Navigator>
   );
 }
+function UnAuthenticatedStack() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
+  const { user } = useAuthStore();
   const fontsLoaded = useLoadFonts();
   if (!fontsLoaded) {
     return <ActivityIndicator size="small" color="#0000ff" />;
@@ -140,7 +170,7 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <AuthenticatedStack />
+        {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
       </NavigationContainer>
     </SafeAreaProvider>
   );

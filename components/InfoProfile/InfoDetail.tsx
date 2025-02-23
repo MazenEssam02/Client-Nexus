@@ -2,12 +2,20 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
 import InfoInput from "./InfoInput";
-const InfoDetail = ({ field, header, info, editable, onChange }) => {
+const InfoDetail = ({
+  field,
+  header,
+  info,
+  editable,
+  onChange,
+  isPassword,
+}) => {
   let inputProps = {
-    placeholderTextColor: Colors.mainColor,
-    clearTextOnFocus: true,
     keyboardType: "default",
   };
+  if (isPassword && !editable) {
+    return;
+  }
   switch (field.toString()) {
     case "mobile":
       inputProps = { ...inputProps, keyboardType: "phone-pad" };
@@ -26,7 +34,7 @@ const InfoDetail = ({ field, header, info, editable, onChange }) => {
     return <Text style={styles.info}>{info}</Text>;
   }
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, editable && { marginVertical: 2 }]}>
       <Text style={styles.title}>{header}</Text>
       <EditableHandler />
     </View>

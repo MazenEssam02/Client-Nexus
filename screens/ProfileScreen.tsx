@@ -12,10 +12,17 @@ import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import { useState } from "react";
 import QuickAccessArea from "../components/QuickAccessProfile/QuickAccessArea";
+import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePicturePicker";
 export default function ProfileScreen() {
   const [editable, setEditable] = useState(false);
+  const [changePP, setChangePP] = useState(false);
+
   function editableHandler() {
     setEditable((editable) => !editable);
+  }
+  function profilePictureHandler() {
+    console.log("clicked");
+    setChangePP((changePP) => !changePP);
   }
   return (
     <ScreensWrapper>
@@ -27,11 +34,10 @@ export default function ProfileScreen() {
           >
             <Text style={styles.editText}>{editable ? "حفظ" : "تعديل"}</Text>
           </Pressable>
-          <View style={styles.imageContainer}>
-            <Image source={require("../assets/ProfilePic/profile.png")} />
-          </View>
+          <ProfilePicturePicker editable={editable} />
           <InfoArea editable={editable} />
           <QuickAccessArea editable={editable} />
+          {/* {changePP && <ProfilePicturePicker />} */}
         </View>
       </ScrollView>
     </ScreensWrapper>

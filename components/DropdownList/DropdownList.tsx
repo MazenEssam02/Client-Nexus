@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Colors } from "../../constants/Color";
-
 export default function DropdownList({ placeholder }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -11,9 +10,8 @@ export default function DropdownList({ placeholder }) {
     { label: "القاهرة الجديدة", value: "القاهرة الجديدة" },
     { label: "مدينة نصر", value: "مدينة نصر" },
   ]);
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { zIndex: open ? 3 : 1 }]}>
       <DropDownPicker
         open={open}
         value={value}
@@ -37,6 +35,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     borderBottomWidth: 2,
     borderBottomColor: Colors.mainColor,
+  },
+  openedContainer: {
+    marginBottom: 10,
   },
   dropdown: {
     borderColor: Colors.mainColor,

@@ -3,7 +3,6 @@ import { Colors } from "../../constants/Color";
 import { useState } from "react";
 import InfoDetail from "./InfoDetail";
 const InfoArea = ({ editable }) => {
-  console.log(editable);
   const [info, setInfo] = useState({
     name: {
       header: "الاسم",
@@ -34,27 +33,17 @@ const InfoArea = ({ editable }) => {
   }
   return (
     <View style={styles.infoContainer}>
-      {Object.keys(info)
-        .filter((key) => key !== "password")
-        .map((key) => (
-          <InfoDetail
-            key={key}
-            field={key}
-            header={info[key].header}
-            info={info[key].value}
-            editable={editable}
-            onChange={changeHandler}
-          />
-        ))}
-      {editable && (
+      {Object.keys(info).map((key) => (
         <InfoDetail
-          field={info.password}
-          header={info.password.header}
-          info={info.password.value}
+          key={key}
+          field={key}
+          header={info[key].header}
+          info={info[key].value}
           editable={editable}
           onChange={changeHandler}
+          isPassword={key === "password"}
         />
-      )}
+      ))}
     </View>
   );
 };

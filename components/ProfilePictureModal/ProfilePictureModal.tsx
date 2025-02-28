@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Text } from "react-native";
 import Modal from "react-native-modal";
 import { Colors } from "../../constants/Color";
-import { font } from "../../constants/Font";
-import DropdownList from "../DropdownList/DropdownList";
 import OurButton from "../../UI/OurButton";
-
-const FilterResultModal = ({ modalVisible, modalHandler }) => {
+const ProfilePictureModal = ({
+  modalVisible,
+  modalHandler,
+  selectImage,
+  takePhoto,
+}) => {
   return (
     <Modal
       isVisible={modalVisible}
@@ -19,11 +21,8 @@ const FilterResultModal = ({ modalVisible, modalHandler }) => {
     >
       <View style={styles.modalContent}>
         <View style={styles.handle} />
-        <Text style={styles.title}>تحديد النتائج</Text>
-        <DropdownList placeholder="اختار المنطقة" />
-        <DropdownList placeholder="التخصص" />
-        <DropdownList placeholder="التقييم" />
-        <OurButton onPress={modalHandler}>التأكيد</OurButton>
+        <OurButton onPress={selectImage}>اختار من المعرض</OurButton>
+        <OurButton onPress={takePhoto}>التقط صورة جديدة</OurButton>
       </View>
     </Modal>
   );
@@ -34,7 +33,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   modalContent: {
-    minHeight: 500,
+    minHeight: 300,
     backgroundColor: Colors.background,
     padding: 20,
     borderTopLeftRadius: 20,
@@ -48,14 +47,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginVertical: 10,
   },
-  title: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
-    alignSelf: "center",
-    marginBottom: 10,
-    borderBottomColor: Colors.mainColor,
-    padding: 5,
-    borderBottomWidth: 2,
-  },
 });
-export default FilterResultModal;
+export default ProfilePictureModal;

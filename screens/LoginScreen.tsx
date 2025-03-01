@@ -1,5 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+} from "react-native";
 import { font } from "../constants/Font";
 import { Colors } from "../constants/Color";
 import { GoogleLogo } from "../components/Icons/GoogleLogo";
@@ -9,85 +18,110 @@ import { LoginInput } from "../components/LoginInput/LoginInput";
 import { MainButton } from "../components/Buttons/MainButton";
 import { SocialLogin } from "../components/SocialLogin/SocialLogin";
 import { useAuthStore } from "../store/auth";
+import { Controller, useForm } from "react-hook-form";
 
 const LoginScreen = () => {
   const { login } = useAuthStore();
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
-  // Simple email validation function
-  const validateEmail = (text: string) => {
-    setEmail(text);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (text && !emailRegex.test(text)) {
-      setEmailError("معذراً البريد غير صحيح!");
-    } else {
-      setEmailError("");
-    }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange", // Validate on change
+  });
+  const onSubmit = (data) => {
+    login({
+      email: data.email,
+      password: data.password,
+    });
   };
-  const validatePassword = (text: string) => {
-    setPassword(text);
-    if (text && text.length < 8) {
-      setPasswordError("كلمة السر يجب أن تحتوي على 8 أحرف على الأقل");
-    } else {
-      setPasswordError("");
-    }
-  };
-  const isDisabled = email === "" || password === "" || emailError !== "";
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("./../assets/login-illustration.png")}
-        style={styles.illustration}
-        resizeMode="contain"
-      />
-
-      <Text style={styles.title}>تسجيل الدخول</Text>
-
-      <LoginInput
-        placeholder="البريد الإلكتروني او رقم الهاتف"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={validateEmail}
-        placeholderTextColor={Colors.gray500}
-        error={emailError}
-      />
-
-      <LoginInput
-        placeholder="كلمة السر"
-        secureTextEntry
-        value={password}
-        onChangeText={validatePassword}
-        error={passwordError}
-        placeholderTextColor={Colors.gray500}
-      />
-
-      <TouchableOpacity style={styles.alignLeft}>
-        <Text style={styles.forgotText}>نسيت كلمة السر؟</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.signupText}>
-        ليس لديك حساب؟ <Text style={styles.signupLink}>سجل هنا</Text>
-      </Text>
-
-      <View style={styles.buttonContainer}>
-        <MainButton
-          title="تسجيل دخول"
-          onPress={() => {
-            login({
-              email,
-              password,
-            });
-          }}
-          disabled={isDisabled}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Image
+          source={require("./../assets/login-illustration.png")}
+          style={styles.illustration}
+          resizeMode="contain"
         />
-      </View>
 
-      <SocialLogin onPress={(authSource) => login({ social: authSource })} />
-    </View>
+        <Text style={styles.title}>تسجيل الدخول</Text>
+
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            required: "البريد الإلكتروني مطلوب",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "معذراً البريد غير صحيح!",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="البريد الإلكتروني او رقم الهاتف"
+              keyboardType="email-address"
+              value={value}
+              onChangeText={onChange}
+              placeholderTextColor={Colors.gray500}
+              error={errors.email?.message}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="password"
+          rules={{
+            required: "كلمة السر مطلوبة",
+            minLength: {
+              value: 8,
+              message: "كلمة السر يجب أن تحتوي على 8 أحرف على الأقل",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="كلمة السر"
+              secureTextEntry
+              value={value}
+              onChangeText={onChange}
+              error={errors.password?.message}
+              placeholderTextColor={Colors.gray500}
+            />
+          )}
+        />
+
+        <TouchableOpacity style={styles.alignLeft}>
+          <Text style={styles.forgotText}>نسيت كلمة السر؟</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.signupText}>
+          ليس لديك حساب؟ <Text style={styles.signupLink}>سجل هنا</Text>
+        </Text>
+
+        <View style={styles.buttonContainer}>
+          <MainButton
+            title="تسجيل دخول"
+            onPress={handleSubmit(onSubmit)}
+            disabled={!isValid}
+          />
+        </View>
+
+        <SocialLogin onPress={(authSource) => login({ social: authSource })} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -97,9 +131,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    minHeight: "100%",
+  },
+  scrollContent: {
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
     padding: 20,
+    paddingBottom: 40, // Extra bottom padding for scroll space
   },
   illustration: {
     marginTop: 50,

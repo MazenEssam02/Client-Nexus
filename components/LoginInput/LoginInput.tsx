@@ -44,7 +44,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     ...font.title,
     color: "black",
-    textAlign: "auto",
+    textAlign: "right",
+    textAlignVertical: "center",
+    lineHeight: 26,
   },
   inputError: {
     color: Colors.invalidColor600,

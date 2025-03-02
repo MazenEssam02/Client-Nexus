@@ -19,9 +19,12 @@ import { MainButton } from "../components/Buttons/MainButton";
 import { SocialLogin } from "../components/SocialLogin/SocialLogin";
 import { useAuthStore } from "../store/auth";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigation } from "@react-navigation/native";
+import { LoginIllustration } from "../components/Icons/LoginIllustration";
 
 const LoginScreen = () => {
   const { login } = useAuthStore();
+  const navigation = useNavigation<AuthNavigationType>();
   const {
     control,
     handleSubmit,
@@ -51,11 +54,7 @@ const LoginScreen = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <Image
-          source={require("./../assets/login-illustration.png")}
-          style={styles.illustration}
-          resizeMode="contain"
-        />
+        <LoginIllustration style={styles.illustration} />
 
         <Text style={styles.title}>تسجيل الدخول</Text>
 
@@ -108,7 +107,13 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         <Text style={styles.signupText}>
-          ليس لديك حساب؟ <Text style={styles.signupLink}>سجل هنا</Text>
+          ليس لديك حساب؟{" "}
+          <Text
+            style={styles.signupLink}
+            onPress={() => navigation.navigate("Register")}
+          >
+            سجل هنا
+          </Text>
         </Text>
 
         <View style={styles.buttonContainer}>

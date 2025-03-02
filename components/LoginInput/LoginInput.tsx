@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     ...font.title,
     color: "black",
-    textAlign: "right",
+    textAlign: "auto",
     textAlignVertical: "center",
     lineHeight: 26,
   },

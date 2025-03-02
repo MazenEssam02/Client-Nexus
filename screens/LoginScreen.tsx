@@ -34,7 +34,7 @@ const LoginScreen = () => {
       email: "",
       password: "",
     },
-    mode: "onChange", // Validate on change
+    mode: "onChange",
   });
   const onSubmit = (data) => {
     login({
@@ -64,7 +64,8 @@ const LoginScreen = () => {
           rules={{
             required: "البريد الإلكتروني مطلوب",
             pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              value:
+                /^([0-9]{11})|([A-Za-z0-9._%\+\-]+@[a-z0-9.\-]+\.[a-z]{2,3})$/i,
               message: "معذراً البريد غير صحيح!",
             },
           }}
@@ -102,7 +103,10 @@ const LoginScreen = () => {
           )}
         />
 
-        <TouchableOpacity style={styles.alignLeft}>
+        <TouchableOpacity
+          style={styles.alignLeft}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
           <Text style={styles.forgotText}>نسيت كلمة السر؟</Text>
         </TouchableOpacity>
 

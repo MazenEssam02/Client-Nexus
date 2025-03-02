@@ -17,6 +17,9 @@ import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 import ArticlesScreen from "./screens/ArticlesScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
+import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
+import { NewPasswordScreen } from "./screens/NewPasswordScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -160,6 +163,21 @@ function UnAuthenticatedStack() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OtpCodeEntry"
+        component={OtpCodeEntryScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="NewPassword"
+        component={NewPasswordScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

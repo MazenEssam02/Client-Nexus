@@ -20,18 +20,20 @@ import { useAuthStore } from "../store/auth";
 import { LawyerIcon } from "../components/Icons/LawyerIcon";
 import { UserIcon } from "../components/Icons/UserIcon";
 import { RegisterIllustration } from "../components/Icons/RegisterIllustration";
+import DatePickerInput from "../components/DatePickerInput/DatePickerInput";
+import { GenderPicker } from "../components/GenderPicker/GenderPicker";
+import CheckBox from "react-native-check-box";
+import { useNavigation } from "@react-navigation/native";
 
 const RegisterScreen = () => {
   const { login } = useAuthStore();
+  const navigation = useNavigation<AuthNavigationType>();
 
   // For role selection: 'client' or 'lawyer'
   const [selectedRole, setSelectedRole] = useState("client");
 
   // For accepting Terms & Privacy
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
-
-  // For gender selection
-  const [isMale, setIsMale] = useState(true);
 
   const {
     control,
@@ -40,10 +42,13 @@ const RegisterScreen = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
-      usernameOrPhone: "",
+      fullName: "",
       email: "",
+      birthdate: null,
+      phone: "",
       password: "",
       confirmPassword: "",
+      gender: true, // true for male, false for female
     },
     mode: "onChange",
   });
@@ -58,7 +63,7 @@ const RegisterScreen = () => {
     }
     // Example call to your store
     login({
-      // username: data.usernameOrPhone,
+      // username: data.fullName,
       email: data.email,
       password: data.password,
       // role: selectedRole,
@@ -84,64 +89,50 @@ const RegisterScreen = () => {
         <Text style={styles.title}>انضم إلينا الآن</Text>
 
         {/* Role Selection */}
-        <View style={styles.roleContainer}>
-          <TouchableOpacity
-            style={[
-              styles.roleBox,
-              selectedRole === "client" && styles.selectedRoleBox,
-            ]}
-            onPress={() => setSelectedRole("client")}
-          >
-            <UserIcon
-              color={
-                selectedRole === "client" ? Colors.mainColor : Colors.gray500
-              }
-            />
-            <Text
-              style={[
-                styles.roleText,
-                selectedRole === "client" && styles.selectedRoleText,
-              ]}
-            >
-              عميل
-            </Text>
+        <View style={styles.rolesContainer}>
+          <TouchableOpacity onPress={() => setSelectedRole("lawyer")}>
+            <View style={[styles.roleContainer]}>
+              <View
+                style={[
+                  styles.roleBox,
+                  selectedRole === "lawyer" && styles.selectedRoleBox,
+                ]}
+              >
+                <LawyerIcon
+                  color={selectedRole === "lawyer" ? "#fff" : "#000"}
+                />
+              </View>
+              <Text style={[styles.roleText]}>محامي</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.roleBox,
-              selectedRole === "lawyer" && styles.selectedRoleBox,
-            ]}
-            onPress={() => setSelectedRole("lawyer")}
-          >
-            <LawyerIcon
-              color={
-                selectedRole === "lawyer" ? Colors.mainColor : Colors.gray500
-              }
-            />
-            <Text
-              style={[
-                styles.roleText,
-                selectedRole === "lawyer" && styles.selectedRoleText,
-              ]}
-            >
-              محامي
-            </Text>
+          <TouchableOpacity onPress={() => setSelectedRole("client")}>
+            <View style={[styles.roleContainer]}>
+              <View
+                style={[
+                  styles.roleBox,
+                  selectedRole === "client" && styles.selectedRoleBox,
+                ]}
+              >
+                <UserIcon />
+              </View>
+              <Text style={[styles.roleText]}>عميل</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
         {/* Username or Phone */}
         <Controller
           control={control}
-          name="usernameOrPhone"
+          name="fullName"
           rules={{
-            required: "مطلوب اسم المستخدم أو رقم الهاتف",
+            required: "مطلوب اسم المستخدم الكامل",
           }}
           render={({ field: { onChange, value } }) => (
             <LoginInput
-              placeholder="اسم المستخدم أو رقم الهاتف"
+              placeholder="اسم المستخدم الكامل"
               value={value}
               onChangeText={onChange}
-              error={errors.usernameOrPhone?.message}
+              error={errors.fullName?.message}
               placeholderTextColor={Colors.gray500}
             />
           )}
@@ -166,6 +157,42 @@ const RegisterScreen = () => {
               onChangeText={onChange}
               placeholderTextColor={Colors.gray500}
               error={errors.email?.message}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="birthdate"
+          rules={{ required: "تاريخ الميلاد مطلوب" }}
+          render={({ field: { onChange, value } }) => (
+            <DatePickerInput
+              date={value}
+              onDateChange={onChange}
+              placeholder="تاريخ الميلاد"
+            />
+          )}
+        />
+
+        {/* Phone */}
+        <Controller
+          control={control}
+          name="phone"
+          rules={{
+            required: "رقم الهاتف مطلوب",
+            pattern: {
+              value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+              message: "معذرةً الرقم غير صحيح!",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="رقم الهاتف"
+              keyboardType="phone-pad"
+              value={value}
+              onChangeText={onChange}
+              placeholderTextColor={Colors.gray500}
+              error={errors.phone?.message}
             />
           )}
         />
@@ -215,32 +242,24 @@ const RegisterScreen = () => {
 
         {/* Gender */}
         <View style={styles.genderContainer}>
-          <Text style={styles.genderLabel}>الجنس</Text>
-          <View style={styles.switchContainer}>
-            <Text style={styles.genderText}>ذكر</Text>
-            <Switch
-              trackColor={{ false: "#ccc", true: Colors.SecondaryColorLight }}
-              thumbColor={isMale ? Colors.SecondaryColor : "#f4f3f4"}
-              onValueChange={() => setIsMale(!isMale)}
-              value={!isMale} // If switch is ON, it means female
-              style={{ marginHorizontal: 10 }}
-            />
-            <Text style={styles.genderText}>أنثى</Text>
-          </View>
+          <Text style={styles.genderLabel}>النوع</Text>
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field: { onChange, value } }) => (
+              <GenderPicker value={value} onChange={onChange} />
+            )}
+          />
         </View>
 
         {/* Terms & Privacy Checkbox */}
         <View style={styles.termsContainer}>
-          <TouchableOpacity
+          <CheckBox
+            onClick={() => setAcceptedPolicy(!acceptedPolicy)}
+            isChecked={acceptedPolicy}
             style={styles.checkbox}
-            onPress={() => setAcceptedPolicy(!acceptedPolicy)}
-          >
-            {/* <Icon
-              name={acceptedPolicy ? "checkbox" : "square-outline"}
-              size={24}
-              color={acceptedPolicy ? Colors.SecondaryColor : Colors.gray500}
-            /> */}
-          </TouchableOpacity>
+            checkBoxColor={Colors.mainColor}
+          />
           <Text style={styles.termsText}>
             أنا موافق على سياسة الاستخدام والخصوصية
           </Text>
@@ -251,16 +270,17 @@ const RegisterScreen = () => {
           <MainButton
             title="إنشاء حساب جديد"
             onPress={handleSubmit(onSubmit)}
-            disabled={!isValid}
+            disabled={!(isValid && acceptedPolicy)}
           />
         </View>
 
-        {/* Or use social */}
-        <Text style={styles.orText}>أو سجل باستخدام</Text>
         <SocialLogin onPress={(authSource) => login({ social: authSource })} />
 
         {/* Already have account? */}
-        <TouchableOpacity style={{ marginTop: 16 }}>
+        <TouchableOpacity
+          style={{ marginTop: 16 }}
+          onPress={() => navigation.navigate("Login")}
+        >
           <Text style={styles.loginText}>
             لديك حساب؟ <Text style={styles.loginLink}>تسجيل دخول</Text>
           </Text>
@@ -276,6 +296,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    minHeight: "100%",
   },
   scrollContent: {
     flexGrow: 1,
@@ -283,22 +304,28 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     padding: 20,
     paddingBottom: 40,
+    minHeight: "100%",
   },
   illustration: {
     marginTop: 50,
-    marginBottom: 20,
+    marginBottom: 30,
     width: 200,
     height: 140,
   },
   title: {
     ...font.headline,
-    alignSelf: "flex-end",
     marginBottom: 20,
   },
-  roleContainer: {
+  rolesContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     marginBottom: 20,
+    width: "100%",
+  },
+  roleContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
   },
   roleBox: {
@@ -306,31 +333,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: Colors.gray200,
-    borderRadius: 12,
-    width: 90,
-    height: 70,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: "#fff",
   },
   selectedRoleBox: {
-    backgroundColor: Colors.SecondaryColor,
-    borderColor: Colors.SecondaryColor,
+    backgroundColor: Colors.mainColor,
   },
   roleText: {
     marginTop: 4,
-    color: Colors.gray500,
+    color: Colors.SecondaryColor,
     ...font.subtitle,
-  },
-  selectedRoleText: {
-    color: "#fff",
   },
   genderContainer: {
     width: "100%",
-    marginBottom: 16,
+    marginBottom: 8,
   },
   genderLabel: {
     ...font.subtitle,
-    marginBottom: 4,
+    lineHeight: 22,
+    marginBottom: 8,
     alignSelf: "flex-end",
   },
   switchContainer: {
@@ -353,13 +376,14 @@ const styles = StyleSheet.create({
   },
   termsText: {
     ...font.subtitle,
-    fontSize: 14,
+    lineHeight: 22,
     flex: 1,
     textAlign: "right",
   },
   buttonContainer: {
     width: "100%",
-    marginTop: 10,
+    height: 36,
+    marginBottom: 20,
   },
   orText: {
     marginVertical: 16,

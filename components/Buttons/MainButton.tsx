@@ -18,15 +18,13 @@ export const MainButton: React.FC<MainButtonProps> = ({
   return (
     <TouchableOpacity
       style={[
-        disabled
-          ? [styles.loginButton, styles.disabledButton]
-          : styles.loginButton,
+        disabled ? [styles.button, styles.disabledButton] : styles.button,
       ]}
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.8}
     >
-      <Text style={[styles.loginText, disabled ? styles.disabledText : null]}>
+      <Text style={[styles.text, disabled ? styles.disabledText : null]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -34,7 +32,7 @@ export const MainButton: React.FC<MainButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-  loginButton: {
+  button: {
     width: "100%",
     height: "100%",
     backgroundColor: Colors.mainColor,
@@ -42,9 +40,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  loginText: {
+  text: {
     color: "#fff",
-    lineHeight: 20,
+    lineHeight: 28,
     ...font.Button,
   },
   disabledButton: {

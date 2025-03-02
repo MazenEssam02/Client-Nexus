@@ -24,6 +24,7 @@ import DatePickerInput from "../components/DatePickerInput/DatePickerInput";
 import { GenderPicker } from "../components/GenderPicker/GenderPicker";
 import CheckBox from "react-native-check-box";
 import { useNavigation } from "@react-navigation/native";
+import { PrivacyPolicyModal } from "../components/PrivacyPolicyModal/PrivacyPolicyModal";
 
 const RegisterScreen = () => {
   const { login } = useAuthStore();
@@ -34,6 +35,7 @@ const RegisterScreen = () => {
 
   // For accepting Terms & Privacy
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const {
     control,
@@ -260,9 +262,15 @@ const RegisterScreen = () => {
             style={styles.checkbox}
             checkBoxColor={Colors.mainColor}
           />
-          <Text style={styles.termsText}>
-            أنا موافق على سياسة الاستخدام والخصوصية
-          </Text>
+          <View style={styles.termsTextContainer}>
+            <Text style={styles.termsText}>أنا موافق على </Text>
+            {/* Tap to open modal */}
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Text style={[styles.termsText, { color: Colors.mainColor }]}>
+                سياسة الاستخدام والخصوصية
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Register Button */}
@@ -286,6 +294,10 @@ const RegisterScreen = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+      <PrivacyPolicyModal
+        isModalVisible={isModalVisible}
+        setModalVisible={setModalVisible}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -377,7 +389,6 @@ const styles = StyleSheet.create({
   termsText: {
     ...font.subtitle,
     lineHeight: 22,
-    flex: 1,
     textAlign: "right",
   },
   buttonContainer: {
@@ -395,5 +406,10 @@ const styles = StyleSheet.create({
   loginLink: {
     color: Colors.SecondaryColor,
     ...font.subtitle,
+  },
+  termsTextContainer: {
+    flexDirection: "row-reverse",
+    gap: 2,
+    flex: 1,
   },
 });

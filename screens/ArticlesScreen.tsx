@@ -20,10 +20,12 @@ export default function ArticlesScreen({ route }) {
         }}
         style={styles.imagecontainer}
       />
-      <ScrollView style={styles.scrollContainer}>
-        <View style={styles.textContainer}>
-          <Text style={[font.headline, styles.titleText]}>{data.title}</Text>
-          <Text style={[font.body, styles.contentText]}>{data.content}</Text>
+      <ScrollView>
+        <View style={styles.scrollContainer}>
+          <View style={styles.textContainer}>
+            <Text style={[font.headline, styles.titleText]}>{data.title}</Text>
+            <Text style={[font.body, styles.contentText]}>{data.content}</Text>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
   textContainer: {
     backgroundColor: Colors.background,
     padding: 15,
-    paddingBottom: 50,
+    paddingBottom: 40,
   },
   titleText: {
     color: Colors.SecondaryColor,

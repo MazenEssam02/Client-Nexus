@@ -16,10 +16,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 import ArticlesScreen from "./screens/ArticlesScreen";
+
 import RegisterScreen from "./screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
 import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
 import { NewPasswordScreen } from "./screens/NewPasswordScreen";
+import EmergencyScreen from "./screens/EmergencyScreen";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -50,6 +53,11 @@ function HomeStack() {
         name="SearchResult"
         component={SearchResultScreen}
         options={{ title: "نتائج البحث" }}
+      />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreen}
+        options={{ title: "محامى عاجل" }}
       />
     </Stack.Navigator>
   );

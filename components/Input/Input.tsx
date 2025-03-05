@@ -4,7 +4,7 @@ import { Colors } from "../../constants/Color";
 function Input({
   label,
   inputConfig,
-  style,
+  style = {},
   isValid,
   backgroundColor = "white",
 }) {
@@ -30,22 +30,18 @@ const styles = StyleSheet.create({
   itemContainer: {
     marginVertical: 8,
   },
-  Label: {
-    color: "white",
-    fontSize: 15,
-    // fontWeight:'bold'
-  },
 
   inputItem: {
-    // backgroundColor:Colors.primaryColor800,
     color: "white",
     padding: 12,
     margin: 10,
     borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: Colors.SecondaryColorLight,
   },
   inputMultiLine: {
     textAlignVertical: "bottom",
-    minHeight: 100,
+    minHeight: "50%",
   },
   invalidInputLabel: {
     color: Colors.invalidColor600,

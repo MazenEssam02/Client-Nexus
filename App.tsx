@@ -21,8 +21,7 @@ import RegisterScreen from "./screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
 import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
 import { NewPasswordScreen } from "./screens/NewPasswordScreen";
-import EmergencyScreen from "./screens/EmergencyScreen";
-
+import EmergencyScreens from "./screens/EmergencyScreens";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -56,7 +55,7 @@ function HomeStack() {
       />
       <Stack.Screen
         name="EmergencyLawyer"
-        component={EmergencyScreen}
+        component={EmergencyScreens}
         options={{ title: "محامى عاجل" }}
       />
     </Stack.Navigator>

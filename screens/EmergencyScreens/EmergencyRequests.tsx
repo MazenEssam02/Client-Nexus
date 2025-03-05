@@ -1,9 +1,9 @@
 import { StyleSheet, View, Text, FlatList } from "react-native";
-import { Colors } from "../constants/Color";
-import { font } from "../constants/Font";
-import NotificationItem from "../components/NotificationItem/NotificationItem";
-import notifications from "../api-mock/notifications.json";
-export default function EmergencyScreen() {
+import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
+import NotificationItem from "../../components/NotificationItem/NotificationItem";
+import notifications from "../../api-mock/notifications.json";
+export default function EmergencyRequests() {
   return (
     <View style={styles.container}>
       <FlatList

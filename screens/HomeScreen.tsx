@@ -35,7 +35,7 @@ export default function HomeScreen() {
           <QuickButton
             title={"محامى عاجل"}
             iconName={"On_time"}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("EmergencyLawyer" as never)}
           />
           <QuickButton
             title={"استشارة مكتبية"}

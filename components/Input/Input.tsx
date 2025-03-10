@@ -20,6 +20,7 @@ function Input({
         style={inputStyle}
         placeholderTextColor={isValid ? Colors.gray500 : Colors.invalidColor200}
         placeholder={label}
+        textAlign="right"
         {...inputConfig}
       />
     </View>
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
   },
 
   inputItem: {
-    color: "white",
+    color: Colors.SecondaryColor,
     padding: 12,
     margin: 10,
     borderRadius: 12,
@@ -43,10 +44,9 @@ const styles = StyleSheet.create({
     textAlignVertical: "bottom",
     minHeight: "50%",
   },
-  invalidInputLabel: {
-    color: Colors.invalidColor600,
-  },
+
   invalidInput: {
-    backgroundColor: Colors.invalidColor200,
+    borderWidth: 1,
+    borderColor: Colors.invalidColor600,
   },
 });

@@ -4,7 +4,7 @@ import { Colors } from "../../constants/Color";
 function Input({
   label,
   inputConfig,
-  style,
+  style = {},
   isValid,
   backgroundColor = "white",
 }) {
@@ -20,6 +20,7 @@ function Input({
         style={inputStyle}
         placeholderTextColor={isValid ? Colors.gray500 : Colors.invalidColor200}
         placeholder={label}
+        textAlign="right"
         {...inputConfig}
       />
     </View>
@@ -30,27 +31,22 @@ const styles = StyleSheet.create({
   itemContainer: {
     marginVertical: 8,
   },
-  Label: {
-    color: "white",
-    fontSize: 15,
-    // fontWeight:'bold'
-  },
 
   inputItem: {
-    // backgroundColor:Colors.primaryColor800,
-    color: "white",
+    color: Colors.SecondaryColor,
     padding: 12,
     margin: 10,
     borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: Colors.SecondaryColorLight,
   },
   inputMultiLine: {
     textAlignVertical: "bottom",
-    minHeight: 100,
+    minHeight: "50%",
   },
-  invalidInputLabel: {
-    color: Colors.invalidColor600,
-  },
+
   invalidInput: {
-    backgroundColor: Colors.invalidColor200,
+    borderWidth: 1,
+    borderColor: Colors.invalidColor600,
   },
 });

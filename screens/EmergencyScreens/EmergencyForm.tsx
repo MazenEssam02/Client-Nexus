@@ -39,27 +39,34 @@ export default function EmergencyForm({ navigation }) {
       address: inputText.address.value,
       description: inputText.description.value,
     };
+    // if (
+    //   !dataEntered.phoneNumber ||
+    //   !dataEntered.address ||
+    //   !dataEntered.description
+    // ) {
+    setInputText((curInputText) => {
+      return {
+        phoneNumber: {
+          value: curInputText.phoneNumber.value,
+          isValid: !!dataEntered.phoneNumber,
+        },
+        address: {
+          value: curInputText.address.value,
+          isValid: !!dataEntered.address,
+        },
+        description: {
+          value: curInputText.description.value,
+          isValid: !!dataEntered.description,
+        },
+      };
+    });
+    // }
     if (
-      !dataEntered.phoneNumber ||
-      !dataEntered.address ||
-      !dataEntered.description
+      !!dataEntered.phoneNumber &&
+      !!dataEntered.address &&
+      !!dataEntered.description
     ) {
-      setInputText((curInputText) => {
-        return {
-          phoneNumber: {
-            value: curInputText.phoneNumber.value,
-            isValid: !!dataEntered.phoneNumber,
-          },
-          address: {
-            value: curInputText.address.value,
-            isValid: !!dataEntered.address,
-          },
-          description: {
-            value: curInputText.description.value,
-            isValid: !!dataEntered.description,
-          },
-        };
-      });
+      navigation.navigate("Requests");
     }
   }
   return (

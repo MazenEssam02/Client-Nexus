@@ -56,7 +56,7 @@ function HomeStack() {
       <Stack.Screen
         name="EmergencyLawyer"
         component={EmergencyScreens}
-        options={{ title: "محامى عاجل" }}
+        options={{ title: "محامى عاجل", headerShown: false }}
       />
     </Stack.Navigator>
   );

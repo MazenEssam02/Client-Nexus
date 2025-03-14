@@ -39,32 +39,47 @@ export default function EmergencyForm({ navigation }) {
       address: inputText.address.value,
       description: inputText.description.value,
     };
+    // if (
+    //   !dataEntered.phoneNumber ||
+    //   !dataEntered.address ||
+    //   !dataEntered.description
+    // ) {
+    setInputText((curInputText) => {
+      return {
+        phoneNumber: {
+          value: curInputText.phoneNumber.value,
+          isValid: !!dataEntered.phoneNumber,
+        },
+        address: {
+          value: curInputText.address.value,
+          isValid: !!dataEntered.address,
+        },
+        description: {
+          value: curInputText.description.value,
+          isValid: !!dataEntered.description,
+        },
+      };
+    });
+    // }
     if (
-      !dataEntered.phoneNumber ||
-      !dataEntered.address ||
-      !dataEntered.description
+      !!dataEntered.phoneNumber &&
+      !!dataEntered.address &&
+      !!dataEntered.description
     ) {
-      setInputText((curInputText) => {
-        return {
-          phoneNumber: {
-            value: curInputText.phoneNumber.value,
-            isValid: !!dataEntered.phoneNumber,
-          },
-          address: {
-            value: curInputText.address.value,
-            isValid: !!dataEntered.address,
-          },
-          description: {
-            value: curInputText.description.value,
-            isValid: !!dataEntered.description,
-          },
-        };
-      });
+      navigation.navigate("Requests");
     }
   }
   return (
-    <View style={styles.container}>
-      <ScrollView keyboardDismissMode="on-drag">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.innerContainer}>
           <Input
             label="رقم الهاتف"
@@ -100,7 +115,7 @@ export default function EmergencyForm({ navigation }) {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -108,17 +123,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    paddingBottom: 15,
     paddingHorizontal: 15,
   },
-  // scrollContainer: {
-  //   height: "100%",
-  // },
+
+  scrollContent: {
+    paddingBottom: 25,
+    flexGrow: 1,
+  },
   innerContainer: {
     marginVertical: 50,
     height: 600,
     backgroundColor: "white",
-    // justifyContent: "center",
     borderRadius: 12,
   },
   buttonContainer: {

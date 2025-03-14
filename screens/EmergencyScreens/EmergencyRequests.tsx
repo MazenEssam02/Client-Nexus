@@ -1,23 +1,21 @@
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import NotificationItem from "../../components/NotificationItem/NotificationItem";
-import notifications from "../../api-mock/notifications.json";
+import Requests from "../../api-mock/requests.json";
+import EmergencyCard from "../../components/EmergencyLawyer Card/EmergencyCard";
 export default function EmergencyRequests() {
   return (
     <View style={styles.container}>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={notifications}
-        keyExtractor={(item) => item.notification_id}
-        renderItem={({ item }) => (
-          <NotificationItem
-            title={item.title}
-            text={item.content}
-            date={item.date}
-          />
-        )}
-      />
+      {Requests.length ? (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={Requests}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <EmergencyCard lawyer={item} />}
+        />
+      ) : (
+        <Text style={styles.waitText}>فى انتظار قبول محامى للطلب ........</Text>
+      )}
     </View>
   );
 }
@@ -25,17 +23,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    paddingBottom: 15,
-    paddingHorizontal: 15,
-  },
-  titleContainer: {
-    height: 48,
-    backgroundColor: Colors.background,
+    paddingHorizontal: 10,
+
     justifyContent: "center",
   },
-  titleText: {
-    color: Colors.SecondaryColor,
-    textAlign: "right",
-    textAlignVertical: "center",
+  waitText: {
+    ...font.headline,
+    textAlign: "center",
   },
 });

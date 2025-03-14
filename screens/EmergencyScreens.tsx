@@ -50,7 +50,7 @@ export default function EmergencyScreens({ navigation }) {
         name="Requests"
         component={EmergencyRequests}
         options={{
-          title: "محامى عاجل",
+          title: "اختر محامى",
           headerLeft: () => (
             <Ionicons
               name="close-outline"

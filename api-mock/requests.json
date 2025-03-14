@@ -1,0 +1,72 @@
+[
+  {
+    "id": "generated-id-1",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "3.4",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "2500",
+    "experiance": "17"
+  },
+  {
+    "id": "generated-id-2",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "4.5",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "10",
+    "experiance": "11"
+  },
+  {
+    "id": "generated-id-3",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "4.1",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "150",
+    "experiance": "5"
+  },
+  {
+    "id": "generated-id-4",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "4",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "70",
+    "experiance": "5"
+  },
+  {
+    "id": "generated-id-5",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "5",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "150",
+    "experiance": "20+"
+  },
+  {
+    "id": "generated-id-6",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "3",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "150",
+    "experiance": "15"
+  },
+  {
+    "id": "generated-id-7",
+    "name": "المحامي عبدالكريم غفار",
+    "rate": "3",
+    "speciality": "جنائي",
+    "vezita": "150",
+    "address": "وسط البلد",
+    "visitors": "150",
+    "experiance": "7"
+  }
+]

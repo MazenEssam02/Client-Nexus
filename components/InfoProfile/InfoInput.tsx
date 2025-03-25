@@ -29,6 +29,7 @@ const InfoInput = ({ field, onChange, inputProps, info }) => {
 const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: "white",
+    borderRadius: 5,
     width: "100%",
     padding: 5,
     marginTop: 3,

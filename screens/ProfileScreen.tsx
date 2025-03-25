@@ -1,10 +1,11 @@
 import {
   View,
-  Image,
   StyleSheet,
   ScrollView,
   Pressable,
   Text,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import InfoArea from "../components/InfoProfile/InfoArea";
@@ -26,20 +27,30 @@ export default function ProfileScreen() {
   }
   return (
     <ScreensWrapper>
-      <ScrollView>
-        <View style={styles.container}>
-          <Pressable
-            style={({ pressed }) => [pressed && styles.pressed]}
-            onPress={editableHandler}
-          >
-            <Text style={styles.editText}>{editable ? "حفظ" : "تعديل"}</Text>
-          </Pressable>
-          <ProfilePicturePicker editable={editable} />
-          <InfoArea editable={editable} />
-          <QuickAccessArea editable={editable} />
-          {/* {changePP && <ProfilePicturePicker />} */}
-        </View>
-      </ScrollView>
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.container}>
+            <Pressable
+              style={({ pressed }) => [pressed && styles.pressed]}
+              onPress={editableHandler}
+            >
+              <Text style={styles.editText}>{editable ? "حفظ" : "تعديل"}</Text>
+            </Pressable>
+            <ProfilePicturePicker editable={editable} />
+            <InfoArea editable={editable} />
+            <QuickAccessArea editable={editable} />
+            {/* {changePP && <ProfilePicturePicker />} */}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreensWrapper>
   );
 }
@@ -48,6 +59,10 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     marginInline: 30,
+  },
+  keyboardContainer: {
+    flex: 1,
+    minHeight: "100%",
   },
   pressed: {
     opacity: 0.3,
@@ -61,5 +76,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    paddingBottom: 40,
+    minHeight: "100%",
   },
 });

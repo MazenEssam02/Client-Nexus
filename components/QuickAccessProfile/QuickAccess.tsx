@@ -1,15 +1,52 @@
-import { Text, View, Image, Pressable, StyleSheet } from "react-native";
-import { quickAccessIcons } from "../../constants/imageRequires";
+import { Text, View, Pressable, StyleSheet } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useEffect, useState } from "react";
+import { Favourite } from "../Icons/Favourite";
+import { Question } from "../Icons/Question";
+import { Calendar } from "../Icons/Calendar";
+import { Search } from "../Icons/Search";
+import { Conditions } from "../Icons/Conditions";
+import { Exit } from "../Icons/Exit";
+import { Arrow } from "../Icons/Arrow";
+import { ExitArrow } from "../Icons/ExitArrow";
+import { useNavigation } from "@react-navigation/native";
 const QuickAccess = ({ icon, title }) => {
   const [exitHandler, setExitHandler] = useState(false);
+  const navigation = useNavigation();
   useEffect(() => {
     if (icon === "Exit") {
       setExitHandler(true);
     }
   }, [icon]);
+  const IconHandler = ({ icon }) => {
+    switch (icon) {
+      case "favourite":
+        return <Favourite />;
+      case "questions":
+        return <Question />;
+      case "schedule":
+        return <Calendar />;
+      case "search":
+        return <Search />;
+      case "conditions":
+        return <Conditions />;
+      case "Exit":
+        return <Exit />;
+    }
+  };
+  const navigateHandler = () => {
+    switch (icon) {
+      case "favourite":
+        navigation.navigate("Favourite" as never);
+        break;
+      case "questions":
+        navigation.navigate("Questions" as never);
+        break;
+      default:
+        return;
+    }
+  };
   return (
     <Pressable
       style={({ pressed }) => [
@@ -17,23 +54,21 @@ const QuickAccess = ({ icon, title }) => {
         pressed && styles.pressed,
         exitHandler && styles.exitBorder,
       ]}
+      onPress={navigateHandler}
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={quickAccessIcons[icon]} />
+          <IconHandler icon={icon} />
         </View>
         <View style={styles.infoContainer}>
           <Text style={exitHandler ? styles.exitTitle : styles.title}>
             {title}
           </Text>
-          <Image
-            source={
-              exitHandler
-                ? require("../../assets/icons/exit_arrow.png")
-                : require("../../assets/icons/Icon_Arrow.png")
-            }
-            style={{ margin: 0, padding: 0, width: 10 }}
-          />
+          {icon === "Exit" ? (
+            <Arrow fillColor={Colors.invalidColor600} />
+          ) : (
+            <Arrow fillColor="" />
+          )}
         </View>
       </View>
     </Pressable>

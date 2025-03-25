@@ -22,7 +22,9 @@ import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
 import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
 import { NewPasswordScreen } from "./screens/NewPasswordScreen";
 import EmergencyScreen from "./screens/EmergencyScreen";
-
+import FavouriteScreen from "./screens/FavouriteScreen";
+import Questions from "./screens/Questions";
+import QuestionForm from "./screens/QuestionForm";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +64,44 @@ function HomeStack() {
     </Stack.Navigator>
   );
 }
+function UserQuickAccess() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Favourite"
+        component={FavouriteScreen}
+        options={{ title: "التفضيلات" }}
+      />
+      <Stack.Screen
+        name="Questions"
+        component={Questions}
+        options={{
+          title: "اسئلة و اجابات",
+        }}
+      />
+      <Stack.Screen
+        name="QuestionForm"
+        component={QuestionForm}
+        options={{ title: "اسأل محامي" }}
+      />
+    </Stack.Navigator>
+  );
+}
 function UserTabs() {
   return (
     <Tab.Navigator
@@ -79,8 +119,8 @@ function UserTabs() {
       })}
     >
       <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="QuickAccess"
+        component={UserQuickAccess}
         options={{
           headerShown: false,
           title: "حسابى",

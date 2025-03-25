@@ -2,9 +2,13 @@ import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
-import Rating from "../../constants/imageRequires";
+import { Rate1 } from "../Icons/Rate1";
+import { Rate2 } from "../Icons/Rate2";
+import { Rate3 } from "../Icons/Rate3";
+import { Rate4 } from "../Icons/Rate4";
+import { Rate5 } from "../Icons/Rate5";
 import { useNavigation } from "@react-navigation/native";
-const LawyerCard = ({
+const ResultLawyerCard = ({
   name = "المحامي عبدالكريم غفار",
   rate = "3",
   speciality = "جنائي",
@@ -13,6 +17,20 @@ const LawyerCard = ({
   onPress = null,
 }) => {
   const navigation = useNavigation();
+  function RateHandler({ style }) {
+    switch (rate) {
+      case "1":
+        return <Rate1 style={style} />;
+      case "2":
+        return <Rate2 style={style} />;
+      case "3":
+        return <Rate3 style={style} />;
+      case "4":
+        return <Rate4 style={style} />;
+      case "5":
+        return <Rate5 style={style} />;
+    }
+  }
   return (
     <Pressable
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
@@ -25,12 +43,7 @@ const LawyerCard = ({
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingContainer}>
-            <Image
-              source={Rating[rate]}
-              style={{
-                marginInline: 5,
-              }}
-            />
+            <RateHandler style={styles.rate} />
             <Text style={styles.specialitiyText}>محامي {speciality}</Text>
           </View>
           <View style={styles.vezitaContainer}>
@@ -74,7 +87,7 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     flexDirection: "row-reverse",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     marginInline: 3,
   },
@@ -94,5 +107,11 @@ const styles = StyleSheet.create({
     color: Colors.SecondaryColor,
     marginInline: 8,
   },
+  rate: {
+    alignSelf: "center",
+    marginVertical: 0,
+    justifyContent: "flex-end",
+    marginLeft: 5,
+  },
 });
-export default LawyerCard;
+export default ResultLawyerCard;

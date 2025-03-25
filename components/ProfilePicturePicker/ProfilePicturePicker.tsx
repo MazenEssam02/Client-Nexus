@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import {
-  View,
-  Image,
-  Button,
-  StyleSheet,
-  Alert,
-  Pressable,
-} from "react-native";
+import { View, Image, StyleSheet, Alert, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ProfilePictureModal from "../ProfilePictureModal/ProfilePictureModal";
+import { Edit } from "../Icons/Edit";
+import { Colors } from "../../constants/Color";
 
 const ProfilePicturePicker = ({ editable }) => {
   const [imageUri, setImageUri] = useState(null);
@@ -118,13 +113,15 @@ const ProfilePicturePicker = ({ editable }) => {
         )}
         {editable && (
           <Pressable onPress={openModal}>
-            <Image
-              source={require("../../assets/icons/Icon_Construction.png")}
+            <Edit
+              color={Colors.mainColor}
+              size={24}
               style={{
-                marginTop: -20,
+                marginTop: -15,
                 marginLeft: 70,
                 backgroundColor: "white",
-                borderRadius: 15,
+                borderRadius: 30,
+                padding: 12,
               }}
             />
           </Pressable>

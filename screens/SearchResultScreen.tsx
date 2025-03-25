@@ -2,7 +2,7 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
-import LawyerCard from "../components/LawyerCard/LawyerCard";
+import ResultLawyerCard from "../components/LawyerCard/ResultLawyerCard";
 import LawyerList from "../api-mock/LawyerList";
 import { useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
@@ -33,7 +33,7 @@ export default function SearchResultScreen() {
           data={LawyerList}
           keyExtractor={(lawyer) => lawyer.id}
           renderItem={(lawyer) => (
-            <LawyerCard
+            <ResultLawyerCard
               name={lawyer.item.name}
               rate={lawyer.item.rate}
               speciality={lawyer.item.speciality}

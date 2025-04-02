@@ -25,6 +25,8 @@ import EmergencyScreens from "./screens/EmergencyScreens";
 import FavouriteScreen from "./screens/FavouriteScreen";
 import Questions from "./screens/Questions";
 import QuestionForm from "./screens/QuestionForm";
+import MyQuestion from "./screens/MyQuestion";
+import QuestionDetails from "./screens/QuestionDetails";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -98,6 +100,17 @@ function UserQuickAccess() {
         name="QuestionForm"
         component={QuestionForm}
         options={{ title: "اسأل محامي" }}
+      />
+
+      <Stack.Screen
+        name="MyQuestion"
+        component={MyQuestion}
+        options={{ title: "اسئلتي" }}
+      />
+      <Stack.Screen
+        name="QuestionDetails"
+        component={QuestionDetails}
+        options={{ title: "تفاصيل السؤال" }}
       />
     </Stack.Navigator>
   );

@@ -26,7 +26,7 @@ const LawyerList = [
   {
     id: new Date().toISOString + Math.random().toString(),
     name: "المحامي عبدالكريم غفار",
-    rate: "3",
+    rate: "1",
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
@@ -42,7 +42,7 @@ const LawyerList = [
   {
     id: new Date().toISOString + Math.random().toString(),
     name: "المحامي عبدالكريم غفار",
-    rate: "5",
+    rate: "2",
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
@@ -72,4 +72,5 @@ const LawyerList = [
     address: "وسط البلد",
   },
 ];
+
 export default LawyerList;

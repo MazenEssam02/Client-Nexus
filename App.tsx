@@ -27,6 +27,7 @@ import Questions from "./screens/Questions";
 import QuestionForm from "./screens/QuestionForm";
 import MyQuestion from "./screens/MyQuestion";
 import QuestionDetails from "./screens/QuestionDetails";
+import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -59,9 +60,14 @@ function HomeStack() {
         options={{ title: "نتائج البحث" }}
       />
       <Stack.Screen
+        name="LawyerDetails"
+        component={LawyerDetailsScreen}
+        options={{ title: "تفاصيل المحامى" }}
+      />
+      <Stack.Screen
         name="EmergencyLawyer"
         component={EmergencyScreens}
-        options={{ title: "محامى عاجل" }}
+        options={{ title: "محامى عاجل", headerShown: false }}
       />
     </Stack.Navigator>
   );

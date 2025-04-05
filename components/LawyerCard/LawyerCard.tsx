@@ -7,16 +7,17 @@ import { Rate2 } from "../Icons/Rate2";
 import { Rate3 } from "../Icons/Rate3";
 import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
-import { useNavigation } from "@react-navigation/native";
-const ResultLawyerCard = ({
+
+const LawyerCard = ({
   name = "المحامي عبدالكريم غفار",
   rate = "3",
   speciality = "جنائي",
   vezita = "150",
   address = "وسط البلد",
   onPress = null,
+  style = null,
+  isLawyerDetailsCard = false,
 }) => {
-  const navigation = useNavigation();
   function RateHandler({ style }) {
     switch (rate) {
       case "1":
@@ -33,10 +34,13 @@ const ResultLawyerCard = ({
   }
   return (
     <Pressable
-      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
-      onPress={() => navigation.navigate("Home" as never)}
+      style={({ pressed }) => [
+        styles.container,
+        pressed && !isLawyerDetailsCard && styles.pressed,
+      ]}
+      onPress={onPress}
     >
-      <View style={styles.card}>
+      <View style={!isLawyerDetailsCard ? styles.card : style}>
         <View style={styles.imageContainer}>
           <Image source={require("../../assets/LawyerPic/image.png")} />
         </View>
@@ -44,10 +48,18 @@ const ResultLawyerCard = ({
           <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />
-            <Text style={styles.specialitiyText}>محامي {speciality}</Text>
+            {!isLawyerDetailsCard ? (
+              <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
+            ) : (
+              ""
+            )}
           </View>
           <View style={styles.vezitaContainer}>
-            <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
+            {!isLawyerDetailsCard ? (
+              <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
+            ) : (
+              <Text style={styles.specialitiyText}>محامي {speciality}</Text>
+            )}
             <Text style={styles.vezitaText}>العنوان: {address}</Text>
           </View>
         </View>
@@ -95,6 +107,7 @@ const styles = StyleSheet.create({
     fontSize: font.subtitle.fontSize,
     fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
+    marginInline: 8,
   },
   vezitaContainer: {
     flexDirection: "row-reverse",
@@ -114,4 +127,4 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 });
-export default ResultLawyerCard;
+export default LawyerCard;

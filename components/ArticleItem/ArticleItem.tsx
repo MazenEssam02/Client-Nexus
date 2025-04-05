@@ -1,10 +1,14 @@
-import { StyleSheet, Pressable, Text, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
 export default function ArticleItem({ title, imageLink, onPress }) {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <Image
         source={{
           uri: imageLink,
@@ -14,7 +18,7 @@ export default function ArticleItem({ title, imageLink, onPress }) {
       <Text numberOfLines={2} style={[font.Caption, styles.titleText]}>
         {title}
       </Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({

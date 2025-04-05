@@ -1,16 +1,28 @@
-import { StyleSheet, Text, Image, Pressable } from "react-native";
+import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
+import { useNavigation } from "@react-navigation/native";
 
-export default function SpecialitiyItem({ text, onPress }) {
+export default function SpecialitiyItem({ text }) {
+  const navigation = useNavigation();
+  function onPressHandler() {
+    navigation.navigate(
+      "SearchResult" as never,
+      { speciality: { text } } as never
+    );
+  }
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPressHandler}
+      activeOpacity={0.8}
+    >
       <Image
         source={require("../../assets/icons/Consult.png")}
         style={{ width: 19, height: 21 }}
       />
       <Text style={[font.subtitle, styles.Text]}>{text}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({

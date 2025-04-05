@@ -4,7 +4,9 @@ import Medal from "../Icons/MedalIcon";
 import Messages from "../Icons/MessageIcon";
 import Star from "../Icons/StarIcon";
 import { font } from "../../constants/Font";
-export default function LawyerSummaryList({ lawyer }) {
+export default function LawyerSummaryList({
+  lawyer = { visitors: 5, rate: 3, experiance: 10 },
+}) {
   return (
     <View style={styles.iconsListContainer}>
       <View style={styles.summarryItemContainer}>

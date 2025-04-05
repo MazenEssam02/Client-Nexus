@@ -2,11 +2,15 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
-import ResultLawyerCard from "../components/LawyerCard/ResultLawyerCard";
+import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerList from "../api-mock/LawyerList";
 import { useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
+import { useNavigation, useRoute } from "@react-navigation/native";
 export default function SearchResultScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  console.log(route.params.speciality.text);
   const [modalVisible, setModalVisible] = useState(false);
   function modalHandler() {
     setModalVisible(!modalVisible);
@@ -39,6 +43,14 @@ export default function SearchResultScreen() {
               speciality={lawyer.item.speciality}
               vezita={lawyer.item.vezita}
               address={lawyer.item.address}
+              onPress={() =>
+                navigation.navigate(
+                  "LawyerDetails" as never,
+                  {
+                    lawyerid: lawyer.id, // Pass the lawyer object to the next screen
+                  } as never
+                )
+              }
             />
           )}
         />

@@ -21,7 +21,7 @@ export default function AllSpecialities() {
               </Text>
             </View>
           ) : (
-            <SpecialitiyItem text={item.speciality_name} onPress={() => {}} />
+            <SpecialitiyItem text={item.speciality_name} />
           )
         }
         stickyHeaderIndices={[0, 8]}

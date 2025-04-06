@@ -10,7 +10,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 export default function SearchResultScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  console.log(route.params.speciality.text);
+  // console.log(route.params.speciality.text);
   const [modalVisible, setModalVisible] = useState(false);
   function modalHandler() {
     setModalVisible(!modalVisible);
@@ -47,7 +47,7 @@ export default function SearchResultScreen() {
                 navigation.navigate(
                   "LawyerDetails" as never,
                   {
-                    lawyerid: lawyer.id, // Pass the lawyer object to the next screen
+                    lawyerid: lawyer.item.id, // Pass the lawyer object to the next screen
                   } as never
                 )
               }
@@ -61,6 +61,7 @@ export default function SearchResultScreen() {
 const style = StyleSheet.create({
   main: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   container: {
     padding: 10,

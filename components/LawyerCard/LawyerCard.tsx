@@ -45,11 +45,13 @@ const LawyerCard = ({
           <Image source={require("../../assets/LawyerPic/image.png")} />
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{name}</Text>
+          <Text numberOfLines={1} style={styles.title}>
+            {name}
+          </Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />
             {!isLawyerDetailsCard ? (
-              <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
+              <Text style={styles.specialitiyText}>محامي {speciality}</Text>
             ) : (
               ""
             )}
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row-reverse",
     alignItems: "center",
+    overflow: "hidden",
     padding: 8,
     marginVertical: 10,
   },
@@ -96,6 +99,7 @@ const styles = StyleSheet.create({
     color: Colors.SecondaryColor,
     fontSize: font.headline.fontSize,
     fontFamily: font.headline.fontFamily,
+    marginHorizontal: 10,
   },
   ratingContainer: {
     flexDirection: "row-reverse",

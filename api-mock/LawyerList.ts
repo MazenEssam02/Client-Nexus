@@ -6,14 +6,18 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
-    name: "المحامي عبدالكريم غفار",
-    rate: "4",
-    speciality: "جنائي",
-    vezita: "150",
-    address: "وسط البلد",
+    name: "المحامي مازن عصام الدين",
+    rate: "5",
+    speciality: "مدنى",
+    vezita: "300",
+    address: "المقطم",
+    visitors: "150",
+    experiance: "10",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -22,6 +26,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -30,6 +36,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -38,6 +46,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -46,6 +56,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -54,6 +66,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -62,6 +76,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
   {
     id: new Date().toISOString + Math.random().toString(),
@@ -70,6 +86,8 @@ const LawyerList = [
     speciality: "جنائي",
     vezita: "150",
     address: "وسط البلد",
+    visitors: "150",
+    experiance: "7",
   },
 ];
 

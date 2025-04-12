@@ -7,6 +7,12 @@ import { useState } from "react";
 import LawyerList from "../api-mock/LawyerList";
 import { font } from "../constants/Font";
 import { MainButton } from "../components/Buttons/MainButton";
+import Pin from "../components/Icons/Pin";
+import Wallet from "../components/Icons/Wallet";
+import BookingBlock from "../components/BookingBlock/BookingBlock";
+import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
+import LawyerQA from "../components/LawyerQA/LawyerQA";
+import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
 export default function LawyerDetailsScreen({ route }) {
   const lwrID = route.params.lawyerid;
   const lawyer = LawyerList.find((lawyer) => lawyer.id === lwrID);
@@ -14,7 +20,7 @@ export default function LawyerDetailsScreen({ route }) {
   const onChange = (value) => {
     setType(value);
   };
-  function onSubmitHandler() {}
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -33,47 +39,10 @@ export default function LawyerDetailsScreen({ route }) {
         <View style={styles.summaryContainer}>
           <LawyerSummarylist lawyer={lawyer} />
         </View>
-        <View style={styles.bookingContainer}>
-          <View style={styles.pickerContainer}>
-            <BookingPicker value={type} onChange={onChange} />
-          </View>
-          <View style={{ width: "100%" }}>
-            <View style={styles.bookInfoOuterContainer}>
-              <View style={styles.bookInfoInnerContainer}>
-                <Image
-                  source={require("../assets/icons/Consult.png")}
-                  style={{ width: 19, height: 21 }}
-                />
-                <Text style={[font.subtitle, styles.Text]}>
-                  سعر الاستشارة : {lawyer.vezita}
-                </Text>
-              </View>
-            </View>
-            {type ? (
-              <View style={styles.bookInfoOuterContainer}>
-                <View style={styles.bookInfoInnerContainer}>
-                  <Image
-                    source={require("../assets/icons/Consult.png")}
-                    style={{ width: 19, height: 21 }}
-                  />
-                  <Text style={[font.subtitle, styles.Text]}>
-                    العنوان : {lawyer.address}
-                  </Text>
-                </View>
-              </View>
-            ) : (
-              ""
-            )}
-          </View>
-          <View style={styles.buttonContainer}>
-            <MainButton
-              title="حجز استشارة"
-              onPress={() => {
-                onSubmitHandler();
-              }}
-            />
-          </View>
-        </View>
+        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
+        <AboutLawyer lawyer={lawyer} />
+        <LawyerQA lawyer={lawyer} />
+        <LawyerSpecialities lawyer={lawyer} />
       </ScrollView>
     </View>
   );

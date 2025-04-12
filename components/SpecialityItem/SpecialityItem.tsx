@@ -1,7 +1,8 @@
-import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useNavigation } from "@react-navigation/native";
+import Consult from "../Icons/Consult";
 
 export default function SpecialitiyItem({ text }) {
   const navigation = useNavigation();
@@ -17,10 +18,7 @@ export default function SpecialitiyItem({ text }) {
       onPress={onPressHandler}
       activeOpacity={0.8}
     >
-      <Image
-        source={require("../../assets/icons/Consult.png")}
-        style={{ width: 19, height: 21 }}
-      />
+      <Consult />
       <Text style={[font.subtitle, styles.Text]}>{text}</Text>
     </TouchableOpacity>
   );

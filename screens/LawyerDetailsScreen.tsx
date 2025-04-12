@@ -11,6 +11,8 @@ import Pin from "../components/Icons/Pin";
 import Wallet from "../components/Icons/Wallet";
 import BookingBlock from "../components/BookingBlock/BookingBlock";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
+import LawyerQA from "../components/LawyerQA/LawyerQA";
+import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
 export default function LawyerDetailsScreen({ route }) {
   const lwrID = route.params.lawyerid;
   const lawyer = LawyerList.find((lawyer) => lawyer.id === lwrID);
@@ -39,6 +41,8 @@ export default function LawyerDetailsScreen({ route }) {
         </View>
         <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
         <AboutLawyer lawyer={lawyer} />
+        <LawyerQA lawyer={lawyer} />
+        <LawyerSpecialities lawyer={lawyer} />
       </ScrollView>
     </View>
   );

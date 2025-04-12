@@ -22,7 +22,7 @@ const QuestionCard = ({ name, askedBy, rating, question, answer }) => {
           </View>
         </View>
       </Pressable>
-      <View style={styles.ratingContainer}>
+      {/* <View style={styles.ratingContainer}>
         <Pressable
           style={({ pressed }) => pressed && styles.pressed}
           onPress={() => setSupport((support) => support + 1)}
@@ -36,7 +36,7 @@ const QuestionCard = ({ name, askedBy, rating, question, answer }) => {
         >
           <RateDown />
         </Pressable>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     borderBottomWidth: 1,
-    borderBottomColor: "black",
+    borderBottomColor: Colors.background,
     paddingBottom: 15,
   },
   row: {

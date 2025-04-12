@@ -1,19 +1,21 @@
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
-
 import { font } from "../../constants/Font";
 import { Arrow } from "../Icons/Arrow";
 import { useState } from "react";
-export default function AboutLawyer({ lawyer }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+import QuestionCard from "../QuestionCard/QuestionCard";
+import Data from "../../api-mock/Questions.json";
+import { MainButton } from "../Buttons/MainButton";
+export default function LawyerQA({ lawyer }) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
   return (
-    <View style={styles.aboutContainer}>
-      <View style={styles.aboutUpperContainer}>
-        <Text style={styles.title}>عن المحامي</Text>
+    <View style={styles.QAContainer}>
+      <View style={styles.QAUpperContainer}>
+        <Text style={styles.title}>أسئلة و اجابات المحامى</Text>
         <Pressable onPress={toggleExpand} style={styles.arrowContainer}>
           <Arrow
             fillColor={Colors.mainColor}
@@ -23,12 +25,15 @@ export default function AboutLawyer({ lawyer }) {
       </View>
       {isExpanded ? (
         <View style={styles.list}>
-          {lawyer.about.split("\n").map((line, index) => (
-            <View key={index} style={{ flexDirection: "row-reverse" }}>
-              <Text style={styles.aboutBullet}>• </Text>
-              <Text style={styles.aboutText}>{line}</Text>
-            </View>
-          ))}
+          <FlatList
+            data={Data.slice(0, 3)} // Only show first 3 items
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <QuestionCard {...item} />}
+            scrollEnabled={false}
+          />
+          <View style={styles.buttonContainer}>
+            <MainButton title="عرض المزيد" onPress={() => {}} />
+          </View>
         </View>
       ) : (
         ""
@@ -37,7 +42,7 @@ export default function AboutLawyer({ lawyer }) {
   );
 }
 const styles = StyleSheet.create({
-  aboutContainer: {
+  QAContainer: {
     backgroundColor: "white",
     marginVertical: 5,
     padding: 15,
@@ -49,19 +54,7 @@ const styles = StyleSheet.create({
     ...font.title,
     textAlign: "right",
   },
-  aboutText: {
-    color: Colors.SecondaryColor,
-    ...font.body,
-    textAlign: "right",
-    paddingHorizontal: 10,
-  },
-  aboutBullet: {
-    color: Colors.SecondaryColor,
-    ...font.body,
-    textAlign: "right",
-  },
-
-  aboutUpperContainer: {
+  QAUpperContainer: {
     flexDirection: "row-reverse",
     justifyContent: "space-between",
     width: "100%",
@@ -72,6 +65,11 @@ const styles = StyleSheet.create({
   },
   list: {
     width: "100%",
-    padding: 10,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    alignSelf: "center",
+    height: 36,
+    width: "50%",
   },
 });

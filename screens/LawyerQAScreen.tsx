@@ -1,0 +1,33 @@
+import { View, StyleSheet, Text, FlatList } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import QuestionCard from "../components/QuestionCard/QuestionCard";
+
+export default function LawyerQAScreen() {
+  const route = useRoute();
+  const { Data } = route.params;
+  const navigation = useNavigation();
+  return (
+    <View style={styles.QAContainer}>
+      <View style={styles.list}>
+        <FlatList
+          data={Data}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <QuestionCard {...item} />}
+        />
+      </View>
+    </View>
+  );
+}
+const styles = StyleSheet.create({
+  QAContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    // padding: 15,
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+
+  list: {
+    width: "100%",
+  },
+});

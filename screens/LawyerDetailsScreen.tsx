@@ -13,6 +13,7 @@ import BookingBlock from "../components/BookingBlock/BookingBlock";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
 import LawyerQA from "../components/LawyerQA/LawyerQA";
 import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
+import LawyerRatings from "../components/LawyerRatings/LawyerRating";
 export default function LawyerDetailsScreen({ route }) {
   const lwrID = route.params.lawyerid;
   const lawyer = LawyerList.find((lawyer) => lawyer.id === lwrID);
@@ -43,6 +44,7 @@ export default function LawyerDetailsScreen({ route }) {
         <AboutLawyer lawyer={lawyer} />
         <LawyerQA lawyer={lawyer} />
         <LawyerSpecialities lawyer={lawyer} />
+        <LawyerRatings />
       </ScrollView>
     </View>
   );

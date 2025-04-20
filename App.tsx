@@ -29,6 +29,8 @@ import MyQuestion from "./screens/MyQuestion";
 import QuestionDetails from "./screens/QuestionDetails";
 import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
 import WebViewScreen from "./screens/WebView";
+import LawyerRatingsScreen from "./screens/LawyerRatingScreen";
+import LawyerQAScreen from "./screens/LawyerQAScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -70,6 +72,38 @@ function HomeStack() {
         component={WebViewScreen}
         options={({ navigation }) => ({
           title: "ادخل بياناتك",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="LawyerRatingScreen"
+        component={LawyerRatingsScreen}
+        options={({ navigation }) => ({
+          title: "تقييمات الزائريين",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="LawyerQAScreen"
+        component={LawyerQAScreen}
+        options={({ navigation }) => ({
+          title: "اسئلة و اجابات المحامى",
           presentation: "modal",
           headerLeft: () => (
             <Ionicons

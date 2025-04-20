@@ -6,9 +6,15 @@ import { useState } from "react";
 import QuestionCard from "../QuestionCard/QuestionCard";
 import Data from "../../api-mock/Questions.json";
 import { MainButton } from "../Buttons/MainButton";
+import { useNavigation } from "@react-navigation/native";
 export default function LawyerQA({ lawyer }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigation = useNavigation();
+  // const [showWebView, setShowWebView] = useState(false);
 
+  const onSubmitHandler = () => {
+    navigation.navigate("LawyerQAScreen" as never, { Data });
+  };
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -32,7 +38,7 @@ export default function LawyerQA({ lawyer }) {
             scrollEnabled={false}
           />
           <View style={styles.buttonContainer}>
-            <MainButton title="عرض المزيد" onPress={() => {}} />
+            <MainButton title="عرض المزيد" onPress={onSubmitHandler} />
           </View>
         </View>
       ) : (

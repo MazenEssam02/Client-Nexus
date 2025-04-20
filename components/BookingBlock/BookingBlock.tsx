@@ -5,8 +5,6 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import Pin from "../Icons/Pin";
 import Wallet from "../Icons/Wallet";
-import { WebView } from "react-native-webview";
-import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 export default function BookingBlock({ type, onChange, lawyer }) {
   const navigation = useNavigation();

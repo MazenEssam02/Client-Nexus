@@ -28,6 +28,7 @@ import QuestionForm from "./screens/QuestionForm";
 import MyQuestion from "./screens/MyQuestion";
 import QuestionDetails from "./screens/QuestionDetails";
 import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
+import WebViewScreen from "./screens/WebView";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,6 +64,22 @@ function HomeStack() {
         name="LawyerDetails"
         component={LawyerDetailsScreen}
         options={{ title: "تفاصيل المحامى" }}
+      />
+      <Stack.Screen
+        name="WebView"
+        component={WebViewScreen}
+        options={({ navigation }) => ({
+          title: "ادخل بياناتك",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="EmergencyLawyer"

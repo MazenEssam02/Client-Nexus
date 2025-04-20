@@ -5,8 +5,17 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import Pin from "../Icons/Pin";
 import Wallet from "../Icons/Wallet";
+import { WebView } from "react-native-webview";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 export default function BookingBlock({ type, onChange, lawyer }) {
-    function onSubmitHandler() {}
+  const navigation = useNavigation();
+  // const [showWebView, setShowWebView] = useState(false);
+
+  const onSubmitHandler = () => {
+    navigation.navigate("WebView" as never);
+  };
+
   return (
     <View style={styles.bookingContainer}>
       <View style={styles.pickerContainer}>
@@ -46,6 +55,9 @@ export default function BookingBlock({ type, onChange, lawyer }) {
   );
 }
 const styles = StyleSheet.create({
+  webview: {
+    flex: 1,
+  },
   bookingContainer: {
     backgroundColor: "white",
     marginVertical: 5,

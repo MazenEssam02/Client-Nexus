@@ -31,6 +31,7 @@ import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
 import WebViewScreen from "./screens/WebView";
 import LawyerRatingsScreen from "./screens/LawyerRatingScreen";
 import LawyerQAScreen from "./screens/LawyerQAScreen";
+import ChatBotScreen from "./screens/ChatBotScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -104,6 +105,22 @@ function HomeStack() {
         component={LawyerQAScreen}
         options={({ navigation }) => ({
           title: "اسئلة و اجابات المحامى",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="ChatBotScreen"
+        component={ChatBotScreen}
+        options={({ navigation }) => ({
+          title: "CLIENT NEXUS BOT",
           presentation: "modal",
           headerLeft: () => (
             <Ionicons
@@ -310,7 +327,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <NavigationContainer>
         {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
       </NavigationContainer>

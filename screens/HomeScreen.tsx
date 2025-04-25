@@ -53,7 +53,9 @@ export default function HomeScreen() {
         <ArticlesSection navigation={navigation} />
       </ScrollView>
       <View style={styles.chatBotContainer}>
-        <ChatBotIcon />
+        <ChatBotIcon
+          onPress={() => navigation.navigate("ChatBotScreen" as never)}
+        />
       </View>
     </ScreensWrapper>
   );

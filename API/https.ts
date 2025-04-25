@@ -4,8 +4,8 @@ const apiClient = axios.create({
   timeout: 10000,
 });
 const Lawyers = {
-  getAll: () => apiClient.get("/lawyers"),
-  getById: (id) => apiClient.get(`/lawyers/${id}`),
+  getAll: () => apiClient.get("/ServiceProvider"),
+  getById: (id) => apiClient.get(`/ServiceProvider/${id}`),
 };
 const Articles = {
   getAll: () => apiClient.get("/articles"),

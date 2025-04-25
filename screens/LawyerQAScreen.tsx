@@ -22,12 +22,8 @@ const styles = StyleSheet.create({
   QAContainer: {
     backgroundColor: "white",
     flex: 1,
-    // padding: 15,
-    justifyContent: "center",
-    alignItems: "flex-end",
   },
-
   list: {
-    width: "100%",
+    padding: 10,
   },
 });

@@ -116,22 +116,7 @@ function HomeStack() {
           ),
         })}
       />
-      <Stack.Screen
-        name="ChatBotScreen"
-        component={ChatBotScreen}
-        options={({ navigation }) => ({
-          title: "CLIENT NEXUS BOT",
-          presentation: "modal",
-          headerLeft: () => (
-            <Ionicons
-              name="close-outline"
-              size={30}
-              color="white"
-              onPress={navigation.goBack}
-            />
-          ),
-        })}
-      />
+
       <Stack.Screen
         name="EmergencyLawyer"
         component={EmergencyScreens}
@@ -273,6 +258,11 @@ function AuthenticatedStack() {
         name="Notification"
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
+      />
+      <Stack.Screen
+        name="ChatBotScreen"
+        component={ChatBotScreen}
+        options={{ title: "CLIENT NEXUS BOT" }}
       />
     </Stack.Navigator>
   );

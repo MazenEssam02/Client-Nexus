@@ -1,6 +1,6 @@
 import axios from "axios";
 const apiClient = axios.create({
-  baseURL: "http://localhost:5015/api",
+  baseURL: "http://clientnexus.runasp.net/swagger/index.html/api",
   timeout: 10000,
 });
 const Lawyers = {
@@ -8,6 +8,6 @@ const Lawyers = {
   getById: (id) => apiClient.get(`/ServiceProvider/${id}`),
 };
 const Articles = {
-  getAll: () => apiClient.get("/articles"),
-  getById: (id) => apiClient.get(`/articles/${id}`),
+  getAll: () => apiClient.get("/Document"),
+  getById: (id) => apiClient.get(`/Document/${id}`),
 };

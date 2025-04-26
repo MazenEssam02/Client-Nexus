@@ -4,12 +4,25 @@ import { View, StyleSheet, Button } from "react-native";
 import { WebView } from "react-native-webview";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../constants/Color";
+import { Calendar } from "react-native-calendars";
+
 export default function WebViewScreen() {
   // const [showWebView, setShowWebView] = useState(false);
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <Calendar
+        current={"2025-04-21"}
+        hideArrows={true}
+        hideDayNames={false}
+        disableMonthChange={true}
+        theme={{
+          textSectionTitleColor: "#000",
+          dayTextColor: "#000",
+          textDisabledColor: "#d9d9d9",
+        }}
+      />
+      {/* <StatusBar style="light" />
       <WebView
         source={{ uri: "https://example.com" }}
         style={styles.webview}
@@ -20,7 +33,7 @@ export default function WebViewScreen() {
           }
           return true;
         }}
-      />
+      /> */}
     </View>
   );
 }

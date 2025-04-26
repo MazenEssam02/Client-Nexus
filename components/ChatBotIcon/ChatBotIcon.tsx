@@ -1,9 +1,9 @@
 import { StyleSheet, Pressable, Image } from "react-native";
 import { Colors } from "../../constants/Color";
 
-export default function ChatBotIcon() {
+export default function ChatBotIcon({ onPress }) {
   return (
-    <Pressable style={styles.container} onPress={() => {}}>
+    <Pressable style={styles.container} onPress={onPress}>
       <Image source={require("../../assets/icons/Icon_ChatBot.png")} />
     </Pressable>
   );

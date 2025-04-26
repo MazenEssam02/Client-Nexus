@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, ScrollView } from "react-native";
+import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotificationButton from "../components/NotificationButton/NotificationButton";
 import QuickButton from "../components/QuickButton/QuickButton";
@@ -8,7 +8,7 @@ import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
 import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
 import { useNavigation } from "@react-navigation/native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
-
+import Bot from "../components/Icons/Bot";
 export default function HomeScreen() {
   const navigation = useNavigation();
 
@@ -52,9 +52,12 @@ export default function HomeScreen() {
         <AskQuestionBlock />
         <ArticlesSection navigation={navigation} />
       </ScrollView>
-      <View style={styles.chatBotContainer}>
-        <ChatBotIcon />
-      </View>
+      <Pressable
+        style={styles.chatBotContainer}
+        onPress={() => navigation.navigate("ChatBotScreen" as never)}
+      >
+        <Bot width={50} height={50} />
+      </Pressable>
     </ScreensWrapper>
   );
 }

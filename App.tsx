@@ -31,6 +31,7 @@ import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
 import WebViewScreen from "./screens/WebView";
 import LawyerRatingsScreen from "./screens/LawyerRatingScreen";
 import LawyerQAScreen from "./screens/LawyerQAScreen";
+import ChatBotScreen from "./screens/ChatBotScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -115,6 +116,7 @@ function HomeStack() {
           ),
         })}
       />
+
       <Stack.Screen
         name="EmergencyLawyer"
         component={EmergencyScreens}
@@ -257,6 +259,11 @@ function AuthenticatedStack() {
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
       />
+      <Stack.Screen
+        name="ChatBotScreen"
+        component={ChatBotScreen}
+        options={{ title: "CLIENT NEXUS BOT" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -310,7 +317,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <NavigationContainer>
         {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
       </NavigationContainer>

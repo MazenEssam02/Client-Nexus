@@ -13,8 +13,8 @@ const FavouriteLawyerCard = ({
   speciality = "جنائي",
   address = "وسط البلد",
   onPress = null,
-  id,
-  editable,
+  id = null,
+  editable = null,
 }) => {
   function RateHandler({ style }) {
     switch (rate) {
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     fontSize: font.subtitle.fontSize,
     fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
+    marginLeft: 10,
   },
   vezitaContainer: {
     flexDirection: "row-reverse",

@@ -32,6 +32,11 @@ import WebViewScreen from "./screens/WebView";
 import LawyerRatingsScreen from "./screens/LawyerRatingScreen";
 import LawyerQAScreen from "./screens/LawyerQAScreen";
 import ChatBotScreen from "./screens/ChatBotScreen";
+import AdminScreen from "./screens/AdminPanel/AdminScreen";
+import ApplicationsScreen from "./screens/AdminPanel/ApplicationsScreen";
+import LawyerRequestScreen from "./screens/AdminPanel/LawyerRequestScreen";
+import ReportListScreen from "./screens/AdminPanel/ReportListScreen";
+import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -48,6 +53,31 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
+      <Stack.Screen
+        name="Admin"
+        component={AdminScreen}
+        options={{ title: "صفحة المتحكم" }}
+      />
+      <Stack.Screen
+        name="Applications"
+        component={ApplicationsScreen}
+        options={{ title: "طلبات الانضمام" }}
+      />
+      <Stack.Screen
+        name="Application Details"
+        component={LawyerRequestScreen}
+        options={{ title: "طلب انضمام" }}
+      />
+      <Stack.Screen
+        name="Report List"
+        component={ReportListScreen}
+        options={{ title: "البلاغات" }}
+      />
+      <Stack.Screen
+        name="Report Detail"
+        component={ReportDetailsScreen}
+        options={{ title: "تفاصيل البلاغ" }}
+      />
       <Stack.Screen
         name="Home"
         component={HomeScreen}

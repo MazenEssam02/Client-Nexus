@@ -12,7 +12,7 @@ const AdminScreen = ({ navigation }) => {
   function navigationHandler(id) {
     if (id === 1) navigation.navigate("Applications" as never);
     if (id === 2) navigation.navigate("Report List" as never);
-    if (id === 3) navigation.navigate("");
+    if (id === 3) navigation.navigate("Article" as never);
   }
   return (
     <View style={styles.container}>

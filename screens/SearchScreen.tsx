@@ -2,13 +2,14 @@ import { StyleSheet, View } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import AllSpecialities from "../components/AllSpecialities/AllSpecialities";
-import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
   const [input, setInput] = useState("");
-  const navigation = useNavigation();
   function submitHandler() {
-    navigation.navigate("SearchResult" as never);
+    navigation.navigate("SearchResult" as never, { requestName: input });
+  }
+  function getText(text) {
+    setInput(text);
   }
   return (
     <View style={styles.container}>
@@ -17,6 +18,7 @@ export default function SearchScreen() {
           placeHolder={"ابحث بالتخصص, أو اسم المحامى"}
           backgroundColor={"white"}
           onSubmitEditing={submitHandler}
+          onChangeText={getText}
         />
         <AllSpecialities />
       </View>

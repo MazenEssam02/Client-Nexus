@@ -6,11 +6,9 @@ import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerList from "../api-mock/LawyerList";
 import { useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
-import { useNavigation, useRoute } from "@react-navigation/native";
-export default function SearchResultScreen() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  // console.log(route.params.speciality.text);
+export default function SearchResultScreen({ route, navigation }) {
+  const searchText = route?.params?.requestName || "";
+  console.log(searchText);
   const [modalVisible, setModalVisible] = useState(false);
   function modalHandler() {
     setModalVisible(!modalVisible);

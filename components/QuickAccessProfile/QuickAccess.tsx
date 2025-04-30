@@ -2,15 +2,15 @@ import { Text, View, Pressable, StyleSheet } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useEffect, useState } from "react";
-import { Favourite } from "../Icons/Favourite";
 import { Question } from "../Icons/Question";
 import { Calendar } from "../Icons/Calendar";
 import { Search } from "../Icons/Search";
 import { Conditions } from "../Icons/Conditions";
 import { Exit } from "../Icons/Exit";
 import { Arrow } from "../Icons/Arrow";
-import { ExitArrow } from "../Icons/ExitArrow";
 import { useNavigation } from "@react-navigation/native";
+import Favourite from "../Icons/Favourite";
+import Payment from "../Icons/Payment";
 const QuickAccess = ({ icon, title }) => {
   const [exitHandler, setExitHandler] = useState(false);
   const navigation = useNavigation();
@@ -33,6 +33,10 @@ const QuickAccess = ({ icon, title }) => {
         return <Conditions />;
       case "Exit":
         return <Exit />;
+      case "Payment History":
+        return <Payment />;
+      default:
+        return <Favourite />;
     }
   };
   const navigateHandler = () => {
@@ -43,8 +47,10 @@ const QuickAccess = ({ icon, title }) => {
       case "questions":
         navigation.navigate("Questions" as never);
         break;
+      case "Payment History":
+        return navigation.navigate("Payment History" as never);
       default:
-        return;
+        navigation.navigate("Home" as never);
     }
   };
   return (

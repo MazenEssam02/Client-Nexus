@@ -40,11 +40,8 @@ import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
 import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
 
-// Setting Up React Query Provider
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-// const queryClient = new QueryClient();
 function HomeStack() {
   return (
     <Stack.Navigator
@@ -58,7 +55,6 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      {/*
       <Stack.Screen
         name="Admin"
         component={AdminScreen}
@@ -89,7 +85,6 @@ function HomeStack() {
         component={Article}
         options={{ title: "التحكم في المقالات" }}
       />
-      */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -363,14 +358,12 @@ export default function App() {
   }
 
   return (
-    // <QueryClientProvider client={queryClient}>
     <SafeAreaProvider>
       <StatusBar style="light" />
       <NavigationContainer>
         {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
       </NavigationContainer>
     </SafeAreaProvider>
-    // </QueryClientProvider>
   );
 }
 

@@ -5,6 +5,7 @@ import EmergencyForm from "./EmergencyScreens/EmergencyForm";
 import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
+import MapScreen from "./MapScreen";
 const Stack = createNativeStackNavigator();
 export default function EmergencyScreens({ navigation }) {
   const handleBack = () => {
@@ -45,6 +46,22 @@ export default function EmergencyScreens({ navigation }) {
         options={{
           title: "محامى عاجل",
         }}
+      />
+      <Stack.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={({ navigation }) => ({
+          title: "اختيار الموقع",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="Requests"

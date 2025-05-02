@@ -43,7 +43,6 @@ const ReportDetailsScreen = ({ route }) => {
             </Text>
           </View>
         </View>
-        <View style={styles.emptySpace} /> {/* To push buttons to the bottom */}
       </View>
       <View style={styles.bottomButtons}>
         <TouchableOpacity style={styles.secondaryButton}>

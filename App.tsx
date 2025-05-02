@@ -16,7 +16,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 import ArticlesScreen from "./screens/ArticlesScreen";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import RegisterScreen from "./screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
 import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
@@ -39,7 +39,7 @@ import ReportListScreen from "./screens/AdminPanel/ReportListScreen";
 import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
 import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
-
+const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function HomeStack() {
@@ -55,7 +55,7 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Admin"
         component={AdminScreen}
         options={{ title: "صفحة المتحكم" }}
@@ -84,7 +84,7 @@ function HomeStack() {
         name="Article"
         component={Article}
         options={{ title: "التحكم في المقالات" }}
-      />
+      /> */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -359,10 +359,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
-      <NavigationContainer>
-        {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <NavigationContainer>
+          {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
+        </NavigationContainer>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }

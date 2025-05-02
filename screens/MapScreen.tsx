@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, Text, Alert } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+// import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 export default function MapScreen({ navigation }) {
@@ -81,39 +81,39 @@ export default function MapScreen({ navigation }) {
       </View>
     );
   }
-  return (
-    <MapView
-      style={styles.Map}
-      initialRegion={{
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }}
-      onPress={selectLocationHandler}
-    >
-      <Marker
-        coordinate={{
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-        }}
-        title="موقعك الحالى"
-      >
-        <View style={styles.customMarker}>
-          <View style={styles.markerDot} />
-        </View>
-      </Marker>
-      {selectedLocation && (
-        <Marker
-          title="الموقع المختار"
-          coordinate={{
-            latitude: selectedLocation.lat,
-            longitude: selectedLocation.lng,
-          }}
-        />
-      )}
-    </MapView>
-  );
+  // return (
+  //   <MapView
+  //     style={styles.Map}
+  //     initialRegion={{
+  //       latitude: currentLocation.latitude,
+  //       longitude: currentLocation.longitude,
+  //       latitudeDelta: 0.01,
+  //       longitudeDelta: 0.01,
+  //     }}
+  //     onPress={selectLocationHandler}
+  //   >
+  //     <Marker
+  //       coordinate={{
+  //         latitude: currentLocation.latitude,
+  //         longitude: currentLocation.longitude,
+  //       }}
+  //       title="موقعك الحالى"
+  //     >
+  //       <View style={styles.customMarker}>
+  //         <View style={styles.markerDot} />
+  //       </View>
+  //     </Marker>
+  //     {selectedLocation && (
+  //       <Marker
+  //         title="الموقع المختار"
+  //         coordinate={{
+  //           latitude: selectedLocation.lat,
+  //           longitude: selectedLocation.lng,
+  //         }}
+  //       />
+  //     )}
+  //   </MapView>
+  // );
 }
 const styles = StyleSheet.create({
   Map: {

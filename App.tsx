@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./screens/HomeScreen";
+// import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ScheduleScreen from "./screens/ScheduleScreen";
 import { font, useLoadFonts } from "./constants/Font";
@@ -16,10 +16,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 import ArticlesScreen from "./screens/ArticlesScreen";
-<<<<<<< HEAD
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-=======
->>>>>>> george
 import RegisterScreen from "./screens/RegisterScreen";
 import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
 import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
@@ -42,7 +38,6 @@ import ReportListScreen from "./screens/AdminPanel/ReportListScreen";
 import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
 import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
-const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 function HomeStack() {
@@ -88,11 +83,11 @@ function HomeStack() {
         component={Article}
         options={{ title: "التحكم في المقالات" }}
       /> */}
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -362,12 +357,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
+      {/* <QueryClientProvider client={queryClient}> */}
         <StatusBar style="light" />
         <NavigationContainer>
           {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
         </NavigationContainer>
-      </QueryClientProvider>
+      {/* </QueryClientProvider> */}
     </SafeAreaProvider>
   );
 }

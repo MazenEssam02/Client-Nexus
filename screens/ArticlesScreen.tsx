@@ -16,7 +16,7 @@ export default function ArticlesScreen({ route }) {
     <View style={styles.container}>
       <Image
         source={{
-          uri: data.image_url,
+          uri: data.imageUrl,
         }}
         style={styles.imagecontainer}
       />

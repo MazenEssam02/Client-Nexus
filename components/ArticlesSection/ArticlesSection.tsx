@@ -1,27 +1,20 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
-import { Colors } from "../../constants/Color";
-import { font } from "../../constants/Font";
+import { View, FlatList, StyleSheet } from "react-native";
+
 import ArticleItem from "../ArticleItem/ArticleItem";
-import { useEffect, useRef } from "react";
-import Data from "../../api-mock/articles.json";
-export default function ArticlesSection({ navigation }) {
-  const scrollRef = useRef(null);
-  useEffect(() => {
-    scrollRef.current?.scrollToEnd({ animated: false });
-  }, []);
+import { Colors } from "../../constants/Color";
+
+const ArticlesSection = ({ navigation, documents }) => {
   return (
     <View style={styles.container}>
-      <Text style={[font.headline, styles.titleText]}>مقالات</Text>
       <FlatList
-        ref={scrollRef}
+        inverted
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={Data}
-        keyExtractor={(item) => item.article_id}
+        data={documents}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ArticleItem
-            title={item.title}
-            imageLink={item.image_url}
+            articleItem={item}
             onPress={() => {
               navigation.navigate("Articles", { data: item });
             }}
@@ -30,7 +23,7 @@ export default function ArticlesSection({ navigation }) {
       />
     </View>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     marginVertical: 11,
@@ -43,3 +36,4 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+export default ArticlesSection;

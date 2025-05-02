@@ -1,4 +1,12 @@
-import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+  Text,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NotificationButton from "../components/NotificationButton/NotificationButton";
 import QuickButton from "../components/QuickButton/QuickButton";
@@ -9,9 +17,35 @@ import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
 import { useNavigation } from "@react-navigation/native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import Bot from "../components/Icons/Bot";
+import { useQuery } from "@tanstack/react-query";
+import { Documents } from "../API/https";
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const {
+    data: documents,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["documents"],
+    queryFn: Documents.getAll,
+  });
 
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
+  }
   return (
     <ScreensWrapper>
       <ScrollView
@@ -50,7 +84,10 @@ export default function HomeScreen() {
         </View>
         <SearchBlock />
         <AskQuestionBlock />
-        <ArticlesSection navigation={navigation} />
+        <ArticlesSection
+          navigation={navigation}
+          documents={documents.data.data}
+        />
       </ScrollView>
       <Pressable
         style={styles.chatBotContainer}

@@ -4,19 +4,21 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
-  Text,
 } from "react-native";
 import Input from "../../components/Input/Input";
 import { useEffect, useState } from "react";
 import { Colors } from "../../constants/Color";
 import { MainButton } from "../../components/Buttons/MainButton";
-import OutlinedButton from "../../components/Buttons/OutlineButton";
 import { useIsFocused, useRoute } from "@react-navigation/native";
-import MapView, { Marker } from "react-native-maps";
 import { font } from "../../constants/Font";
+import LocationPreview from "../../components/LocationPreview/LocationPreview";
 export default function EmergencyForm({ navigation }) {
   const route = useRoute();
-  const [pickedLocation, setPickedLocation] = useState(null);
+  const [pickedLocation, setPickedLocation] = useState({
+    lat: null,
+    lng: null,
+    isValid: true,
+  });
   const isFocused = useIsFocused();
   const [inputText, setInputText] = useState({
     phoneNumber: {
@@ -34,6 +36,7 @@ export default function EmergencyForm({ navigation }) {
       const mapPickedLocation = {
         lat: route.params.pickedLat,
         lng: route.params.pickedLng,
+        isValid: !!route.params.pickedLat,
       };
       setPickedLocation(mapPickedLocation);
     }
@@ -70,44 +73,21 @@ export default function EmergencyForm({ navigation }) {
         },
       };
     });
+    setPickedLocation({
+      lat: pickedLocation.lat,
+      lng: pickedLocation.lng,
+      isValid: !!pickedLocation.lat,
+    });
     // }
     if (
       !!dataEntered.phoneNumber &&
-      !!pickedLocation &&
+      !!pickedLocation.isValid &&
       !!dataEntered.description
     ) {
       navigation.navigate("Requests");
     }
   }
-  function mapHandler() {
-    navigation.navigate("MapScreen");
-  }
 
-  let locationPreview = (
-    <Text style={styles.locationText}>لم يتم اختيار الموقع بعد</Text>
-  );
-
-  if (pickedLocation) {
-    locationPreview = (
-      <MapView
-        style={styles.imagePreview}
-        initialRegion={{
-          latitude: pickedLocation.lat,
-          longitude: pickedLocation.lng,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      >
-        <Marker
-          title="الموقع المختار"
-          coordinate={{
-            latitude: pickedLocation.lat,
-            longitude: pickedLocation.lng,
-          }}
-        />
-      </MapView>
-    );
-  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -128,19 +108,10 @@ export default function EmergencyForm({ navigation }) {
               onChangeText: inputTextHandler.bind(this, "phoneNumber"),
             }}
           />
-          {/* <Input
-            label="العنوان"
-            isValid={inputText.address.isValid}
-            inputConfig={{
-              onChangeText: inputTextHandler.bind(this, "address"),
-            }}
-          /> */}
-          <View style={styles.mapPreview}>{locationPreview}</View>
-          <View style={styles.outlineButtonContainer}>
-            <OutlinedButton icon="map" onPress={mapHandler}>
-              اختيار الموقع
-            </OutlinedButton>
-          </View>
+          <LocationPreview
+            navigation={navigation}
+            pickedLocation={pickedLocation}
+          />
 
           <Input
             label="برجاء كتابة تفاصيل المشكلة"

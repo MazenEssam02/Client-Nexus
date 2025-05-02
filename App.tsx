@@ -30,7 +30,7 @@ import LawyerDetailsScreen from "./screens/LawyerDetailsScreen";
 import WebViewScreen from "./screens/WebView";
 import LawyerRatingsScreen from "./screens/LawyerRatingScreen";
 import LawyerQAScreen from "./screens/LawyerQAScreen";
-// import ChatBotScreen from "./screens/ChatBotScreen";
+import ChatBotScreen from "./screens/ChatBotScreen";
 import AdminScreen from "./screens/AdminPanel/AdminScreen";
 import ApplicationsScreen from "./screens/AdminPanel/ApplicationsScreen";
 import LawyerRequestScreen from "./screens/AdminPanel/LawyerRequestScreen";
@@ -304,11 +304,11 @@ function AuthenticatedStack() {
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
       />
-      {/*<Stack.Screen
+      <Stack.Screen
         name="ChatBotScreen"
         component={ChatBotScreen}
         options={{ title: "CLIENT NEXUS BOT" }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }

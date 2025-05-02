@@ -4,17 +4,17 @@ import { font } from "../../constants/Font";
 import { useNavigation } from "@react-navigation/native";
 import Consult from "../Icons/Consult";
 
-export default function SpecialitiyItem({ text }) {
+export default function SpecialitiyItem({ text, index }) {
   const navigation = useNavigation();
   function onPressHandler() {
     navigation.navigate(
       "SearchResult" as never,
-      { speciality: { text } } as never
+      { requestName: text } as never
     );
   }
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, index === 0 ? { borderTopWidth: 1 } : {}]}
       onPress={onPressHandler}
       activeOpacity={0.8}
     >
@@ -29,8 +29,7 @@ const styles = StyleSheet.create({
     height: 48,
     width: "100%",
     borderBottomColor: Colors.SecondaryColor,
-    borderBottomWidth: 0.5,
-    borderTopWidth: 0.5,
+    borderBottomWidth: 1,
     alignItems: "center",
     justifyContent: "flex-start",
   },

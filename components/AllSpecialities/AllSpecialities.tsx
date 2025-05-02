@@ -3,28 +3,19 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import specialities from "../../api-mock/specialities.json";
 import SpecialitiyItem from "../SpecialityItem/SpecialityItem";
-export default function AllSpecialities() {
+export default function AllSpecialities({ specialities }) {
   return (
     <View style={styles.container}>
-      {/* <Text style={[font.title, styles.titleText]}>
-        التخصصات الاكثر اختيارا
-      </Text> */}
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>جميع التخصصات</Text>
+      </View>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={specialities.specialities}
-        keyExtractor={(item) => item.speciality_id}
-        renderItem={({ item }) =>
-          item.isHeader ? (
-            <View style={styles.titleContainer}>
-              <Text style={[font.title, styles.titleText]}>
-                {item.speciality_name}
-              </Text>
-            </View>
-          ) : (
-            <SpecialitiyItem text={item.speciality_name} />
-          )
-        }
-        stickyHeaderIndices={[0, 8]}
+        data={specialities}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => (
+          <SpecialitiyItem text={item.name} index={index} />
+        )}
       />
     </View>
   );
@@ -32,16 +23,18 @@ export default function AllSpecialities() {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 11,
+    marginBottom: 100,
   },
   titleContainer: {
+    flexDirection: "row-reverse",
     height: 48,
-
-    backgroundColor: Colors.background,
-    justifyContent: "center",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   titleText: {
     color: Colors.SecondaryColor,
-    textAlign: "right",
-    textAlignVertical: "center",
+
+    ...font.title,
   },
 });

@@ -54,7 +54,7 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      <Stack.Screen
+      {/*<Stack.Screen
         name="Admin"
         component={AdminScreen}
         options={{ title: "صفحة المتحكم" }}
@@ -84,6 +84,7 @@ function HomeStack() {
         component={Article}
         options={{ title: "التحكم في المقالات" }}
       />
+      */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -326,11 +327,11 @@ function UnAuthenticatedStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      {/*      <Stack.Screen
+      <Stack.Screen
         name="Register"
         component={RegisterScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}

@@ -1,7 +1,7 @@
 import { View, StyleSheet, Text } from "react-native";
 import { Colors } from "../../constants/Color";
 import OutlinedButton from "../Buttons/OutlineButton";
-import MapView, { Marker } from "react-native-maps";
+// import MapView, { Marker } from "react-native-maps";
 import { font } from "../../constants/Font";
 export default function locationPreview({ navigation, pickedLocation }) {
   let inputStyle = [
@@ -23,27 +23,27 @@ export default function locationPreview({ navigation, pickedLocation }) {
     </Text>
   );
 
-  if (!!pickedLocation.lat) {
-    locationPreview = (
-      <MapView
-        style={styles.imagePreview}
-        initialRegion={{
-          latitude: pickedLocation.lat,
-          longitude: pickedLocation.lng,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      >
-        <Marker
-          title="الموقع المختار"
-          coordinate={{
-            latitude: pickedLocation.lat,
-            longitude: pickedLocation.lng,
-          }}
-        />
-      </MapView>
-    );
-  }
+  // if (!!pickedLocation.lat) {
+  //   locationPreview = (
+  //     <MapView
+  //       style={styles.imagePreview}
+  //       initialRegion={{
+  //         latitude: pickedLocation.lat,
+  //         longitude: pickedLocation.lng,
+  //         latitudeDelta: 0.01,
+  //         longitudeDelta: 0.01,
+  //       }}
+  //     >
+  //       <Marker
+  //         title="الموقع المختار"
+  //         coordinate={{
+  //           latitude: pickedLocation.lat,
+  //           longitude: pickedLocation.lng,
+  //         }}
+  //       />
+  //     </MapView>
+  //   );
+  // }
   return (
     <View style={styles.container}>
       <View style={inputStyle}>{locationPreview}</View>

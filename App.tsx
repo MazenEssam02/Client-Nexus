@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-// import HomeScreen from "./screens/HomeScreen";
+import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ScheduleScreen from "./screens/ScheduleScreen";
 import { font, useLoadFonts } from "./constants/Font";
@@ -38,8 +38,13 @@ import ReportListScreen from "./screens/AdminPanel/ReportListScreen";
 import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
 import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
 function HomeStack() {
   return (
     <Stack.Navigator
@@ -83,11 +88,11 @@ function HomeStack() {
         component={Article}
         options={{ title: "التحكم في المقالات" }}
       /> */}
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -357,12 +362,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {/* <QueryClientProvider client={queryClient}> */}
+      <QueryClientProvider client={queryClient}>
         <StatusBar style="light" />
         <NavigationContainer>
           {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
         </NavigationContainer>
-      {/* </QueryClientProvider> */}
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }

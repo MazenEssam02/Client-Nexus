@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text, TextInput } from "react-native";
 import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
 
 function Input({
   label,
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
 
   inputItem: {
     color: Colors.SecondaryColor,
+    ...font.title,
     padding: 12,
     margin: 10,
     borderRadius: 12,
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
   },
   inputMultiLine: {
     textAlignVertical: "bottom",
-    minHeight: "50%",
+    minHeight: 230,
   },
 
   invalidInput: {

@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
-export default function ArticleItem({ title, imageLink, onPress }) {
+export default function ArticleItem({ articleItem ,onPress }) {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -11,12 +11,12 @@ export default function ArticleItem({ title, imageLink, onPress }) {
     >
       <Image
         source={{
-          uri: imageLink,
+          uri: articleItem.imageUrl,
         }}
         style={styles.imagecontainer}
       />
       <Text numberOfLines={2} style={[font.Caption, styles.titleText]}>
-        {title}
+        {articleItem.title}
       </Text>
     </TouchableOpacity>
   );

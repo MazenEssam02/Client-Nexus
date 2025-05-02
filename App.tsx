@@ -58,7 +58,7 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      {/* <Stack.Screen
+      {/*<Stack.Screen
         name="Admin"
         component={AdminScreen}
         options={{ title: "صفحة المتحكم" }}
@@ -330,11 +330,11 @@ function UnAuthenticatedStack() {
         component={LoginScreen}
         options={{ headerShown: false }}
       />
-      {/*      <Stack.Screen
+      <Stack.Screen
         name="Register"
         component={RegisterScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
@@ -362,12 +362,14 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
+
       <QueryClientProvider client={queryClient}>
         <StatusBar style="light" />
         <NavigationContainer>
           {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
         </NavigationContainer>
       </QueryClientProvider>
+
     </SafeAreaProvider>
   );
 }

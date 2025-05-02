@@ -1,15 +1,16 @@
 import { StyleSheet, Image, TextInput, Pressable } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-
+import { useState } from "react";
 export default function SearchBar({
-  placeHolder,
+  placeHolder = null,
   backgroundColor,
   onPress = null,
   iseditable = true,
   onSubmitEditing = null,
   onChangeText = null,
 }) {
+  const [placeHolderText, setPlaceHolderText] = useState(placeHolder);
   return (
     <Pressable
       style={[{ backgroundColor: backgroundColor }, styles.container]}
@@ -18,12 +19,16 @@ export default function SearchBar({
       <Image source={require("../../assets/icons/Icon_Search.png")} />
       <TextInput
         style={[font.subtitle, styles.placeHolderText]}
-        placeholder={placeHolder}
+        placeholder={placeHolderText}
         placeholderTextColor={Colors.SecondaryColor}
         editable={iseditable}
         onPress={onPress} //work only on ios
         onSubmitEditing={onSubmitEditing}
         onChangeText={onChangeText}
+        onBlur={() => setPlaceHolderText(placeHolder)}
+        onFocus={() => {
+          setPlaceHolderText("");
+        }}
       />
     </Pressable>
   );

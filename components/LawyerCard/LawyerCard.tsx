@@ -15,6 +15,7 @@ const LawyerCard = ({
   vezita = "150",
   address = "وسط البلد",
   onPress = null,
+  imageURL = null,
   style = null,
   isLawyerDetailsCard = false,
 }) => {
@@ -42,7 +43,13 @@ const LawyerCard = ({
     >
       <View style={!isLawyerDetailsCard ? styles.card : style}>
         <View style={styles.imageContainer}>
-          <Image source={require("../../assets/LawyerPic/image.png")} />
+          <Image
+            source={
+              imageURL
+                ? { uri: imageURL }
+                : require("../../assets/LawyerPic/image.png")
+            }
+          />
         </View>
         <View style={styles.infoContainer}>
           <Text numberOfLines={1} style={styles.title}>

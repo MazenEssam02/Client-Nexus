@@ -7,13 +7,13 @@ import QuestionCard from "../QuestionCard/QuestionCard";
 import Data from "../../api-mock/Questions.json";
 import { MainButton } from "../Buttons/MainButton";
 import { useNavigation } from "@react-navigation/native";
-export default function LawyerQA({ lawyer }) {
+export default function LawyerQA({ lawyerQA }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const navigation = useNavigation();
   // const [showWebView, setShowWebView] = useState(false);
 
   const onSubmitHandler = () => {
-    navigation.navigate("LawyerQAScreen" as never, { Data });
+    navigation.navigate("LawyerQAScreen" as never, { lawyerQA });
   };
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -32,9 +32,9 @@ export default function LawyerQA({ lawyer }) {
       {isExpanded ? (
         <View style={styles.list}>
           <FlatList
-            data={Data.slice(0, 3)} // Only show first 3 items
+            data={lawyerQA.slice(0, 3)} // Only show first 3 items
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <QuestionCard {...item} />}
+            renderItem={({ item }) => <QuestionCard questionItem={item} />}
             scrollEnabled={false}
           />
           <View style={styles.buttonContainer}>

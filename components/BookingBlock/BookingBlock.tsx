@@ -19,28 +19,38 @@ export default function BookingBlock({ type, onChange, lawyer }) {
       <View style={styles.pickerContainer}>
         <BookingPicker value={type} onChange={onChange} />
       </View>
-      <View style={{ width: "100%" }}>
-        <View style={styles.bookInfoOuterContainer}>
-          <View style={styles.bookInfoInnerContainer}>
-            <Wallet />
-            <Text style={[font.subtitle, styles.Text]}>
-              سعر الاستشارة : {lawyer.vezita}ج
-            </Text>
+
+      {type ? (
+        <View style={{ width: "100%" }}>
+          <View style={styles.bookInfoOuterContainer}>
+            <View style={styles.bookInfoInnerContainer}>
+              <Wallet />
+              <Text style={[font.subtitle, styles.Text]}>
+                سعر الاستشارة : {lawyer.office_consultation_price}ج
+              </Text>
+            </View>
           </View>
-        </View>
-        {type ? (
           <View style={styles.bookInfoOuterContainer}>
             <View style={styles.bookInfoInnerContainer}>
               <Pin />
               <Text style={[font.subtitle, styles.Text]}>
-                العنوان : {lawyer.address}
+                العنوان : {lawyer.city}
               </Text>
             </View>
           </View>
-        ) : (
-          ""
-        )}
-      </View>
+        </View>
+      ) : (
+        <View style={{ width: "100%" }}>
+          <View style={styles.bookInfoOuterContainer}>
+            <View style={styles.bookInfoInnerContainer}>
+              <Wallet />
+              <Text style={[font.subtitle, styles.Text]}>
+                سعر الاستشارة : {lawyer.telephone_consultation_price}ج
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
       <View style={styles.buttonContainer}>
         <MainButton
           title="حجز استشارة"

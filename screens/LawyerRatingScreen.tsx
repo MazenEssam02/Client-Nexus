@@ -6,17 +6,17 @@ import { font } from "../constants/Font";
 
 export default function LawyerRatingsScreen() {
   const route = useRoute();
-  const { Data } = route.params;
+  const { feedbacks } = route.params;
   const navigation = useNavigation();
   return (
     <View style={styles.ratingContainer}>
       <View style={styles.list}>
         <FlatList
-          data={Data}
+          data={feedbacks}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <>
-              <UserCard {...item} />
+              <UserCard feedbackItem={item} />
               <View style={styles.underline}></View>
             </>
           )}

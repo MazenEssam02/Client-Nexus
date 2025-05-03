@@ -4,7 +4,7 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { Arrow } from "../Icons/Arrow";
 import { useState } from "react";
-export default function AboutLawyer({ lawyer }) {
+export default function AboutLawyer({ Description }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpand = () => {
@@ -23,7 +23,7 @@ export default function AboutLawyer({ lawyer }) {
       </View>
       {isExpanded ? (
         <View style={styles.list}>
-          {lawyer.about.split("\n").map((line, index) => (
+          {Description.split("\n").map((line, index) => (
             <View key={index} style={{ flexDirection: "row-reverse" }}>
               <Text style={styles.aboutBullet}>• </Text>
               <Text style={styles.aboutText}>{line}</Text>

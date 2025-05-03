@@ -4,11 +4,9 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
 import StarRating from "../StarRating/StarRating";
 
-const UserCard = ({
-  name = " احمد سمير",
-  rating = "3",
-  description = "من أفضل المحامين",
-}) => {
+const UserCard = ({ feedbackItem }) => {
+  //to be edited to get image and user name using their id
+  const name = feedbackItem.clientId;
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
@@ -19,9 +17,9 @@ const UserCard = ({
           {name}
         </Text>
         <View style={styles.ratingContainer}>
-          <StarRating rating={rating} editable={false} />
+          <StarRating rating={feedbackItem.rate} editable={false} />
         </View>
-        <Text style={styles.descriptionText}>{description}</Text>
+        <Text style={styles.descriptionText}>{feedbackItem.feedback}</Text>
       </View>
     </View>
   );

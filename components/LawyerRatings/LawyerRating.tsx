@@ -1,13 +1,12 @@
 import { StyleSheet, View, Text, Pressable, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import Data from "../../api-mock/Rating.json";
 import UserCard from "../UserCard/UserCard";
 import { useNavigation } from "@react-navigation/native";
-export default function LawyerRatings() {
+export default function LawyerRatings({ feedbacks }) {
   const navigation = useNavigation();
   const moreHandler = () => {
-    navigation.navigate("LawyerRatingScreen" as never, { Data });
+    navigation.navigate("LawyerRatingScreen" as never, { feedbacks });
   };
   return (
     <View style={styles.ratingContainer}>
@@ -19,11 +18,11 @@ export default function LawyerRatings() {
       </View>
       <View style={styles.list}>
         <FlatList
-          data={Data.slice(0, 3)}
+          data={feedbacks.slice(0, 3)}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <>
-              <UserCard {...item} />
+              <UserCard feedbackItem={item} />
               <View style={styles.underline}></View>
             </>
           )}

@@ -44,6 +44,7 @@ const LawyerCard = ({
       <View style={!isLawyerDetailsCard ? styles.card : style}>
         <View style={styles.imageContainer}>
           <Image
+            style={styles.imageStyle}
             source={
               imageURL
                 ? { uri: imageURL }
@@ -96,6 +97,11 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+    borderRadius: 30,
+  },
+  imageStyle: {
+    flex: 1,
+    borderRadius: 30,
   },
   infoContainer: {
     flex: 4,

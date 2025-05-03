@@ -113,7 +113,7 @@ export default function SearchResultScreen({ route, navigation }) {
                   navigation.navigate(
                     "LawyerDetails" as never,
                     {
-                      lawyerid: lawyer.id,
+                      lawyer: lawyer,
                     } as never
                   )
                 }

@@ -5,13 +5,14 @@ import Messages from "../Icons/MessageIcon";
 import Star from "../Icons/StarIcon";
 import { font } from "../../constants/Font";
 export default function LawyerSummaryList({ lawyer }) {
+  let lawyerVisitors = 0;
   return (
     <View style={styles.iconsListContainer}>
       <View style={styles.summarryItemContainer}>
         <View style={styles.IconContainer}>
           <Messages />
         </View>
-        <Text style={styles.summaryNumber}>{lawyer.visitors}</Text>
+        <Text style={styles.summaryNumber}>{lawyerVisitors}</Text>
         <Text style={styles.summaryTitle}>زائر</Text>
       </View>
       <View style={styles.summarryItemContainer}>
@@ -25,7 +26,7 @@ export default function LawyerSummaryList({ lawyer }) {
         <View style={styles.IconContainer}>
           <Medal />
         </View>
-        <Text style={styles.summaryNumber}>{lawyer.experiance}</Text>
+        <Text style={styles.summaryNumber}>{lawyer.yearsOfExperience}</Text>
         <Text style={styles.summaryTitle}>سنين الخبرة</Text>
       </View>
     </View>

@@ -4,15 +4,15 @@ import QuestionCard from "../components/QuestionCard/QuestionCard";
 
 export default function LawyerQAScreen() {
   const route = useRoute();
-  const { Data } = route.params;
+  const { lawyerQA } = route.params;
   const navigation = useNavigation();
   return (
     <View style={styles.QAContainer}>
       <View style={styles.list}>
         <FlatList
-          data={Data}
+          data={lawyerQA}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <QuestionCard {...item} />}
+          renderItem={({ item }) => <QuestionCard questionItem={item} />}
         />
       </View>
     </View>

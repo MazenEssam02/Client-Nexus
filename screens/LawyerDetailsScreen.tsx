@@ -1,27 +1,61 @@
-import { StyleSheet, View, Image, ScrollView, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
 import { BookingPicker } from "../components/BookingPicker/BookingPicker";
 import { useState } from "react";
-import LawyerList from "../api-mock/LawyerList";
-import { font } from "../constants/Font";
-import { MainButton } from "../components/Buttons/MainButton";
-import Pin from "../components/Icons/Pin";
-import Wallet from "../components/Icons/Wallet";
 import BookingBlock from "../components/BookingBlock/BookingBlock";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
 import LawyerQA from "../components/LawyerQA/LawyerQA";
 import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
 import LawyerRatings from "../components/LawyerRatings/LawyerRating";
+import { useQueries } from "@tanstack/react-query";
+import { ServiceProvider } from "../API/https";
 export default function LawyerDetailsScreen({ route }) {
-  const lwrID = route.params.lawyerid;
-  const lawyer = LawyerList.find((lawyer) => lawyer.id === lwrID);
+  const lawyer = route.params.lawyer;
   const [type, setType] = useState(true);
   const onChange = (value) => {
     setType(value);
   };
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["providerFeedbacks", lawyer.id],
+        queryFn: () => ServiceProvider.getFeedbacks(lawyer.id),
+      },
+      {
+        queryKey: ["providerQA", lawyer.id],
+        queryFn: () => ServiceProvider.getQA(lawyer.id),
+      },
+    ],
+  });
 
+  const isLoading = results.some((result) => result.isLoading);
+  const isError = results.some((result) => result.isError);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>حدث خطأ</Text>
+      </View>
+    );
+  }
+  const [providerFeedbacks, providerQA] = results;
   return (
     <View style={styles.container}>
       <ScrollView
@@ -30,10 +64,11 @@ export default function LawyerDetailsScreen({ route }) {
         showsVerticalScrollIndicator={false}
       >
         <LawyerCard
-          name={lawyer.name}
+          name={lawyer.firstName + " " + lawyer.lastName}
           rate={lawyer.rate}
-          speciality={lawyer.speciality}
-          address={lawyer.address}
+          speciality={lawyer.main_Specialization}
+          address={lawyer.city}
+          imageURL={lawyer.mainImage}
           style={styles.card}
           isLawyerDetailsCard={true}
         />
@@ -41,10 +76,10 @@ export default function LawyerDetailsScreen({ route }) {
           <LawyerSummarylist lawyer={lawyer} />
         </View>
         <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
-        <AboutLawyer lawyer={lawyer} />
-        <LawyerQA lawyer={lawyer} />
-        <LawyerSpecialities lawyer={lawyer} />
-        <LawyerRatings />
+        <AboutLawyer Description={lawyer.description} />
+        <LawyerQA lawyerQA={providerQA.data.data} />
+        <LawyerSpecialities specializationName={lawyer.specializationName} />
+        <LawyerRatings feedbacks={providerFeedbacks.data.data} />
       </ScrollView>
     </View>
   );

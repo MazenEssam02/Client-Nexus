@@ -33,7 +33,8 @@
             "kotlinVersion": "1.6.21"
           }
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

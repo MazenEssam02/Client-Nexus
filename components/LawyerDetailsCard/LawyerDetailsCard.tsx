@@ -14,6 +14,7 @@ const LawyerDetailsCard = ({
   vezita = null,
   address = "وسط البلد",
   onPress = null,
+  imageURL = null,
 }) => {
   function RateHandler({ style }) {
     switch (rate) {
@@ -29,10 +30,18 @@ const LawyerDetailsCard = ({
         return <Rate5 style={style} />;
     }
   }
+  console.log(imageURL);
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={require("../../assets/LawyerPic/image.png")} />
+        <Image
+          style={styles.imageContainer}
+          source={
+            imageURL
+              ? { uri: imageURL }
+              : require("../../assets/LawyerPic/image.png")
+          }
+        />
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{name}</Text>

@@ -13,12 +13,12 @@ import QuickButton from "../components/QuickButton/QuickButton";
 import SearchBlock from "../components/SearchBlock/SearchBlock";
 import AskQuestionBlock from "../components/AskQuestionBlock/AskQuestionBlock";
 import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
-import ChatBotIcon from "../components/ChatBotIcon/ChatBotIcon";
 import { useNavigation } from "@react-navigation/native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import Bot from "../components/Icons/Bot";
 import { useQuery } from "@tanstack/react-query";
 import { Documents } from "../API/https";
+import MainLogo from "../components/Icons/MainLogo";
 export default function HomeScreen() {
   const navigation = useNavigation();
   const {
@@ -59,16 +59,12 @@ export default function HomeScreen() {
               navigation.navigate("Notification" as never);
             }}
           />
-          <Image
-            source={require("../assets/icons/Main-Logo.png")}
-            style={styles.logoImage}
-            resizeMethod="resize"
-          />
+          <MainLogo />
         </View>
         <View style={styles.QuickButtonContainer}>
           <QuickButton
             title={"محامى عاجل"}
-            iconName={"On_time"}
+            iconName={"OnTime"}
             onPress={() => navigation.navigate("EmergencyLawyer" as never)}
           />
           <QuickButton
@@ -106,18 +102,15 @@ const styles = StyleSheet.create({
   },
   header: {
     marginVertical: 20,
-    marginHorizontal: 15,
+    marginHorizontal: 10,
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  logoImage: {
-    width: 60,
-    height: 43,
-  },
+
   QuickButtonContainer: {
     flexDirection: "row-reverse",
     justifyContent: "space-between",
-    marginVertical: 11,
+    marginBottom: 11,
   },
   chatBotContainer: {
     position: "absolute",

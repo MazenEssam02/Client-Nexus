@@ -3,7 +3,7 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { Arrow } from "../Icons/Arrow";
 import { useState } from "react";
-export default function LawyerSpecialities({ lawyer }) {
+export default function LawyerSpecialities({ specializationName }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -22,7 +22,7 @@ export default function LawyerSpecialities({ lawyer }) {
       </View>
       {isExpanded ? (
         <View style={styles.list}>
-          {lawyer.otherSpecialities.map((speciality, index) => (
+          {specializationName.map((speciality, index) => (
             <View key={index} style={styles.specialitiyItem}>
               <Text style={styles.specialityText}>{speciality}</Text>
             </View>

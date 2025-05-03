@@ -4,8 +4,12 @@ import { RateDown } from "../Icons/RateDown";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
 import { useState } from "react";
-const QuestionCard = ({ name, askedBy, rating, question, answer }) => {
-  const [support, setSupport] = useState(rating);
+const QuestionCard = ({ questionItem }) => {
+  // to be updated soon: we need to fetch the user gender and age and lawyer name from their ids passed here
+  // questionItem.clientId / questionItem.serviceProviderId
+  const askedBy = null;
+  const name = null;
+  // const [support, setSupport] = useState(rating);
   return (
     <View style={styles.card}>
       <Pressable
@@ -14,11 +18,11 @@ const QuestionCard = ({ name, askedBy, rating, question, answer }) => {
         <View style={styles.infoSection}>
           <View style={styles.row}>
             <Text style={styles.askedBy}>{askedBy}</Text>
-            <Text style={styles.question}>{question}</Text>
+            <Text style={styles.question}>{questionItem.questionBody}</Text>
           </View>
           <View style={styles.answerContainer}>
             <Text style={styles.name}>{name}</Text>
-            <Text style={styles.answer}>{answer}</Text>
+            <Text style={styles.answer}>{questionItem.answerBody}</Text>
           </View>
         </View>
       </Pressable>

@@ -2,6 +2,8 @@ import { StyleSheet, Image, TextInput, Pressable } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useState } from "react";
+import { Search } from "../Icons/Search";
+
 export default function SearchBar({
   placeHolder = null,
   backgroundColor,
@@ -16,7 +18,7 @@ export default function SearchBar({
       style={[{ backgroundColor: backgroundColor }, styles.container]}
       onPress={onPress} //work only on android
     >
-      <Image source={require("../../assets/icons/Icon_Search.png")} />
+      <Search stroke={null} fill={Colors.SecondaryColor} />
       <TextInput
         style={[font.subtitle, styles.placeHolderText]}
         placeholder={placeHolderText}

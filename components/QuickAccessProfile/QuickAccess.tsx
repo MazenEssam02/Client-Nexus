@@ -28,7 +28,7 @@ const QuickAccess = ({ icon, title }) => {
       case "schedule":
         return <Calendar />;
       case "search":
-        return <Search />;
+        return <Search stroke={Colors.mainColor} fill={null} />;
       case "conditions":
         return <Conditions />;
       case "Exit":

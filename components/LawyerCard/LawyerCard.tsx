@@ -44,6 +44,7 @@ const LawyerCard = ({
       <View style={!isLawyerDetailsCard ? styles.card : style}>
         <View style={styles.imageContainer}>
           <Image
+            style={styles.imageContainer}
             source={
               imageURL
                 ? { uri: imageURL }

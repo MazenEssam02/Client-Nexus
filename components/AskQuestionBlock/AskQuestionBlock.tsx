@@ -3,12 +3,13 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import { useNavigation } from "@react-navigation/native";
+import QuestionIcon from "../Icons/QuestionIcon";
 export default function AskQuestionBlock() {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.rightContainer}>
-        <Image source={require("../../assets/icons/Icon_Question.png")} />
+        <QuestionIcon />
         <Text style={[font.subtitle, styles.Text]}>لديك سؤال قانونى؟</Text>
       </View>
       <View style={styles.buttonContainer}>
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     flexDirection: "row-reverse",
+    alignItems: "center",
   },
   Text: {
     color: Colors.SecondaryColor,

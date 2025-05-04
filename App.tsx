@@ -87,12 +87,12 @@ function HomeStack() {
         name="Article"
         component={Article}
         options={{ title: "التحكم في المقالات" }}
-      /> */}
+      /> 
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -362,14 +362,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-
       <QueryClientProvider client={queryClient}>
         <StatusBar style="light" />
         <NavigationContainer>
           {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
         </NavigationContainer>
       </QueryClientProvider>
-
     </SafeAreaProvider>
   );
 }

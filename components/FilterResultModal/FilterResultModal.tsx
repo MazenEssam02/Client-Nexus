@@ -1,37 +1,86 @@
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
-import Modal from "react-native-modal";
+import React, { useCallback, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import DropdownList from "../DropdownList/DropdownList";
 import OurButton from "../../UI/OurButton";
 
-const FilterResultModal = ({ modalVisible, modalHandler }) => {
+const FilterResultModal = ({ modalVisible, modalHandler, onFilter }) => {
+  const [city, setCity] = useState(null);
+  const [region, setRegion] = useState(null);
+  const [speciality, setSpeciality] = useState(null);
+  const [rate, setRate] = useState(null);
+  const handleCityChange = useCallback((value) => {
+    setCity(value);
+  }, []);
+  const handleRegionChange = useCallback((value) => {
+    setRegion(value);
+  }, []);
+  const handleSpecialityChange = useCallback((value) => {
+    setSpeciality(value);
+  }, []);
+  const handleRateChange = useCallback((value) => {
+    setRate(value);
+  }, []);
+  const handleConfirmFilter = useCallback(() => {
+    const filters = {
+      city: city,
+      state: region,
+      rate: rate,
+      speciality: speciality,
+    };
+    onFilter(filters);
+    modalHandler();
+  }, [modalHandler, onFilter, region, speciality, rate, city]);
+  const handleModalClose = useCallback(() => {
+    modalHandler();
+  }, [modalHandler]);
   return (
     <Modal
-      isVisible={modalVisible}
-      animationInTiming={300}
-      animationOut="slideOutDown"
-      animationOutTiming={300}
-      swipeDirection="down"
-      onBackdropPress={modalHandler}
-      onSwipeComplete={modalHandler}
-      style={styles.modal}
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={modalHandler}
     >
-      <View style={styles.modalContent}>
-        <View style={styles.handle} />
-        <Text style={styles.title}>تحديد النتائج</Text>
-        <DropdownList placeholder="اختار المنطقة" />
-        <DropdownList placeholder="التخصص" />
-        <DropdownList placeholder="التقييم" />
-        <OurButton onPress={modalHandler}>التأكيد</OurButton>
-      </View>
+      <TouchableWithoutFeedback onPress={handleModalClose}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.handle} />
+            <Text style={styles.title}>تحديد النتائج</Text>
+            <DropdownList
+              placeholder="المدينة"
+              onValueChange={handleCityChange}
+            />
+            <DropdownList
+              placeholder="اختار المنطقة"
+              onValueChange={handleRegionChange}
+            />
+            <DropdownList
+              placeholder="التخصص"
+              onValueChange={handleSpecialityChange}
+            />
+            <DropdownList
+              placeholder="التقييم"
+              onValueChange={handleRateChange}
+            />
+            <OurButton onPress={handleConfirmFilter}>التأكيد</OurButton>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
-  modal: {
+  modalOverlay: {
+    flex: 1,
     justifyContent: "flex-end",
-    margin: 0,
   },
   modalContent: {
     minHeight: 500,
@@ -39,6 +88,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    borderWidth: 2,
+    borderBottomWidth: 0,
+    borderColor: Colors.mainColor,
   },
   handle: {
     width: 50,
@@ -58,4 +110,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
   },
 });
+
 export default FilterResultModal;

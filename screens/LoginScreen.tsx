@@ -23,7 +23,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LoginIllustration } from "../components/Icons/LoginIllustration";
 
 const LoginScreen = () => {
-  const { login } = useAuthStore();
+  const { login, isLoading, error } = useAuthStore();
   const navigation = useNavigation<AuthNavigationType>();
   const {
     control,
@@ -124,8 +124,11 @@ const LoginScreen = () => {
           <MainButton
             title="تسجيل دخول"
             onPress={handleSubmit(onSubmit)}
-            disabled={!isValid}
+            disabled={!isValid || isLoading}
           />
+          {error && (
+            <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
+          )}
         </View>
 
         <SocialLogin onPress={(authSource) => login({ social: authSource })} />

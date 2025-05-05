@@ -4,24 +4,6 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 let token = "";
-function getToken() {
-  apiClient
-    .post("api/Auth/login", {
-      email: "Georgegeham@outlook.com",
-      password: "123456789",
-    })
-    .then((response) => {
-      console.log("Fetched the token Successfully");
-      token = response.data.token;
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      console.log("Finished");
-    });
-}
-getToken();
 apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

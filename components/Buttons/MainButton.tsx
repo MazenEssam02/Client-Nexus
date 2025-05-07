@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
+import React from "react";
 
 type MainButtonProps = {
   title: string;
@@ -8,15 +9,17 @@ type MainButtonProps = {
   disabled?: boolean;
   width?: string;
   height?: string;
-};
+} & React.ComponentProps<typeof TouchableOpacity>;
 
 export const MainButton: React.FC<MainButtonProps> = ({
   title,
   onPress,
   disabled = false,
+  ...rest
 }) => {
   return (
     <TouchableOpacity
+      {...rest}
       style={[
         disabled ? [styles.button, styles.disabledButton] : styles.button,
       ]}

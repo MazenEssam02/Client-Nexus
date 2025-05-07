@@ -6,25 +6,130 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import InfoArea from "../components/InfoProfile/InfoArea";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Client } from "../API/https";
 import QuickAccessArea from "../components/QuickAccessProfile/QuickAccessArea";
 import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePicturePicker";
+import IsLoading from "../components/IsLoading/IsLoading";
+import IsError from "../components/IsError/IsError";
 export default function ProfileScreen() {
   const [editable, setEditable] = useState(false);
-  const [changePP, setChangePP] = useState(false);
-
+  const [originalInfo, setOriginalInfo] = useState(null);
+  const [originalImageUri, setOriginalImageUri] = useState(null);
+  const [currentImageUri, setCurrentImageUri] = useState(null);
+  const [info, setInfo] = useState({
+    name: {},
+    email: {},
+    mobile: {},
+    birthday: {},
+    password: {},
+  });
+  const {
+    data: ClientData,
+    isLoading: isGetLoading,
+    isError: isGetError,
+    error: getError,
+    refetch: refetchClientData,
+  } = useQuery({
+    queryKey: ["Client"],
+    queryFn: Client.get,
+  });
+  const {
+    mutate: updateClient,
+    isError: isUpdateError,
+    error: updateError,
+    reset: resetUpdateMutation,
+  } = useMutation({
+    mutationFn: Client.update,
+    onSuccess: () => {
+      Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
+      setEditable(false);
+      setOriginalInfo(null);
+      setOriginalImageUri(null);
+      refetchClientData();
+      resetUpdateMutation();
+    },
+    onError: (err) => {
+      Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+      console.error("Update error:", err);
+    },
+  });
+  useEffect(() => {
+    if (ClientData?.data) {
+      console.log(ClientData.data);
+      setInfo({
+        name: {
+          header: "الاسم",
+          value: `${ClientData.data.data.firstName || ""} ${
+            ClientData.data.data.lastName || ""
+          }`,
+        },
+        email: {
+          header: "البريد الالكتروني",
+          value: `Georgegeham@outlook.com`,
+        },
+        mobile: {
+          header: "التليفون",
+          value: `${ClientData.data.data.phoneNumber}` || "",
+        },
+        birthday: {
+          header: "تاريخ الميلاد",
+          value: `${ClientData.data.data.birthDate}` || "",
+        },
+        password: { header: "كلمة السر", value: "123456789" },
+      });
+    } else if (ClientData) {
+      console.log(ClientData);
+    }
+  }, [ClientData]);
   function editableHandler() {
-    setEditable((editable) => !editable);
+    setEditable((prevEditable) => {
+      if (!prevEditable) {
+        setOriginalInfo(info);
+        setOriginalImageUri(currentImageUri);
+      }
+      return !prevEditable;
+    });
   }
-  function profilePictureHandler() {
-    console.log("clicked");
-    setChangePP((changePP) => !changePP);
+
+  function exitEditing() {
+    setEditable(false);
+    if (originalInfo) {
+      setInfo(originalInfo);
+      setOriginalInfo(null);
+    }
+    if (originalImageUri) {
+      setCurrentImageUri(originalImageUri);
+      setOriginalImageUri(null);
+    }
   }
+  function saveChanges() {
+    if (info) {
+      const clientDataToSend = {
+        email: info.email.value,
+        firstName: info.name.value.split(" ")[0] || "",
+        lastName: info.name.value.split(" ")[1] || "",
+        birthDate: info.birthday.value,
+        phoneNumber: info.mobile.value,
+        newPassword: info.password.value,
+      };
+      updateClient({ ...clientDataToSend });
+    }
+  }
+  if (isGetLoading) {
+    return <IsLoading />;
+  }
+  if (isGetError || isUpdateError) {
+    return <IsError error={getError || updateError} />;
+  }
+
   return (
     <ScreensWrapper>
       <KeyboardAvoidingView
@@ -38,16 +143,38 @@ export default function ProfileScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.container}>
-            <Pressable
-              style={({ pressed }) => [pressed && styles.pressed]}
-              onPress={editableHandler}
-            >
-              <Text style={styles.editText}>{editable ? "حفظ" : "تعديل"}</Text>
-            </Pressable>
-            <ProfilePicturePicker editable={editable} />
-            <InfoArea editable={editable} />
+            <View style={styles.optionContainer}>
+              {editable ? (
+                <>
+                  <Pressable
+                    style={({ pressed }) => [pressed && styles.pressed]}
+                    onPress={saveChanges}
+                  >
+                    <Text style={styles.editText}>حفظ</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed }) => [pressed && styles.pressed]}
+                    onPress={exitEditing}
+                  >
+                    <Text style={styles.editText}>إلغاء</Text>
+                  </Pressable>
+                </>
+              ) : (
+                <Pressable
+                  style={({ pressed }) => [pressed && styles.pressed]}
+                  onPress={editableHandler}
+                >
+                  <Text style={styles.editText}>تعديل</Text>
+                </Pressable>
+              )}
+            </View>
+            <ProfilePicturePicker
+              editable={editable}
+              onImageChange={setCurrentImageUri}
+              currentImage={currentImageUri}
+            />
+            <InfoArea editable={editable} info={info} onChange={setInfo} />{" "}
             <QuickAccessArea editable={editable} />
-            {/* {changePP && <ProfilePicturePicker />} */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -66,6 +193,10 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.3,
+  },
+  optionContainer: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
   },
   editText: {
     fontFamily: font.title.fontFamily,

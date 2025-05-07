@@ -3,9 +3,8 @@ export const apiClient = axios.create({
   baseURL: "http://clientnexus.runasp.net",
   timeout: 10000,
 });
+let token = "";
 apiClient.interceptors.request.use((config) => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJtYXplbmVzc2FtMjAxMUBvdXRsb29rLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNsaWVudCIsImV4cCI6MTc0NjMwNTMxMiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3QiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdCJ9.Yi5H_GMH3m0X7eFsp5YEgRgDFj95RrN-5UTJOwPa340";
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -15,7 +14,19 @@ export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),
   getFeedbacks: (id) => apiClient.get(`/api/Feedback/provider/${id}`),
+  getBySearch: (searchQuery) =>
+    apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
   getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
+  filter: (filterData) =>
+    apiClient.get("/api/ServiceProivder/filter", {
+      params: {
+        searchQuery: filterData.searchQuery,
+        minRate: filterData.minRate,
+        state: filterData.state,
+        city: filterData.city,
+        specializationName: filterData.speciality,
+      },
+    }),
 };
 
 export const Documents = {
@@ -29,5 +40,25 @@ export const Specialization = {
     apiClient.post("/api/Specialization", {
       name: name,
       serviceProviderTypeId: serviceProviderTypeId,
+    }),
+};
+
+export const Client = {
+  get: () => apiClient.get("api/Client"),
+  update: ({
+    email,
+    firstName,
+    lastName,
+    birthDate,
+    phoneNumber,
+    newPassword,
+  }) =>
+    apiClient.put("api/Client", {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      birthDate: birthDate,
+      phoneNumber: phoneNumber,
+      newPassword: newPassword,
     }),
 };

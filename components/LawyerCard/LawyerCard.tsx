@@ -31,6 +31,8 @@ const LawyerCard = ({
         return <Rate4 style={style} />;
       case "5":
         return <Rate5 style={style} />;
+      default:
+        return;
     }
   }
   return (
@@ -54,7 +56,7 @@ const LawyerCard = ({
         </View>
         <View style={styles.infoContainer}>
           <Text numberOfLines={1} style={styles.title}>
-            {name}
+            {name} المحامي
           </Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />
@@ -70,7 +72,11 @@ const LawyerCard = ({
             ) : (
               <Text style={styles.specialitiyText}>محامي {speciality}</Text>
             )}
-            <Text style={styles.vezitaText}>العنوان: {address}</Text>
+            {!!address ? (
+              <Text style={styles.vezitaText}>العنوان: {address}</Text>
+            ) : (
+              ""
+            )}
           </View>
         </View>
       </View>
@@ -101,7 +107,7 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
-    borderRadius: 30,
+    borderRadius: "50%",
   },
   infoContainer: {
     flex: 4,

@@ -1,7 +1,13 @@
-import { View, StyleSheet, Pressable, Text } from "react-native";
-import Modal from "react-native-modal";
+import React from "react";
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Colors } from "../../constants/Color";
 import OurButton from "../../UI/OurButton";
+
 const ProfilePictureModal = ({
   modalVisible,
   modalHandler,
@@ -10,27 +16,29 @@ const ProfilePictureModal = ({
 }) => {
   return (
     <Modal
-      isVisible={modalVisible}
-      animationInTiming={300}
-      animationOut="slideOutDown"
-      animationOutTiming={300}
-      swipeDirection="down"
-      onBackdropPress={modalHandler}
-      onSwipeComplete={modalHandler}
-      style={styles.modal}
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={modalHandler}
     >
-      <View style={styles.modalContent}>
-        <View style={styles.handle} />
-        <OurButton onPress={selectImage}>اختار من المعرض</OurButton>
-        <OurButton onPress={takePhoto}>التقط صورة جديدة</OurButton>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback onPress={modalHandler}>
+          <View style={{ flex: 1 }} />
+        </TouchableWithoutFeedback>
+        <View style={styles.modalContent}>
+          <View style={styles.handle} />
+          <OurButton onPress={selectImage}>اختار من المعرض</OurButton>
+          <OurButton onPress={takePhoto}>التقط صورة جديدة</OurButton>
+        </View>
       </View>
     </Modal>
   );
 };
+
 const styles = StyleSheet.create({
-  modal: {
+  modalOverlay: {
+    flex: 1,
     justifyContent: "flex-end",
-    margin: 0,
   },
   modalContent: {
     minHeight: 300,
@@ -38,6 +46,9 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    borderWidth: 2,
+    borderBottomWidth: 0,
+    borderColor: Colors.mainColor,
   },
   handle: {
     width: 50,
@@ -48,4 +59,5 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+
 export default ProfilePictureModal;

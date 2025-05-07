@@ -2,14 +2,20 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Colors } from "../../constants/Color";
-export default function DropdownList({ placeholder }) {
+import useFilterOptions from "../../store/filterStore";
+export default function DropdownList({
+  placeholder,
+  initialValue = null,
+  onValueChange,
+}) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "وسط البلد", value: "وسط البلد" },
-    { label: "القاهرة الجديدة", value: "القاهرة الجديدة" },
-    { label: "مدينة نصر", value: "مدينة نصر" },
-  ]);
+  const [value, setValue] = useState(initialValue || null);
+  const { items } = useFilterOptions();
+  useEffect(() => {
+    if (value !== null && onValueChange) {
+      onValueChange(value);
+    }
+  }, [value, onValueChange]);
   return (
     <View style={[styles.container, { zIndex: open ? 3 : 1 }]}>
       <DropDownPicker
@@ -18,7 +24,6 @@ export default function DropdownList({ placeholder }) {
         items={items}
         setOpen={setOpen}
         setValue={setValue}
-        setItems={setItems}
         placeholder={placeholder}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}

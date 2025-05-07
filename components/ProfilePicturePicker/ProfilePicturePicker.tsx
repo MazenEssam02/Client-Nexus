@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet, Alert, Pressable } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ProfilePictureModal from "../ProfilePictureModal/ProfilePictureModal";
 import { Edit } from "../Icons/Edit";
 import { Colors } from "../../constants/Color";
 
-const ProfilePicturePicker = ({ editable }) => {
-  const [imageUri, setImageUri] = useState(null);
+const ProfilePicturePicker = ({ editable, onImageChange, currentImage }) => {
+  const [imageUri, setImageUri] = useState(currentImage || null);
   const [cameraPermissionInformation, requestCameraPermission] =
     ImagePicker.useCameraPermissions();
   const [mediaLibraryPermissionInformation, requestMediaPermission] =
     ImagePicker.useMediaLibraryPermissions();
   const [isModelOpened, setIsModalOpened] = useState(false);
   // Request permissions when the component loads
+  useEffect(() => {
+    setImageUri(currentImage || null);
+  }, [currentImage]);
   async function requestMediaHandler() {
     if (
       mediaLibraryPermissionInformation.status ===
@@ -49,6 +52,7 @@ const ProfilePicturePicker = ({ editable }) => {
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
       setIsModalOpened(false);
+      onImageChange(result.assets[0].uri);
     }
   };
   // Request Camera Permission
@@ -87,6 +91,10 @@ const ProfilePicturePicker = ({ editable }) => {
     if (!result.canceled) {
       setImageUri(result.assets[0].uri);
       setIsModalOpened(false);
+      onImageChange(result.assets[0].uri);
+    }
+    if (!editable) {
+      return;
     }
   };
   function openModal() {

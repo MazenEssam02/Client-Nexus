@@ -4,7 +4,6 @@ import {
   Image,
   ScrollView,
   Pressable,
-  ActivityIndicator,
   Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +18,7 @@ import Bot from "../components/Icons/Bot";
 import { useQuery } from "@tanstack/react-query";
 import { Documents } from "../API/https";
 import MainLogo from "../components/Icons/MainLogo";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function HomeScreen() {
   const navigation = useNavigation();
   const {
@@ -34,7 +34,7 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+        <LoadingSpinner />
       </View>
     );
   }

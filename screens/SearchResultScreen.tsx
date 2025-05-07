@@ -1,4 +1,6 @@
+
 import { View, StyleSheet, FlatList } from "react-native";
+
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
@@ -6,6 +8,8 @@ import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 import { useCallback, useLayoutEffect, useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
 import { font } from "../constants/Font";
+
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { ServiceProvider } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
 import IsLoading from "../components/IsLoading/IsLoading";
@@ -136,6 +140,7 @@ export default function SearchResultScreen({ route, navigation }) {
         ) : (
           ""
         )}
+
         <FlatList
           data={lawyersToDisplay}
           keyExtractor={(lawyer) => lawyer.id.toString()}
@@ -158,6 +163,7 @@ export default function SearchResultScreen({ route, navigation }) {
             />
           )}
         />
+
       </View>
     </>
   );

@@ -1,10 +1,11 @@
-import { ActivityIndicator, StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import AllSpecialities from "../components/AllSpecialities/AllSpecialities";
 import { useState } from "react";
 import { Specialization } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
 export default function SearchScreen({ navigation }) {
   const [input, setInput] = useState("");
@@ -21,7 +22,7 @@ export default function SearchScreen({ navigation }) {
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+        <LoadingSpinner />
       </View>
     );
   }

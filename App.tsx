@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, I18nManager } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -40,6 +40,11 @@ import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
+import BookingScreen from "./screens/BookingScreen";
+import { useEffect, useRef } from "react";
+import { getTokenAndSend } from "./helpers/notifications";
+import { sendTokenToBackend } from "./API/sendTokenToBackend ";
+import * as Notifications from "expo-notifications";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -87,12 +92,12 @@ function HomeStack() {
         name="Article"
         component={Article}
         options={{ title: "التحكم في المقالات" }}
-      /> 
+      /> */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -107,6 +112,22 @@ function HomeStack() {
         name="LawyerDetails"
         component={LawyerDetailsScreen}
         options={{ title: "تفاصيل المحامى" }}
+      />
+      <Stack.Screen
+        name="BookingScreen"
+        component={BookingScreen}
+        options={({ navigation }) => ({
+          title: "ادخل بياناتك",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="WebView"
@@ -353,8 +374,49 @@ function UnAuthenticatedStack() {
     </Stack.Navigator>
   );
 }
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
 export default function App() {
   const { user } = useAuthStore();
+  // console.log("hhaahah");
+  const notificationListener = useRef(null);
+  const responseListener = useRef(null);
+  useEffect(() => {
+    // Get the token and send to backend
+    getTokenAndSend();
+    // Listener when notification is received while app is in foreground
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log("Notification Received:", notification);
+        Alert.alert(
+          notification.request.content.title,
+          notification.request.content.body
+        );
+      });
+    // Listener when user taps on notification
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log("Notification Tap:", response);
+        // Navigate or handle logic here
+      });
+    return () => {
+      if (notificationListener.current) {
+        notificationListener.current.remove();
+      }
+      if (responseListener.current) {
+        responseListener.current.remove();
+      }
+    };
+  }, []);
+
   const fontsLoaded = useLoadFonts();
   if (!fontsLoaded) {
     return <ActivityIndicator size="small" color="#0000ff" />;

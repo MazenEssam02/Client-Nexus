@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Alert } from "react-native";
 import { Colors } from "../../constants/Color";
 import { BookingPicker } from "../BookingPicker/BookingPicker";
 import { font } from "../../constants/Font";
@@ -6,18 +6,53 @@ import { MainButton } from "../Buttons/MainButton";
 import Pin from "../Icons/Pin";
 import Wallet from "../Icons/Wallet";
 import { useNavigation } from "@react-navigation/native";
+import BookingSlotsPicker from "../BookingSlotsPicker/BookingSlotsPicker";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { Appointments } from "../../API/https";
+import IsError from "../IsError/IsError";
+
 export default function BookingBlock({ type, onChange, lawyer }) {
+  //type: 73->offline 80-> online
+  const typeNo = type ? 73 : 80;
   const navigation = useNavigation();
-  // const [showWebView, setShowWebView] = useState(false);
-
+  const [slot, setSlot] = useState(null);
+  const { mutate: bookAppointment, reset: resetBookMutation } = useMutation({
+    mutationFn: Appointments.bookAppointment,
+    onSuccess: () => {
+      resetBookMutation();
+      // if (!type) navigation.navigate("WebView" as never);
+      // else
+      Alert.alert(
+        "نجحت العملية",
+        "تم حجز الموعد بنجاح!",
+        [
+          {
+            text: "العودة إلى الصفحة الرئيسية",
+            onPress: () => {
+              resetBookMutation();
+              navigation.popToTop();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    },
+    onError: (err) => {
+      Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+      console.error("Update error:", err);
+    },
+  });
   const onSubmitHandler = () => {
-    navigation.navigate("WebView" as never);
+    if (slot) {
+      bookAppointment(slot);
+    } else Alert.alert("خطأ", "يجب اختيار موعد!");
   };
-
+  console.log(slot);
   return (
     <View style={styles.bookingContainer}>
       <View style={styles.pickerContainer}>
-        <BookingPicker value={type} onChange={onChange} />
+        <BookingPicker value={type} onChange={onChange} setSlot={setSlot} />
       </View>
 
       {type ? (
@@ -51,6 +86,13 @@ export default function BookingBlock({ type, onChange, lawyer }) {
           </View>
         </View>
       )}
+      <View style={{ flex: 1, width: "100%" }}>
+        <BookingSlotsPicker
+          setSlot={setSlot}
+          typeNo={typeNo}
+          spId={lawyer.id}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <MainButton
           title="حجز استشارة"
@@ -63,9 +105,6 @@ export default function BookingBlock({ type, onChange, lawyer }) {
   );
 }
 const styles = StyleSheet.create({
-  webview: {
-    flex: 1,
-  },
   bookingContainer: {
     backgroundColor: "white",
     marginVertical: 5,

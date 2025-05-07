@@ -7,7 +7,8 @@ import { Specialization } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
-export default function SearchScreen({ navigation }) {
+export default function SearchScreen({ navigation, route }) {
+  const type = route.params === undefined ? true : route.params.type;
   const [input, setInput] = useState("");
   const {
     data: specialities,
@@ -20,11 +21,7 @@ export default function SearchScreen({ navigation }) {
   });
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <LoadingSpinner />
-      </View>
-    );
+    return <LoadingSpinner />;
   }
 
   if (isError) {
@@ -36,7 +33,10 @@ export default function SearchScreen({ navigation }) {
   }
 
   function submitHandler() {
-    navigation.navigate("SearchResult" as never, { requestName: input });
+    navigation.navigate("SearchResult" as never, {
+      requestName: input,
+      type: type,
+    });
   }
   function getText(text) {
     setInput(text);
@@ -51,7 +51,7 @@ export default function SearchScreen({ navigation }) {
           onSubmitEditing={submitHandler}
           onChangeText={getText}
         />
-        <AllSpecialities specialities={specialities.data.data} />
+        <AllSpecialities specialities={specialities.data.data} type={type} />
       </View>
     </View>
   );

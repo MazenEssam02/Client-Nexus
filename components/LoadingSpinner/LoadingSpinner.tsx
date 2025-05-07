@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Easing, View } from "react-native";
+import { Animated, Easing, View, StyleSheet } from "react-native";
 import MainLogo from "../Icons/MainLogo";
 
 const LoadingSpinner = () => {
@@ -22,7 +22,7 @@ const LoadingSpinner = () => {
   });
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
+    <View style={styles.container}>
       <Animated.View
         style={{
           transform: [{ perspective: 1000 }, { rotateY: rotation }],
@@ -33,4 +33,11 @@ const LoadingSpinner = () => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 export default LoadingSpinner;

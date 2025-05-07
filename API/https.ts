@@ -62,3 +62,15 @@ export const Client = {
       newPassword: newPassword,
     }),
 };
+export const Slots = {
+  getWeek: ({ serviceProviderId, startDate, endDate, type }) =>
+    apiClient.get(
+      `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${type}`
+    ),
+  getById: (id) => apiClient.get(`/api/slots/${id}`),
+};
+export const Appointments = {
+  bookAppointment: (slotId) =>
+    apiClient.post(`/api/appointments`, { slotId: slotId }),
+  getById: (id) => apiClient.get(`/api/appointments/${id}`),
+};

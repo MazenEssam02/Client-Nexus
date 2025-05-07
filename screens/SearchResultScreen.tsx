@@ -1,4 +1,3 @@
-
 import { View, StyleSheet, FlatList } from "react-native";
 
 import { Colors } from "../constants/Color";
@@ -104,7 +103,7 @@ export default function SearchResultScreen({ route, navigation }) {
       (filteredSearchResult?.data?.data?.length || 0) === 0
     : noResponse;
   if (searchIsLoading && searchText) {
-    return <IsLoading />;
+    return <LoadingSpinner />;
   }
   if (searchIsError && searchText) {
     return <IsError error={searchError} />;
@@ -157,13 +156,13 @@ export default function SearchResultScreen({ route, navigation }) {
                   "LawyerDetails" as never,
                   {
                     lawyer: lawyer,
+                    type: route.params.type,
                   } as never
                 )
               }
             />
           )}
         />
-
       </View>
     </>
   );

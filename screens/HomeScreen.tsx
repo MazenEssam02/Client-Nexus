@@ -19,8 +19,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Documents } from "../API/https";
 import MainLogo from "../components/Icons/MainLogo";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default function HomeScreen({ navigation }) {
+  // const navigation = useNavigation();
   const {
     data: documents,
     isLoading,
@@ -32,11 +32,7 @@ export default function HomeScreen() {
   });
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <LoadingSpinner />
-      </View>
-    );
+    return <LoadingSpinner />;
   }
 
   if (isError) {
@@ -75,7 +71,9 @@ export default function HomeScreen() {
           <QuickButton
             title={"مكالمة محامى"}
             iconName={"Call"}
-            onPress={() => navigation.navigate("Search" as never)}
+            onPress={() =>
+              navigation.navigate("Search" as never, { type: false })
+            }
           />
         </View>
         <SearchBlock />

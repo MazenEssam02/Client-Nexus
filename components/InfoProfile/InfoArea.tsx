@@ -1,36 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { Colors } from "../../constants/Color";
-import { useState } from "react";
 import InfoDetail from "./InfoDetail";
-const InfoArea = ({ editable }) => {
-  const [info, setInfo] = useState({
-    name: {
-      header: "الاسم",
-      value: "جورج جيهام وليم",
-    },
-    email: {
-      header: "البريد الالكتروني",
-      value: "George25geham@gmail.com",
-    },
-    mobile: {
-      header: "التليفون",
-      value: "01210268324",
-    },
-    birthday: {
-      header: "تاريخ الميلاد",
-      value: "15/7/2001",
-    },
-    password: {
-      header: "كلمة السر",
-      value: "123456789",
-    },
-  });
-  function changeHandler(field, text) {
-    setInfo((info) => ({
-      ...info,
-      [field]: { ...info[field], value: text },
-    }));
-  }
+const InfoArea = ({ editable, info, onChange }) => {
   return (
     <View style={styles.infoContainer}>
       {Object.keys(info).map((key) => (
@@ -40,7 +11,9 @@ const InfoArea = ({ editable }) => {
           header={info[key].header}
           info={info[key].value}
           editable={editable}
-          onChange={changeHandler}
+          onChange={(field, text) =>
+            onChange({ ...info, [field]: { ...info[field], value: text } })
+          }
           isPassword={key === "password"}
         />
       ))}

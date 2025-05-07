@@ -1,64 +1,119 @@
-import { View, StyleSheet, FlatList, Text, Image } from "react-native";
+
+import { View, StyleSheet, FlatList } from "react-native";
+
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
 import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
-import { useLayoutEffect, useState } from "react";
-import axios from "axios";
+import { useCallback, useLayoutEffect, useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
-import api from "../utils/config";
 import { font } from "../constants/Font";
+
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { ServiceProvider } from "../API/https";
+import { useQuery } from "@tanstack/react-query";
+import IsLoading from "../components/IsLoading/IsLoading";
+import IsError from "../components/IsError/IsError";
+import NoResponse from "../components/NoResponse/NoResponse";
 export default function SearchResultScreen({ route, navigation }) {
   const initialSearchText = route?.params?.requestName;
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchText, setSearchText] = useState(initialSearchText || "");
-  const [loading, setLoading] = useState(false);
-  const [noResponse, setNoResponse] = useState(true);
+  const [filterUsed, setFilterUsed] = useState(false);
+  const [filterData, setFilterData] = useState({
+    searchQuery: "",
+    minRate: "",
+    state: "",
+    city: "",
+    specializationName: "",
+  });
+  const {
+    data: searchResultsData,
+    isLoading: searchIsLoading,
+    isError: searchIsError,
+    error: searchError,
+  } = useQuery({
+    queryKey: ["Lawyers", searchText],
+    queryFn: () => ServiceProvider.getBySearch(searchText),
+    enabled: !!searchText,
+  });
+  const searchResults = searchResultsData?.data?.data || [];
+  const noResponse =
+    !searchIsLoading && !searchIsError && searchResults.length === 0;
   function modalHandler() {
     setModalVisible(!modalVisible);
   }
-  async function search(text) {
-    setLoading(true);
-    setNoResponse(false);
-    try {
-      const result = await axios.get(
-        "http://clientnexus.runasp.net/api/ServiceProvider/Search",
-        {
-          params: {
-            searchQuery: text,
-          },
-        }
-      );
-      if (result.data && result.data.data) {
-        setNoResponse(false);
-        setSearchResults(result.data.data);
-        console.log(searchResults);
-      } else {
-        setNoResponse(true);
-        setSearchResults([]);
-      }
-    } catch (error) {
-      console.log(error);
-      setNoResponse(true);
-      setSearchResults([]);
-    } finally {
-      setLoading(false);
-    }
-  }
+
   useLayoutEffect(() => {
-    console.log(initialSearchText);
     if (initialSearchText) {
       setSearchText(initialSearchText);
-      search(initialSearchText);
     }
   }, [initialSearchText]);
   function handleSearchBar(event) {
-    console.log(event.nativeEvent.text);
     setSearchText(event.nativeEvent.text);
-    console.log(searchText);
-    search(event.nativeEvent.text);
+  }
+  //Handle Filteration Confirmation
+  const handleFilterConfirmation = useCallback(
+    (filters) => {
+      const data = {
+        searchQuery: searchText,
+        minRate: filters.rate || "",
+        state: filters.region || "",
+        city: filters.city || "",
+        specializationName: filters.speciality || "",
+      };
+      setFilterData(data);
+      setFilterUsed(true);
+      console.log("handleFilterConfirmation:", data);
+      modalHandler();
+    },
+    [searchText, setFilterData, modalHandler]
+  );
+  const {
+    data: filteredSearchResult,
+    isLoading: filteredIsLoading,
+    isError: filterIsError,
+    error: filterError,
+  } = useQuery({
+    queryKey: ["filteredResults", filterData],
+    queryFn: () => {
+      console.log("filter queryFn called", filterData); // <--- Add this line
+      return ServiceProvider.filter({ filterData })
+        .then((response) => {
+          console.log("filter queryFn success", response);
+          return response; // Important: Return the response!
+        })
+        .catch((err) => {
+          console.error("filter queryFn error", err);
+          throw err; // Important: Re-throw the error!
+        })
+        .finally(() => console.log("filter queryFn finished"));
+    },
+    enabled:
+      !!filterData.city ||
+      !!filterData.minRate ||
+      !!filterData.specializationName ||
+      !!filterData.state,
+  });
+  const lawyersToDisplay = filterUsed
+    ? filteredSearchResult?.data?.data || []
+    : searchResults;
+  const noResponseToShow = filterUsed
+    ? !filteredIsLoading &&
+      !filterIsError &&
+      (filteredSearchResult?.data?.data?.length || 0) === 0
+    : noResponse;
+  if (searchIsLoading && searchText) {
+    return <IsLoading />;
+  }
+  if (searchIsError && searchText) {
+    return <IsError error={searchError} />;
+  }
+  if (filteredIsLoading && searchText) {
+    return <IsLoading />;
+  }
+  if (filterIsError && searchText) {
+    return <IsError error={filterError} />;
   }
   return (
     <>
@@ -66,6 +121,7 @@ export default function SearchResultScreen({ route, navigation }) {
         <FilterResultModal
           modalVisible={modalVisible}
           modalHandler={modalHandler}
+          onFilter={handleFilterConfirmation}
         />
       )}
       <View style={style.main}>
@@ -79,42 +135,35 @@ export default function SearchResultScreen({ route, navigation }) {
           </View>
           <FilterIcon onPress={modalHandler} />
         </View>
-        {noResponse ? (
-          <View style={style.loadingContainer}>
-            <Text style={style.loadingText}>لا توجد نتائج للبحث</Text>
-          </View>
+        {noResponseToShow && searchText ? (
+          <NoResponse text="لا توجد نتائج للبحث" />
         ) : (
           ""
         )}
-        {loading ? (
-          <View style={style.loadingContainer}>
-            <LoadingSpinner />
-            <Text style={style.loadingText}>Searching...</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={searchResults}
-            keyExtractor={(lawyer) => lawyer.id.toString()}
-            renderItem={({ item: lawyer }) => (
-              <ResultLawyerCard
-                name={lawyer.firstName}
-                rate={lawyer.rate}
-                speciality={lawyer.specializationName?.[0]}
-                vezita={lawyer.office_consultation_price}
-                address={lawyer.city}
-                imageURL={lawyer.mainImage}
-                onPress={() =>
-                  navigation.navigate(
-                    "LawyerDetails" as never,
-                    {
-                      lawyer: lawyer,
-                    } as never
-                  )
-                }
-              />
-            )}
-          />
-        )}
+
+        <FlatList
+          data={lawyersToDisplay}
+          keyExtractor={(lawyer) => lawyer.id.toString()}
+          renderItem={({ item: lawyer }) => (
+            <ResultLawyerCard
+              name={lawyer.firstName}
+              rate={lawyer.rate}
+              speciality={lawyer.specializationName?.[0]}
+              vezita={lawyer.office_consultation_price}
+              address={lawyer.city}
+              imageURL={lawyer.mainImage}
+              onPress={() =>
+                navigation.navigate(
+                  "LawyerDetails" as never,
+                  {
+                    lawyer: lawyer,
+                  } as never
+                )
+              }
+            />
+          )}
+        />
+
       </View>
     </>
   );

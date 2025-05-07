@@ -386,36 +386,35 @@ Notifications.setNotificationHandler({
 
 export default function App() {
   const { user } = useAuthStore();
-  // console.log("hhaahah");
-  const notificationListener = useRef(null);
-  const responseListener = useRef(null);
-  useEffect(() => {
-    // Get the token and send to backend
-    getTokenAndSend();
-    // Listener when notification is received while app is in foreground
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        console.log("Notification Received:", notification);
-        Alert.alert(
-          notification.request.content.title,
-          notification.request.content.body
-        );
-      });
-    // Listener when user taps on notification
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("Notification Tap:", response);
-        // Navigate or handle logic here
-      });
-    return () => {
-      if (notificationListener.current) {
-        notificationListener.current.remove();
-      }
-      if (responseListener.current) {
-        responseListener.current.remove();
-      }
-    };
-  }, []);
+  // const notificationListener = useRef(null);
+  // const responseListener = useRef(null);
+  // useEffect(() => {
+  //   // Get the token and send to backend
+  //   getTokenAndSend();
+  //   // Listener when notification is received while app is in foreground
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       console.log("Notification Received:", notification);
+  //       Alert.alert(
+  //         notification.request.content.title,
+  //         notification.request.content.body
+  //       );
+  //     });
+  //   // Listener when user taps on notification
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log("Notification Tap:", response);
+  //       // Navigate or handle logic here
+  //     });
+  //   return () => {
+  //     if (notificationListener.current) {
+  //       notificationListener.current.remove();
+  //     }
+  //     if (responseListener.current) {
+  //       responseListener.current.remove();
+  //     }
+  //   };
+  // }, []);
 
   const fontsLoaded = useLoadFonts();
   if (!fontsLoaded) {

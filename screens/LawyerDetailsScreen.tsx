@@ -1,15 +1,7 @@
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, View, Image, ScrollView, Text } from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
-import { BookingPicker } from "../components/BookingPicker/BookingPicker";
 import { useState } from "react";
 import BookingBlock from "../components/BookingBlock/BookingBlock";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
@@ -18,6 +10,7 @@ import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialit
 import LawyerRatings from "../components/LawyerRatings/LawyerRating";
 import { useQueries } from "@tanstack/react-query";
 import { ServiceProvider } from "../API/https";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function LawyerDetailsScreen({ route }) {
   const lawyer = route.params.lawyer;
   const [type, setType] = useState(true);
@@ -43,7 +36,7 @@ export default function LawyerDetailsScreen({ route }) {
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+        <LoadingSpinner />
       </View>
     );
   }

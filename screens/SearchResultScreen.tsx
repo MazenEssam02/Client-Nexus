@@ -1,11 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  Text,
-  Image,
-} from "react-native";
+import { View, StyleSheet, FlatList, Text, Image } from "react-native";
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
@@ -15,6 +8,7 @@ import axios from "axios";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
 import api from "../utils/config";
 import { font } from "../constants/Font";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function SearchResultScreen({ route, navigation }) {
   const initialSearchText = route?.params?.requestName;
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,7 +88,7 @@ export default function SearchResultScreen({ route, navigation }) {
         )}
         {loading ? (
           <View style={style.loadingContainer}>
-            <ActivityIndicator size="large" color={Colors.mainColor} />
+            <LoadingSpinner />
             <Text style={style.loadingText}>Searching...</Text>
           </View>
         ) : (

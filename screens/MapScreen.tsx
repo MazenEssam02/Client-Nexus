@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, Text, Alert } from "react-native";
+import { View, StyleSheet, Text, Alert } from "react-native";
 // import MapView, { Marker } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function MapScreen({ navigation }) {
   const [selectedLocation, setSelectedLocation] = useState<
     { lat: number; lng: number } | undefined
@@ -70,7 +71,7 @@ export default function MapScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" />
+        <LoadingSpinner />
       </View>
     );
   }

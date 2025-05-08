@@ -11,7 +11,9 @@ import { Arrow } from "../Icons/Arrow";
 import { useNavigation } from "@react-navigation/native";
 import Favourite from "../Icons/Favourite";
 import Payment from "../Icons/Payment";
+import { useAuthStore } from "../../store/auth";
 const QuickAccess = ({ icon, title }) => {
+  const { logout } = useAuthStore();
   const [exitHandler, setExitHandler] = useState(false);
   const navigation = useNavigation();
   useEffect(() => {
@@ -49,6 +51,9 @@ const QuickAccess = ({ icon, title }) => {
         break;
       case "Payment History":
         return navigation.navigate("Payment History" as never);
+      case "Exit":
+        logout();
+        break;
       default:
         navigation.navigate("Home" as never);
     }

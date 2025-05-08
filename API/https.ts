@@ -3,13 +3,7 @@ export const apiClient = axios.create({
   baseURL: "http://clientnexus.runasp.net",
   timeout: 10000,
 });
-let token = "";
-apiClient.interceptors.request.use((config) => {
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),

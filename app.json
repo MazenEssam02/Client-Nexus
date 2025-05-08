@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Client-Nexus",
+    "name": "Client Nexus",
     "slug": "Client-Nexus",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,17 +8,17 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F0EDEA"
+      "backgroundColor": "#B47947"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F0EDEA"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#B47947"
       },
       "package": "com.anonymous.ClientNexus"
     },

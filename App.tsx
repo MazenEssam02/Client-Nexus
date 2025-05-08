@@ -4,6 +4,7 @@ import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import * as SplashScreen from "expo-splash-screen";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
@@ -40,10 +41,13 @@ import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+SplashScreen.preventAutoHideAsync().catch(console.warn);
 
 function HomeStack() {
   return (
@@ -354,9 +358,15 @@ function UnAuthenticatedStack() {
   );
 }
 export default function App() {
-  const { user } = useAuthStore();
+  const { isInitialized, user } = useAuthStore();
   const fontsLoaded = useLoadFonts();
-  if (!fontsLoaded) {
+  const isAppReady = fontsLoaded && isInitialized;
+  useEffect(() => {
+    if (isAppReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [isAppReady]);
+  if (!isAppReady) {
     return <ActivityIndicator size="small" color="#0000ff" />;
   }
 

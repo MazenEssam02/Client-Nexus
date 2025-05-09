@@ -2,13 +2,11 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Switch,
 } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { Colors } from "../constants/Color";
@@ -16,7 +14,6 @@ import { font } from "../constants/Font";
 import { MainButton } from "../components/Buttons/MainButton";
 import { SocialLogin } from "../components/SocialLogin/SocialLogin";
 import { LoginInput } from "../components/LoginInput/LoginInput";
-import { useAuthStore } from "../store/auth";
 import { LawyerIcon } from "../components/Icons/LawyerIcon";
 import { UserIcon } from "../components/Icons/UserIcon";
 import { RegisterIllustration } from "../components/Icons/RegisterIllustration";
@@ -25,13 +22,17 @@ import { GenderPicker } from "../components/GenderPicker/GenderPicker";
 import CheckBox from "react-native-check-box";
 import { useNavigation } from "@react-navigation/native";
 import { PrivacyPolicyModal } from "../components/PrivacyPolicyModal/PrivacyPolicyModal";
+import { apiClient } from "../API/https";
 
 const RegisterScreen = () => {
-  const { login } = useAuthStore();
   const navigation = useNavigation<AuthNavigationType>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // For role selection: 'client' or 'lawyer'
-  const [selectedRole, setSelectedRole] = useState("client");
+  const [selectedRole, setSelectedRole] = useState<"lawyer" | "client">(
+    "client"
+  );
 
   // For accepting Terms & Privacy
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
@@ -58,19 +59,45 @@ const RegisterScreen = () => {
   // Watch password to compare with confirm password
   const passwordValue = watch("password");
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (!acceptedPolicy) {
       alert("الرجاء الموافقة على سياسة الاستخدام والخصوصية أولاً");
       return;
     }
-    // Example call to your store
-    login({
-      // username: data.fullName,
-      email: data.email,
-      password: data.password,
-      // role: selectedRole,
-      // gender: isMale ? "male" : "female",
-    });
+    if (selectedRole === "lawyer") {
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    console.log("Registering user", data);
+    apiClient
+      .post(
+        "/api/auth/register",
+        {
+          FirstName: data.fullName.split(" ")[0],
+          LastName: data.fullName.split(" ").slice(1).join(" "),
+          Email: data.email,
+          UserType: 67,
+          BirthDate: data.birthdate.toISOString().split("T")[0],
+          PhoneNumber: data.phone,
+          Password: data.password,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        console.log("Registration successful", res.data);
+        setIsLoading(false);
+        navigation.navigate("Login");
+      })
+      .catch((err) => {
+        console.warn("Registration error", err.response.data);
+        setIsLoading(false);
+        setError(err.response.data.message || "حدث خطأ أثناء التسجيل");
+      });
   };
 
   return (
@@ -128,6 +155,17 @@ const RegisterScreen = () => {
           name="fullName"
           rules={{
             required: "مطلوب اسم المستخدم الكامل",
+            minLength: {
+              value: 3,
+              message: "اسم المستخدم الكامل يجب أن يكون 3 أحرف على الأقل",
+            },
+            maxLength: {
+              value: 50,
+              message: "اسم المستخدم الكامل يجب أن يكون أقل من 50 حرف",
+            },
+            validate: (value) =>
+              value.trim().split(" ").length > 1 ||
+              "اسم المستخدم الكامل يجب أن يحتوي على اسمين على الأقل",
           }}
           render={({ field: { onChange, value } }) => (
             <LoginInput
@@ -278,11 +316,17 @@ const RegisterScreen = () => {
           <MainButton
             title="إنشاء حساب جديد"
             onPress={handleSubmit(onSubmit)}
-            disabled={!(isValid && acceptedPolicy)}
+            disabled={!(isValid && acceptedPolicy) || isLoading}
           />
         </View>
 
-        <SocialLogin onPress={(authSource) => login({ social: authSource })} />
+        {error && <Text style={{ color: "red" }}>{error}</Text>}
+
+        <SocialLogin
+          onPress={(authSource) =>
+            console.log("Attempt to login with social Not IMplemeneted")
+          }
+        />
 
         {/* Already have account? */}
         <TouchableOpacity

@@ -83,9 +83,14 @@ export const useAuthStore = create<AuthStore>()(persist(
       set({ error: "لا يوجد الحساب", isLoading: false });
     }
   },
-  logout: () => {
-    set({ user: null, isLoading: false, error: null });
-    delete apiClient.defaults.headers.common["Authorization"];
+  logout: async () => {
+    try {
+      await apiClient.post("api/Auth/logout");
+      set({ user: null, isLoading: false, error: null });
+      delete apiClient.defaults.headers.common["Authorization"];
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2));
+    }
   },
 }), {
   name: 'auth-storage',
@@ -95,7 +100,7 @@ export const useAuthStore = create<AuthStore>()(persist(
     console.log('Auth Hydration finished.');
     return async (state, error) => {
       if (error) {
-          console.error("Failed to rehydrate auth state:", error);
+          console.warn("Failed to rehydrate auth state:", error);
           state?._setIsInitialized(true);
       } else if (state) {
           if (state.user) {

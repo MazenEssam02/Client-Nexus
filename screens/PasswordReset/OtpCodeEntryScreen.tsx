@@ -8,14 +8,15 @@ import {
   Platform,
   TextInput,
 } from "react-native";
-import { Colors } from "../constants/Color";
-import { font } from "../constants/Font";
-import { MainButton } from "../components/Buttons/MainButton";
-import { OtpCodeIllustration } from "../components/Icons/OtpCodeIllustration";
+import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { OtpCodeIllustration } from "../../components/Icons/OtpCodeIllustration";
 import { useNavigation } from "@react-navigation/native";
 
-export const OtpCodeEntryScreen = () => {
+export const OtpCodeEntryScreen = ({ route }) => {
   const navigator = useNavigation<AuthNavigationType>();
+  const { emailOrPhone } = route.params;
   // We'll store 6 digits in an array
   const [code, setCode] = useState(["", "", "", "", "", ""]);
 
@@ -37,7 +38,10 @@ export const OtpCodeEntryScreen = () => {
   const handleVerify = () => {
     const enteredCode = code.join("");
     console.log("Code entered:", enteredCode);
-    navigator.navigate("NewPassword");
+    navigator.navigate("NewPassword", {
+      emailOrPhone,
+      code: enteredCode,
+    });
   };
 
   return (

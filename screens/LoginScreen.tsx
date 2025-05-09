@@ -131,7 +131,11 @@ const LoginScreen = () => {
           )}
         </View>
 
-        <SocialLogin onPress={(authSource) => login({ social: authSource })} />
+        <SocialLogin
+          onPress={(authSource) =>
+            console.log(`attempt to login with ${authSource}`)
+          }
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

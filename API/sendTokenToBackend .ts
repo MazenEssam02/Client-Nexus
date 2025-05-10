@@ -1,10 +1,15 @@
 import { apiClient } from "./https";
 
-export const sendTokenToBackend = async (token) => {
+export async function sendTokenToBackend(token: string) {
   try {
-    await apiClient.patch("/api/users/notification-token", { token });
-    console.log("Token sent to backend successfully");
-  } catch (err) {
-    console.error("Error sending token to backend:", err);
+    const response = await apiClient.patch("/api/users/notification-token", {
+      token,
+    });
+    console.log("Push token sent to backend successfully", response.data);
+  } catch (error) {
+    console.error(
+      "Failed to send token to backend:",
+      error.response?.data || error.message
+    );
   }
-};
+}

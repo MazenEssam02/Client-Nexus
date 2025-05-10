@@ -1,8 +1,10 @@
 import axios from "axios";
+import SSE from "react-native-sse";
 export const apiClient = axios.create({
   baseURL: "http://clientnexus.runasp.net",
   timeout: 10000,
 });
+
 let token = "";
 apiClient.interceptors.request.use((config) => {
   if (token) {
@@ -73,4 +75,19 @@ export const Appointments = {
   bookAppointment: (slotId) =>
     apiClient.post(`/api/appointments`, { slotId: slotId }),
   getById: (id) => apiClient.get(`/api/appointments/${id}`),
+};
+export const EmeregencyCases = {
+  requestEmergency: ({
+    name,
+    description,
+    meetingLatitude,
+    meetingLongitude,
+  }) =>
+    apiClient.post(`/api/emergency-cases`, {
+      name: "name",
+      description: "description",
+      meetingLatitude: 0,
+      meetingLongitude: 0,
+    }),
+  deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
 };

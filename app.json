@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F0EDEA"
@@ -35,6 +36,12 @@
         }
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "83564128-6039-450e-9db9-4b8e66756ad1"
+      }
+    },
+    "owner": "mazenessam02"
   }
 }

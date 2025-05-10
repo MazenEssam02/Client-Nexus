@@ -40,7 +40,7 @@ export default function BookingBlock({ type, onChange, lawyer }) {
     },
     onError: (err) => {
       Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
-      console.error("Update error:", err);
+      console.error("book error:", err);
     },
   });
   const onSubmitHandler = () => {

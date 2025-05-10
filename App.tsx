@@ -380,7 +380,6 @@ export default function App() {
 
   const { isInitialized, user } = useAuthStore();
 
-  const { user } = useAuthStore();
   // Start SSE connection
   // const [messages, setMessages] = useState<string[]>([]);
   // const [offers, setOffers] = useState<string[]>([]);

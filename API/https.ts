@@ -5,7 +5,6 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 
-
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),
@@ -78,10 +77,10 @@ export const EmeregencyCases = {
     meetingLongitude,
   }) =>
     apiClient.post(`/api/emergency-cases`, {
-      name: "name",
-      description: "description",
-      meetingLatitude: 0,
-      meetingLongitude: 0,
+      name: name,
+      description: description,
+      meetingLatitude: meetingLatitude,
+      meetingLongitude: meetingLongitude,
     }),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
 };

@@ -19,6 +19,7 @@ import QuickAccessArea from "../components/QuickAccessProfile/QuickAccessArea";
 import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePicturePicker";
 import IsLoading from "../components/IsLoading/IsLoading";
 import IsError from "../components/IsError/IsError";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function ProfileScreen() {
   const [editable, setEditable] = useState(false);
   const [originalInfo, setOriginalInfo] = useState(null);
@@ -124,7 +125,7 @@ export default function ProfileScreen() {
     }
   }
   if (isGetLoading) {
-    return <IsLoading />;
+    return <LoadingSpinner />;
   }
   if (isGetError || isUpdateError) {
     return <IsError error={getError || updateError} />;

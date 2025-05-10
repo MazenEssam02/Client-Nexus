@@ -13,7 +13,7 @@ import { ServiceProvider } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function LawyerDetailsScreen({ route }) {
   const lawyer = route.params.lawyer;
-  const [type, setType] = useState(true);
+  const [type, setType] = useState(route.params.type); //true is in person , false is phone
   const onChange = (value) => {
     setType(value);
   };
@@ -34,11 +34,7 @@ export default function LawyerDetailsScreen({ route }) {
   const isError = results.some((result) => result.isError);
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <LoadingSpinner />
-      </View>
-    );
+    return <LoadingSpinner />;
   }
 
   if (isError) {

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, I18nManager } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -42,6 +42,8 @@ import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import BookingScreen from "./screens/BookingScreen";
+// import { Offers } from "./API/https";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -91,12 +93,12 @@ function HomeStack() {
         name="Article"
         component={Article}
         options={{ title: "التحكم في المقالات" }}
-      /> 
+      /> */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -111,6 +113,22 @@ function HomeStack() {
         name="LawyerDetails"
         component={LawyerDetailsScreen}
         options={{ title: "تفاصيل المحامى" }}
+      />
+      <Stack.Screen
+        name="BookingScreen"
+        component={BookingScreen}
+        options={({ navigation }) => ({
+          title: "ادخل بياناتك",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="WebView"
@@ -357,8 +375,27 @@ function UnAuthenticatedStack() {
     </Stack.Navigator>
   );
 }
+
 export default function App() {
+
   const { isInitialized, user } = useAuthStore();
+
+  const { user } = useAuthStore();
+  // Start SSE connection
+  // const [messages, setMessages] = useState<string[]>([]);
+  // const [offers, setOffers] = useState<string[]>([]);
+  // useEffect(() => {
+  //   const cleanup = Offers.subscribeToOffers(
+  //     "19", // Dynamic ID in real usage
+  //     {
+  //       onMessage: (data) => setMessages((prev) => [...prev, data]),
+  //       onOffer: (data) => setOffers((prev) => [...prev, data]),
+  //       onError: (error) => console.error("SSE Error:", error),
+  //     }
+  //   );
+
+  //   return cleanup; // Close connection on unmount
+  // }, []);
   const fontsLoaded = useLoadFonts();
   const isAppReady = fontsLoaded && isInitialized;
   useEffect(() => {
@@ -369,7 +406,6 @@ export default function App() {
   if (!isAppReady) {
     return <ActivityIndicator size="small" color="#0000ff" />;
   }
-
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
@@ -381,9 +417,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

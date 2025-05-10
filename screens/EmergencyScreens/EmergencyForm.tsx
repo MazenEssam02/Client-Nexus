@@ -4,6 +4,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
+  Alert,
 } from "react-native";
 import Input from "../../components/Input/Input";
 import { useEffect, useState } from "react";
@@ -11,36 +12,75 @@ import { Colors } from "../../constants/Color";
 import { MainButton } from "../../components/Buttons/MainButton";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import { font } from "../../constants/Font";
-import LocationPreview from "../../components/LocationPreview/LocationPreview";
+import * as Location from "expo-location";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import IsError from "../../components/IsError/IsError";
+import { EmeregencyCases } from "../../API/https";
+import { useMutation } from "@tanstack/react-query";
 export default function EmergencyForm({ navigation }) {
   const route = useRoute();
-  const [pickedLocation, setPickedLocation] = useState({
-    lat: null,
-    lng: null,
-    isValid: true,
-  });
-  const isFocused = useIsFocused();
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const { mutate: requestEmergency, reset: resetRequestMutation } = useMutation(
+    {
+      mutationFn: EmeregencyCases.requestEmergency,
+      onSuccess: (data) => {
+        const emergencyCaseId = data.data.id;
+        console.log("Created emergency case ID:", emergencyCaseId);
+
+        navigation.navigate("Requests", { emergencyCaseId: emergencyCaseId });
+
+        resetRequestMutation();
+      },
+      onError: (err) => {
+        Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+        console.error("request error:", err);
+        if ("response" in err && err.response?.data) {
+          console.error("Full error:", err.response.data); // Server's validation messages
+        } else {
+          console.error("Error:", err);
+        }
+      },
+    }
+  );
+  useEffect(() => {
+    (async () => {
+      const { status: existingStatus } =
+        await Location.getForegroundPermissionsAsync();
+
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        setLoading(false);
+        return;
+      }
+      const loc = await Location.getCurrentPositionAsync({});
+      setCurrentLocation(loc.coords);
+      setLoading(false);
+    })();
+  }, []);
+
   const [inputText, setInputText] = useState({
     phoneNumber: {
       value: "",
       isValid: true,
     },
-
+    address: {
+      value: "",
+      isValid: true,
+    },
     description: {
       value: "",
       isValid: true,
     },
   });
-  useEffect(() => {
-    if (isFocused && route.params) {
-      const mapPickedLocation = {
-        lat: route.params.pickedLat,
-        lng: route.params.pickedLng,
-        isValid: !!route.params.pickedLat,
-      };
-      setPickedLocation(mapPickedLocation);
-    }
-  }, [route, isFocused]);
+
   function inputTextHandler(inputPicker, inputNewText) {
     setInputText((curInputText) => {
       return {
@@ -52,42 +92,48 @@ export default function EmergencyForm({ navigation }) {
   function onSubmitHandler() {
     const dataEntered = {
       phoneNumber: inputText.phoneNumber.value,
+      address: inputText.address.value,
       description: inputText.description.value,
     };
 
-    // if (
-    //   !dataEntered.phoneNumber ||
-    //   !dataEntered.address ||
-    //   !dataEntered.description
-    // ) {
     setInputText((curInputText) => {
       return {
         phoneNumber: {
           value: curInputText.phoneNumber.value,
           isValid: !!dataEntered.phoneNumber,
         },
-
+        address: {
+          value: curInputText.address.value,
+          isValid: !!dataEntered.address,
+        },
         description: {
           value: curInputText.description.value,
           isValid: !!dataEntered.description,
         },
       };
     });
-    setPickedLocation({
-      lat: pickedLocation.lat,
-      lng: pickedLocation.lng,
-      isValid: !!pickedLocation.lat,
-    });
-    // }
+
     if (
       !!dataEntered.phoneNumber &&
-      !!pickedLocation.isValid &&
+      !!dataEntered.address &&
       !!dataEntered.description
     ) {
-      navigation.navigate("Requests");
+      console.log(inputText.phoneNumber.value);
+      console.log(inputText.description.value);
+      requestEmergency({
+        name: inputText.description.value,
+        description: inputText.description.value,
+        meetingLatitude: currentLocation.latitude,
+        meetingLongitude: currentLocation.longitude,
+      });
     }
   }
-
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  if (errorMsg) {
+    return <IsError error={errorMsg} />;
+  }
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -108,9 +154,13 @@ export default function EmergencyForm({ navigation }) {
               onChangeText: inputTextHandler.bind(this, "phoneNumber"),
             }}
           />
-          <LocationPreview
-            navigation={navigation}
-            pickedLocation={pickedLocation}
+          <Input
+            label="العنوان"
+            isValid={inputText.address.isValid}
+            inputConfig={{
+              // keyboardType: "decimal-pad",
+              onChangeText: inputTextHandler.bind(this, "address"),
+            }}
           />
 
           <Input

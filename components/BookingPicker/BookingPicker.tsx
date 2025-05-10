@@ -5,7 +5,11 @@ import { font } from "../../constants/Font";
 // Pass `value` as a boolean (true => offline, false => online)
 // and `onChange` as a callback that receives true/false
 // whenever the user taps on a segment.
-export const BookingPicker = ({ value, onChange }) => {
+export const BookingPicker = ({ value, onChange, setSlot }) => {
+  function pressHandler(changeValue) {
+    onChange(changeValue);
+    setSlot(null);
+  }
   return (
     <View style={styles.container}>
       {/* Left half => أنثى */}
@@ -14,7 +18,7 @@ export const BookingPicker = ({ value, onChange }) => {
           styles.segment,
           !value ? styles.selectedSegment : styles.unselectedSegment,
         ]}
-        onPress={() => onChange(false)}
+        onPress={() => pressHandler(false)}
         activeOpacity={0.9}
       >
         <Text
@@ -33,7 +37,7 @@ export const BookingPicker = ({ value, onChange }) => {
           styles.segment,
           value ? styles.selectedSegment : styles.unselectedSegment,
         ]}
-        onPress={() => onChange(true)}
+        onPress={() => pressHandler(true)}
         activeOpacity={0.9}
       >
         <Text

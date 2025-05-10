@@ -7,15 +7,18 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { LoginInput } from "../components/LoginInput/LoginInput";
-import { MainButton } from "../components/Buttons/MainButton";
-import { Colors } from "../constants/Color";
-import { font } from "../constants/Font";
+import { LoginInput } from "../../components/LoginInput/LoginInput";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
-import { NewPasswordIllustration } from "../components/Icons/NewPasswordIllustration";
+import { NewPasswordIllustration } from "../../components/Icons/NewPasswordIllustration";
+import { apiClient } from "../../API/https";
 
-export const NewPasswordScreen = () => {
+export const NewPasswordScreen = ({ route }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigator = useNavigation<AuthNavigationType>();
   const {
     control,
@@ -30,6 +33,7 @@ export const NewPasswordScreen = () => {
     mode: "onChange",
   });
   const passwordValue = watch("password");
+  const { emailOrPhone, code } = route.params;
 
   return (
     <KeyboardAvoidingView
@@ -93,10 +97,39 @@ export const NewPasswordScreen = () => {
         {/* Send Code Button */}
         <View style={styles.buttonContainer}>
           <MainButton
-            title="ارسل رمز التحقق"
-            onPress={handleSubmit(() => navigator.navigate("Login"))}
-            disabled={!isValid}
+            title="تأكيد كلمة السر"
+            onPress={handleSubmit(() => {
+              setIsLoading(true);
+              setError(null);
+              apiClient
+                .post("/api/PasswordReset/reset-password", {
+                  email: emailOrPhone,
+                  otp: code,
+                  newPassword: passwordValue,
+                })
+                .then(() => {
+                  setIsLoading(false);
+                  navigator.navigate("Login");
+                })
+                .catch((err) => {
+                  setIsLoading(false);
+                  setError("حدث خطأ ما ، حاول مرة أخرى لاحقاً");
+                  console.warn("Error sending new password:", err);
+                });
+            })}
+            disabled={!isValid || isLoading}
           />
+          {error && (
+            <Text
+              style={{
+                color: Colors.invalidColor200,
+                textAlign: "center",
+                marginTop: 10,
+              }}
+            >
+              {error}
+            </Text>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

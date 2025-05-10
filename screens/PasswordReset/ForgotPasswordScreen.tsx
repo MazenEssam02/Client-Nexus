@@ -7,15 +7,18 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { LoginInput } from "../components/LoginInput/LoginInput";
-import { MainButton } from "../components/Buttons/MainButton";
-import { Colors } from "../constants/Color";
-import { font } from "../constants/Font";
-import { VerificationIllustration } from "../components/Icons/VerificationIllustration";
+import { LoginInput } from "../../components/LoginInput/LoginInput";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
+import { VerificationIllustration } from "../../components/Icons/VerificationIllustration";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
+import { apiClient } from "../../API/https";
 
 export const ForgotPasswordScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigator = useNavigation<AuthNavigationType>();
   const {
     control,
@@ -74,9 +77,41 @@ export const ForgotPasswordScreen = () => {
         <View style={styles.buttonContainer}>
           <MainButton
             title="ارسل رمز التحقق"
-            onPress={handleSubmit(() => navigator.navigate("OtpCodeEntry"))}
-            disabled={!isValid}
+            onPress={handleSubmit(({ emailOrPhone }) => {
+              setIsLoading(true);
+              setError(null);
+              apiClient
+                .post("/api/PasswordReset/send-otp", {
+                  email: emailOrPhone,
+                })
+                .then(() => {
+                  setIsLoading(false);
+                  navigator.navigate("OtpCodeEntry", {
+                    emailOrPhone,
+                  });
+                })
+                .catch((err) => {
+                  setIsLoading(false);
+                  setError("حدث خطأ ما ، حاول مرة أخرى لاحقاً");
+                  console.warn(
+                    "Error sending OTP:",
+                    JSON.stringify(err, null, 2)
+                  );
+                });
+            })}
+            disabled={!isValid || isLoading}
           />
+          {error && (
+            <Text
+              style={{
+                color: Colors.invalidColor200,
+                textAlign: "center",
+                marginTop: 10,
+              }}
+            >
+              {error}
+            </Text>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../API/https";
 
 export type User = {
@@ -26,7 +28,8 @@ type AuthStore = {
   logout: () => void;
 };
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>()(persist(
+  (set) => ({
   user: null,
   isLoading: false,
   error: null,
@@ -80,8 +83,38 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ error: "لا يوجد الحساب", isLoading: false });
     }
   },
-  logout: () => {
-    set({ user: null, isLoading: false, error: null });
-    delete apiClient.defaults.headers.common["Authorization"];
+  logout: async () => {
+    try {
+      await apiClient.post("api/Auth/logout");
+      set({ user: null, isLoading: false, error: null });
+      delete apiClient.defaults.headers.common["Authorization"];
+    } catch (error) {
+      console.log(JSON.stringify(error, null, 2));
+    }
   },
+}), {
+  name: 'auth-storage',
+  storage: createJSONStorage(() => AsyncStorage),
+  partialize: (state) => ({ user: state.user }),
+  onRehydrateStorage: () => {
+    console.log('Auth Hydration finished.');
+    return async (state, error) => {
+      if (error) {
+          console.warn("Failed to rehydrate auth state:", error);
+          state?._setIsInitialized(true);
+      } else if (state) {
+          if (state.user) {
+            // make a reqeust to make sure the token is still valid
+            apiClient.defaults.headers.common["Authorization"] = `Bearer ${state.user.authToken}`;
+            try {
+              await apiClient.get("api/client");
+            } catch (error) {
+              console.log(JSON.stringify(error, null, 2));
+              state.logout();
+            }
+          }
+          state._setIsInitialized(true);
+      }
+    }
+  }
 }));

@@ -4,6 +4,7 @@ import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import * as SplashScreen from "expo-splash-screen";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
@@ -17,9 +18,9 @@ import { useAuthStore } from "./store/auth";
 import LoginScreen from "./screens/LoginScreen";
 import ArticlesScreen from "./screens/ArticlesScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import { ForgotPasswordScreen } from "./screens/ForgotPasswordScreen";
-import { OtpCodeEntryScreen } from "./screens/OtpCodeEntryScreen";
-import { NewPasswordScreen } from "./screens/NewPasswordScreen";
+import { ForgotPasswordScreen } from "./screens/PasswordReset/ForgotPasswordScreen";
+import { OtpCodeEntryScreen } from "./screens/PasswordReset/OtpCodeEntryScreen";
+import { NewPasswordScreen } from "./screens/PasswordReset/NewPasswordScreen";
 import EmergencyScreens from "./screens/EmergencyScreens";
 import FavouriteScreen from "./screens/FavouriteScreen";
 import Questions from "./screens/Questions";
@@ -40,12 +41,15 @@ import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import BookingScreen from "./screens/BookingScreen";
 // import { Offers } from "./API/https";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+SplashScreen.preventAutoHideAsync().catch(console.warn);
 
 function HomeStack() {
   return (
@@ -373,6 +377,9 @@ function UnAuthenticatedStack() {
 }
 
 export default function App() {
+
+  const { isInitialized, user } = useAuthStore();
+
   const { user } = useAuthStore();
   // Start SSE connection
   // const [messages, setMessages] = useState<string[]>([]);
@@ -389,9 +396,14 @@ export default function App() {
 
   //   return cleanup; // Close connection on unmount
   // }, []);
-
   const fontsLoaded = useLoadFonts();
-  if (!fontsLoaded) {
+  const isAppReady = fontsLoaded && isInitialized;
+  useEffect(() => {
+    if (isAppReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [isAppReady]);
+  if (!isAppReady) {
     return <ActivityIndicator size="small" color="#0000ff" />;
   }
   return (

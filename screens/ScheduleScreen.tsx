@@ -1,49 +1,71 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
-import FavouriteLawyerCard from "../components/LawyerCard/FavouriteLawyerCard";
 import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
+import { useQuery } from "@tanstack/react-query";
+import { Client, ServiceProvider } from "../API/https";
 export default function ScheduleScreen() {
+  const [lawyerData, setLawyerData] = useState([]);
   const [transactions, setTransactions] = useState([
     {
-      id: "1",
-      date: "11/1/2025",
-      rate: "3",
-      day: "الأربعاء",
-      name: "المحامي جورج جيهام",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
-    },
-    {
-      id: "2",
-      date: "12/1/2025",
-      rate: "5",
-      day: "الخميس",
-      name: "المحامي عبدالكريم غفار",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
-    },
-    {
-      id: "3",
-      date: "13/1/2025",
-      rate: "4",
-      day: "الجمعة",
-      name: "المحامي عبدالكريم غفار",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
+      id: undefined,
+      date: "",
+      rate: "",
+      day: "",
+      name: "",
+      speciality: "",
+      time: "",
+      type: "",
+      image: "",
     },
   ]);
-
-  // Uncomment the next line to test the empty screen
-  // setTransactions([]);
-
+  const {
+    data: Appointments,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["Appointments"],
+    queryFn: Client.getAppointments,
+  });
+  const fetchLawyer = async (lawyerId) => {
+    try {
+      const response = await ServiceProvider.getById(lawyerId);
+      if (response && response.data) {
+        return response.data.data;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log("Error While Fetching Lawyer with ID:" + lawyerId, err);
+      throw err;
+    }
+  };
+  useEffect(() => {
+    const processAppointments = async () => {
+      if (Appointments?.data) {
+        const appointmentList = [];
+        const lawyerIds = new Set();
+        Appointments.data.data.forEach((appointment) => {
+          lawyerIds.add(appointment.serviceProviderId);
+        });
+        try {
+          const lawyerPromises = Array.from(lawyerIds).map(fetchLawyer);
+          const lawyers = await Promise.all(lawyerPromises);
+          const lawyerMap = {};
+          lawyers.forEach((lawyer) => {
+            if (lawyer) {
+              lawyerMap[lawyer.id] = lawyer;
+            }
+          });
+          setLawyerData(lawyerMap);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+  }, []);
   return (
     <View style={styles.container}>
       {transactions.length === 0 ? (

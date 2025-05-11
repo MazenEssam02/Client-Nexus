@@ -35,6 +35,7 @@ export default function SearchResultScreen({ route, navigation }) {
     queryKey: ["Lawyers", searchText],
     queryFn: () => ServiceProvider.getBySearch(searchText),
     enabled: !!searchText,
+    refetchInterval: 5000,
   });
   const searchResults = searchResultsData?.data?.data || [];
   const noResponse =
@@ -93,6 +94,7 @@ export default function SearchResultScreen({ route, navigation }) {
       !!filterData.minRate ||
       !!filterData.specializationName ||
       !!filterData.state,
+    refetchInterval: 5000,
   });
   const lawyersToDisplay = filterUsed
     ? filteredSearchResult?.data?.data || []

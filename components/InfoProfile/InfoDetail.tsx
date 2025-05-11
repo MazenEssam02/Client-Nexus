@@ -28,6 +28,7 @@ const InfoDetail = ({
           info={info}
           inputProps={inputProps}
           onChange={onChange}
+          isPassword={isPassword}
         />
       );
     }

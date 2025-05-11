@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-const InfoInput = ({ field, onChange, inputProps, info }) => {
+const InfoInput = ({ field, onChange, inputProps, info, isPassword }) => {
   const [name, setName] = useState(`${info}`);
   const [focued, setFocused] = useState(false);
   return (
@@ -21,6 +21,7 @@ const InfoInput = ({ field, onChange, inputProps, info }) => {
           value={name}
           style={styles.input}
           onEndEditing={() => onChange(field, name)}
+          secureTextEntry={isPassword ? true : false}
         ></TextInput>
       </View>
     </TouchableWithoutFeedback>

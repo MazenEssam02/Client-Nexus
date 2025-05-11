@@ -40,22 +40,32 @@ export const Specialization = {
 
 export const Client = {
   get: () => apiClient.get("api/Client"),
-  update: ({
-    email,
-    firstName,
-    lastName,
-    birthDate,
-    phoneNumber,
-    newPassword,
-  }) =>
-    apiClient.put("api/Client", {
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      birthDate: birthDate,
-      phoneNumber: phoneNumber,
-      newPassword: newPassword,
-    }),
+  async update(formData) {
+    try {
+      const response = await apiClient.put("api/Client", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating client:", error);
+      throw error;
+    }
+  },
+  getAppointments: () =>
+    apiClient.get("api/appointments/client?offset=0&limit=10"),
+  getAllQuestions: () =>
+    apiClient.get("api/qa/all?offset=0&limit=10&onlyUnanswered=false"),
+  submitQA: (description) =>
+    apiClient
+      .post("api/qa/question", { questionBody: description })
+      .then((response) => console.log(response))
+      .catch((err) => console.log(err)),
+  getMyQA: () =>
+    apiClient.get("api/qa/client?offset=0&limit=10&onlyUnanswered=false"),
+  submitQAFeedback: (id, feedback) =>
+    apiClient.patch(`api/qa/${id}/mark?isHelpful=${feedback}`),
 };
 export const Slots = {
   getWeek: ({ serviceProviderId, startDate, endDate, type }) =>
@@ -83,4 +93,10 @@ export const EmeregencyCases = {
       meetingLongitude: meetingLongitude,
     }),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
+};
+export const Filter = {
+  getCity: () => apiClient.get("api/City"),
+  getState: () => apiClient.get("api/State"),
+  getSpeciality: () =>
+    apiClient.get("api/Specialization/GetAllSpecializations"),
 };

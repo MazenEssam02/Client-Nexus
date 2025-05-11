@@ -75,7 +75,6 @@ const LoginScreen = () => {
               keyboardType="email-address"
               value={value}
               onChangeText={onChange}
-              placeholderTextColor={Colors.gray500}
               error={errors.email?.message}
             />
           )}
@@ -98,7 +97,6 @@ const LoginScreen = () => {
               value={value}
               onChangeText={onChange}
               error={errors.password?.message}
-              placeholderTextColor={Colors.gray500}
             />
           )}
         />

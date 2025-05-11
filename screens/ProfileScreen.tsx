@@ -17,7 +17,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Client } from "../API/https";
 import QuickAccessArea from "../components/QuickAccessProfile/QuickAccessArea";
 import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePicturePicker";
-import IsLoading from "../components/IsLoading/IsLoading";
 import IsError from "../components/IsError/IsError";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 export default function ProfileScreen() {
@@ -25,6 +24,7 @@ export default function ProfileScreen() {
   const [originalInfo, setOriginalInfo] = useState(null);
   const [originalImageUri, setOriginalImageUri] = useState(null);
   const [currentImageUri, setCurrentImageUri] = useState(null);
+
   const [info, setInfo] = useState<{
     name: { value: string; header?: string };
     email: { value: string; header?: string };

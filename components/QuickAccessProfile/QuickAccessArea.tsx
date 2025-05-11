@@ -7,7 +7,8 @@ const QuickAccessArea = ({ editable }) => {
     <>
       <QuickAccess icon="favourite" title="المفضلة" />
       <QuickAccess icon="Payment History" title="معاملاتي" />
-      <QuickAccess icon="questions" title="اسئلتي" />
+      <QuickAccess icon="myQuestions" title="اسئلتي" />
+      <QuickAccess icon="allQuestions" title="كل الاسئلة" />
       <QuickAccess icon="schedule" title="مواعيدي" />
       <QuickAccess icon="search" title="البحث عن محامي" />
       <QuickAccess icon="conditions" title="الشروط و الاحكام" />

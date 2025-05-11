@@ -377,22 +377,6 @@ function UnAuthenticatedStack() {
 
 export default function App() {
   const { isInitialized, user } = useAuthStore();
-
-  // Start SSE connection
-  // const [messages, setMessages] = useState<string[]>([]);
-  // const [offers, setOffers] = useState<string[]>([]);
-  // useEffect(() => {
-  //   const cleanup = Offers.subscribeToOffers(
-  //     "19", // Dynamic ID in real usage
-  //     {
-  //       onMessage: (data) => setMessages((prev) => [...prev, data]),
-  //       onOffer: (data) => setOffers((prev) => [...prev, data]),
-  //       onError: (error) => console.error("SSE Error:", error),
-  //     }
-  //   );
-
-  //   return cleanup; // Close connection on unmount
-  // }, []);
   const fontsLoaded = useLoadFonts();
   const isAppReady = fontsLoaded && isInitialized;
   useEffect(() => {

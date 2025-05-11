@@ -40,7 +40,7 @@ import {
 import { Colors } from "../constants/Color";
 
 const BookingScreen = () => {
-  const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedDay, setSelectedDay] = useState<{ date: string } | null>(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const slots = [
     {
@@ -167,7 +167,7 @@ const BookingScreen = () => {
         };
       }
     });
-    return Object.values(daysMap);
+    return Object.values(daysMap) as { date: string; dayName: string; fullDate: string }[];
   };
 
   // 2. Filter slots by selected day
@@ -185,7 +185,7 @@ const BookingScreen = () => {
       });
   };
 
-  const days = getUniqueDays();
+  const days: { date: string; dayName: string; fullDate: string }[] = getUniqueDays();
   const timeSlots = getTimeSlotsForDay();
 
   return (

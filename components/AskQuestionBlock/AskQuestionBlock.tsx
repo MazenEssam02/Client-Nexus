@@ -4,8 +4,7 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import { useNavigation } from "@react-navigation/native";
 import QuestionIcon from "../Icons/QuestionIcon";
-export default function AskQuestionBlock() {
-  const navigation = useNavigation();
+export default function AskQuestionBlock({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.rightContainer}>
@@ -16,7 +15,9 @@ export default function AskQuestionBlock() {
         <MainButton
           title="اسأل الآن"
           onPress={() => {
-            navigation.navigate("QuickAccess" as never);
+            navigation.navigate("QuickAccess", {
+              screen: "Questions",
+            });
           }}
         />
       </View>

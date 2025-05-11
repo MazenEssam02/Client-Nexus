@@ -56,6 +56,12 @@ const QuickAccess = ({ icon, title }) => {
         break;
       case "Payment History":
         return navigation.navigate("Payment History" as never);
+      case "search":
+        return navigation.navigate("HomeStack" as never, {
+          screen: "Search" as never,
+        });
+      case "schedule":
+        return navigation.navigate("Schedule" as never);
       case "Exit":
         logout();
         break;

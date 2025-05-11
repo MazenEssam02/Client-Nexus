@@ -1,12 +1,10 @@
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
-import { useNavigation } from "@react-navigation/native";
 import { MainButton } from "../Buttons/MainButton";
 import LawyerSummarylist from "../LawyerSummarylist/LawyerSummarylist";
 export default function EmergencyCard({ lawyer, onPress = null }) {
-  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.cardHeader}>

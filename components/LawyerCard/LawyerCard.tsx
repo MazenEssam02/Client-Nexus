@@ -9,11 +9,11 @@ import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
 
 const LawyerCard = ({
-  name = "المحامي عبدالكريم غفار",
-  rate = "3",
-  speciality = "جنائي",
-  vezita = "150",
-  address = "وسط البلد",
+  name = "",
+  rate = "",
+  speciality = "",
+  vezita = "",
+  address = "",
   onPress = null,
   imageURL = null,
   style = null,
@@ -56,7 +56,7 @@ const LawyerCard = ({
         </View>
         <View style={styles.infoContainer}>
           <Text numberOfLines={1} style={styles.title}>
-            {name} المحامي
+            المحامي {name}
           </Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />

@@ -48,7 +48,7 @@ export default function BookingBlock({ type, onChange, lawyer }) {
       bookAppointment(slot);
     } else Alert.alert("خطأ", "يجب اختيار موعد!");
   };
-  console.log(slot);
+  // console.log(slot);
   return (
     <View style={styles.bookingContainer}>
       <View style={styles.pickerContainer}>

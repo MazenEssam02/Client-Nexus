@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
 } from "react-native";
 import { Colors } from "../../constants/Color";
@@ -78,8 +77,14 @@ const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
     setSlot(null);
   };
   // 1. Extract unique days from the slots
-  const getUniqueDays = () => {
-    const daysMap = {};
+  type Day = {
+    date: string;
+    dayName: string;
+    fullDate: string;
+  };
+
+  const getUniqueDays = (): Day[] => {
+    const daysMap: Record<string, Day> = {};
     slots.forEach((slot) => {
       const date = new Date(slot.date);
       const dayKey = date.toISOString().split("T")[0]; // YYYY-MM-DD format
@@ -101,21 +106,26 @@ const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
   // 2. Filter slots by selected day
   const getTimeSlotsForDay = () => {
     if (!selectedDay) return [];
+
     return slots
       .filter((slot) => slot.date.startsWith(selectedDay.date))
       .map((slot) => {
         const time = new Date(slot.date).toLocaleTimeString("ar-SA", {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
         });
-        return { ...slot, formattedTime: time };
-      });
+        return {
+          ...slot,
+          formattedTime: time,
+          timestamp: new Date(slot.date).getTime(),
+        };
+      })
+      .sort((a, b) => a.timestamp - b.timestamp);
   };
 
-  const days = getUniqueDays();
+  const days: Day[] = getUniqueDays();
   const timeSlots = getTimeSlotsForDay();
-  // console.log(!days.length);
+
   return (
     <View style={styles.container}>
       {/* Day Picker */}
@@ -123,6 +133,7 @@ const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
         <TouchableOpacity
           onPress={() => shiftWeek(-7)}
           style={styles.navButton}
+          disabled={startDate === new Date().toISOString().split("T")[0]}
         >
           <Arrow fillColor={Colors.mainColor} rotation={180} />
         </TouchableOpacity>

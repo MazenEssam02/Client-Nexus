@@ -24,27 +24,19 @@ export default function ProfileScreen() {
   const [originalInfo, setOriginalInfo] = useState(null);
   const [originalImageUri, setOriginalImageUri] = useState(null);
   const [currentImageUri, setCurrentImageUri] = useState(null);
-  const [info, setInfo] = useState({
-    name: {
-      header: "",
-      value: "",
-    },
-    email: {
-      header: "",
-      value: "",
-    },
-    mobile: {
-      header: "",
-      value: "",
-    },
-    birthday: {
-      header: "",
-      value: "",
-    },
-    password: {
-      header: "",
-      value: "",
-    },
+
+  const [info, setInfo] = useState<{
+    name: { value: string; header?: string };
+    email: { value: string; header?: string };
+    mobile: { value: string; header?: string };
+    birthday: { value: string; header?: string };
+    password: { value: string; header?: string };
+  }>({
+    name: { value: "" },
+    email: { value: "" },
+    mobile: { value: "" },
+    birthday: { value: "" },
+    password: { value: "" },
   });
   const {
     data: ClientData,

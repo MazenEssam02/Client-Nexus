@@ -3,6 +3,7 @@ import { font } from "../constants/Font";
 import EmergencyForm from "./EmergencyScreens/EmergencyForm";
 import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
 const Stack = createNativeStackNavigator();
 export default function EmergencyScreens({ navigation }) {
   return (
@@ -22,6 +23,17 @@ export default function EmergencyScreens({ navigation }) {
         component={EmergencyForm}
         options={{
           title: "محامى عاجل",
+          headerLeft: () => (
+            <Ionicons
+              name="chevron-back-outline"
+              style={{ marginLeft: -10 }}
+              size={30}
+              color="white"
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
         }}
       />
 

@@ -178,12 +178,6 @@ function HomeStack() {
           ),
         })}
       />
-
-      <Stack.Screen
-        name="EmergencyLawyer"
-        component={EmergencyScreens}
-        options={{ title: "محامى عاجل", headerShown: false }}
-      />
     </Stack.Navigator>
   );
 }
@@ -330,6 +324,11 @@ function AuthenticatedStack() {
         name="ChatBotScreen"
         component={ChatBotScreen}
         options={{ title: "CLIENT NEXUS BOT" }}
+      />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreens}
+        options={{ title: "محامى عاجل", headerShown: false }}
       />
     </Stack.Navigator>
   );

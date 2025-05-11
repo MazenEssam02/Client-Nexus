@@ -178,12 +178,6 @@ function HomeStack() {
           ),
         })}
       />
-
-      <Stack.Screen
-        name="EmergencyLawyer"
-        component={EmergencyScreens}
-        options={{ title: "محامى عاجل", headerShown: false }}
-      />
     </Stack.Navigator>
   );
 }
@@ -331,6 +325,11 @@ function AuthenticatedStack() {
         component={ChatBotScreen}
         options={{ title: "CLIENT NEXUS BOT" }}
       />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreens}
+        options={{ title: "محامى عاجل", headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
@@ -377,7 +376,6 @@ function UnAuthenticatedStack() {
 }
 
 export default function App() {
-
   const { isInitialized, user } = useAuthStore();
 
   // Start SSE connection

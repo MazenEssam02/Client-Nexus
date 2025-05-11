@@ -73,6 +73,7 @@ export const EmeregencyCases = {
   requestEmergency: ({
     name,
     description,
+    meetingTextAddress,
     meetingLatitude,
     meetingLongitude,
   }) =>
@@ -81,6 +82,7 @@ export const EmeregencyCases = {
       description: description,
       meetingLatitude: meetingLatitude,
       meetingLongitude: meetingLongitude,
+      meetingTextAddress: meetingTextAddress,
     }),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
 };

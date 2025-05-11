@@ -67,7 +67,7 @@ export default function EmergencyForm({ navigation }) {
   }, []);
 
   const [inputText, setInputText] = useState({
-    phoneNumber: {
+    title: {
       value: "",
       isValid: true,
     },
@@ -91,16 +91,16 @@ export default function EmergencyForm({ navigation }) {
   }
   function onSubmitHandler() {
     const dataEntered = {
-      phoneNumber: inputText.phoneNumber.value,
+      title: inputText.title.value,
       address: inputText.address.value,
       description: inputText.description.value,
     };
 
     setInputText((curInputText) => {
       return {
-        phoneNumber: {
-          value: curInputText.phoneNumber.value,
-          isValid: !!dataEntered.phoneNumber,
+        title: {
+          value: curInputText.title.value,
+          isValid: !!dataEntered.title,
         },
         address: {
           value: curInputText.address.value,
@@ -114,15 +114,14 @@ export default function EmergencyForm({ navigation }) {
     });
 
     if (
-      !!dataEntered.phoneNumber &&
+      !!dataEntered.title &&
       !!dataEntered.address &&
       !!dataEntered.description
     ) {
-      console.log(inputText.phoneNumber.value);
-      console.log(inputText.description.value);
       requestEmergency({
-        name: inputText.description.value,
+        name: inputText.title.value,
         description: inputText.description.value,
+        meetingTextAddress: inputText.address.value,
         meetingLatitude: currentLocation.latitude,
         meetingLongitude: currentLocation.longitude,
       });
@@ -147,11 +146,10 @@ export default function EmergencyForm({ navigation }) {
       >
         <View style={styles.innerContainer}>
           <Input
-            label="رقم الهاتف"
-            isValid={inputText.phoneNumber.isValid}
+            label="عنوان المشكلة"
+            isValid={inputText.title.isValid}
             inputConfig={{
-              keyboardType: "decimal-pad",
-              onChangeText: inputTextHandler.bind(this, "phoneNumber"),
+              onChangeText: inputTextHandler.bind(this, "title"),
             }}
           />
           <Input

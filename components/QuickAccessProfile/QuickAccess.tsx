@@ -25,7 +25,9 @@ const QuickAccess = ({ icon, title }) => {
     switch (icon) {
       case "favourite":
         return <Favourite />;
-      case "questions":
+      case "myQuestions":
+        return <Question />;
+      case "allQuestions":
         return <Question />;
       case "schedule":
         return <Calendar />;
@@ -46,7 +48,10 @@ const QuickAccess = ({ icon, title }) => {
       case "favourite":
         navigation.navigate("Favourite" as never);
         break;
-      case "questions":
+      case "myQuestions":
+        navigation.navigate("MyQuestion" as never);
+        break;
+      case "allQuestions":
         navigation.navigate("Questions" as never);
         break;
       case "Payment History":

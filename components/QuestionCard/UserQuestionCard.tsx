@@ -5,6 +5,7 @@ import { Colors } from "../../constants/Color";
 
 const UserQuestionCard = ({ item }) => {
   const navigation = useNavigation();
+  const date = new Date(item.createdAt).toLocaleDateString();
   return (
     <View style={styles.card}>
       <View style={styles.row}>
@@ -14,7 +15,7 @@ const UserQuestionCard = ({ item }) => {
         </View>
         <View style={styles.column}>
           <Text style={styles.subtitle}>تاريخ الاستشارة: </Text>
-          <Text style={styles.caption}>{item.date}</Text>
+          <Text style={styles.caption}>{date}</Text>
         </View>
       </View>
       <View style={styles.statusContainer}>
@@ -22,12 +23,21 @@ const UserQuestionCard = ({ item }) => {
           <Text style={styles.subtitle}>حالة الاستشارة:</Text>
         </View>
         <View style={styles.column}>
-          <Text style={styles.statusText}>{item.status}</Text>
+          <Text
+            style={[
+              styles.statusText,
+              item.status === 68 && { backgroundColor: Colors.SecondaryColor },
+            ]}
+          >
+            {item.status === 68 ? "تم الرد" : "جاري الرد"}
+          </Text>
         </View>
       </View>
       <Pressable
         style={styles.detailsButton}
-        onPress={() => navigation.navigate("QuestionDetails" as never)}
+        onPress={() =>
+          navigation.navigate("QuestionDetails" as never, { Question: item })
+        }
       >
         <Text style={styles.detailsButtonText}>تفاصيل السؤال</Text>
       </Pressable>

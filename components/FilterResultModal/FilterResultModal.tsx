@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ const FilterResultModal = ({ modalVisible, modalHandler, onFilter }) => {
   const [region, setRegion] = useState(null);
   const [speciality, setSpeciality] = useState(null);
   const [rate, setRate] = useState(null);
+
   const handleCityChange = useCallback((value) => {
     setCity(value);
   }, []);
@@ -58,7 +59,7 @@ const FilterResultModal = ({ modalVisible, modalHandler, onFilter }) => {
               onValueChange={handleCityChange}
             />
             <DropdownList
-              placeholder="اختار المنطقة"
+              placeholder="المنطقة"
               onValueChange={handleRegionChange}
             />
             <DropdownList

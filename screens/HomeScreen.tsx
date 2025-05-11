@@ -98,7 +98,7 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
         <SearchBlock />
-        <AskQuestionBlock />
+        <AskQuestionBlock navigation={navigation} />
         <ArticlesSection
           navigation={navigation}
           documents={documents.data.data}

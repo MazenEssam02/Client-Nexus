@@ -1,9 +1,15 @@
 import { View, StyleSheet, Text, FlatList } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import QuestionCard from "../components/QuestionCard/QuestionCard";
 
+type LawyerQAScreenRouteParams = {
+  params: {
+    lawyerQA: { id: string; [key: string]: any }[];
+  };
+};
+
 export default function LawyerQAScreen() {
-  const route = useRoute();
+  const route = useRoute<RouteProp<LawyerQAScreenRouteParams, "params">>();
   const { lawyerQA } = route.params;
   const navigation = useNavigation();
   return (

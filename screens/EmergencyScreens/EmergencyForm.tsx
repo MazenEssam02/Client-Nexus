@@ -36,8 +36,8 @@ export default function EmergencyForm({ navigation }) {
       onError: (err) => {
         Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
         console.error("request error:", err);
-        if ("response" in err && err.response?.data) {
-          console.error("Full error:", err.response.data); // Server's validation messages
+        if ("response" in err && (err as any).response?.data) {
+          console.error("Full error:", (err as any).response?.data); // Server's validation messages
         } else {
           console.error("Error:", err);
         }

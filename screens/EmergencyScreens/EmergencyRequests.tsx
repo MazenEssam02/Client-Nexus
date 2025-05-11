@@ -9,10 +9,11 @@ import EventSource from "react-native-sse";
 import { apiClient } from "../../API/https";
 import EmergencyCard from "../../components/EmergencyLawyer Card/EmergencyCard";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 
 export default function EmergencyRequests({ navigation }) {
-  const route = useRoute();
+  const route =
+    useRoute<RouteProp<{ params: { emergencyCaseId: string } }, "params">>();
   const emergencyCaseId = route.params.emergencyCaseId;
   const [offers, setOffers] = useState<any[]>([]);
   const [error, setError] = useState<Error | null>(null);
@@ -49,6 +50,7 @@ export default function EmergencyRequests({ navigation }) {
   };
   useLayoutEffect(() => {
     navigation.setOptions({
+      gestureEnabled: false,
       headerLeft: () => (
         <Ionicons
           name="close-outline"

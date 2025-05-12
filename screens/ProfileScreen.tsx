@@ -180,7 +180,7 @@ export default function ProfileScreen() {
               onImageChange={setCurrentImageUri}
               currentImage={currentImageUri}
             />
-            <InfoArea editable={editable} info={info} onChange={setInfo} />{" "}
+            <InfoArea editable={editable} info={info} onChange={setInfo} />
             <QuickAccessArea editable={editable} />
           </View>
         </ScrollView>

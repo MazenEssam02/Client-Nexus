@@ -10,38 +10,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Documents } from "../API/https";
 import MainLogo from "../components/Icons/MainLogo";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
-import { useEffect, useRef } from "react";
-import { registerForPushNotificationsAsync } from "../helpers/notifications";
-import { sendTokenToBackend } from "../API/sendTokenToBackend ";
-import * as Notifications from "expo-notifications";
-import { useAuthStore } from "../store/auth";
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+import { usePushNotifications } from "../hooks/usePushNotifications";
+
 export default function HomeScreen({ navigation }) {
-  const responseListener = useRef<Notifications.EventSubscription>(null);
-  // const authToken = useAuthStore().user?.authToken;
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      if (token) {
-        sendTokenToBackend(token);
-      }
-    });
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        // console.log("Notification Response:", response);
-        navigation.navigate("Notification");
-      });
-    return () => {
-      responseListener.current && responseListener.current.remove();
-    };
-  }, []);
-  // const navigation = useNavigation();
+  usePushNotifications(navigation);
   const {
     data: documents,
     isLoading,

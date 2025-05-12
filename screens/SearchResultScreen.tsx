@@ -147,7 +147,7 @@ export default function SearchResultScreen({ route, navigation }) {
           keyExtractor={(lawyer) => lawyer.id.toString()}
           renderItem={({ item: lawyer }) => (
             <ResultLawyerCard
-              name={lawyer.firstName}
+              name={lawyer.firstName + " " + lawyer.lastName}
               rate={lawyer.rate}
               speciality={lawyer.specializationName?.[0]}
               vezita={lawyer.office_consultation_price}

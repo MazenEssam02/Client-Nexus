@@ -18,7 +18,6 @@ import IsError from "../../components/IsError/IsError";
 import { EmeregencyCases } from "../../API/https";
 import { useMutation } from "@tanstack/react-query";
 export default function EmergencyForm({ navigation }) {
-  const route = useRoute();
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -27,9 +26,13 @@ export default function EmergencyForm({ navigation }) {
       mutationFn: EmeregencyCases.requestEmergency,
       onSuccess: (data) => {
         const emergencyCaseId = data.data.id;
+        const emergencyCaseLimit = data.data.timeoutInMinutes;
         console.log("Created emergency case ID:", emergencyCaseId);
 
-        navigation.navigate("Requests", { emergencyCaseId: emergencyCaseId });
+        navigation.navigate("Requests", {
+          emergencyCaseId: emergencyCaseId,
+          emergencyCaseLimit: emergencyCaseLimit,
+        });
 
         resetRequestMutation();
       },

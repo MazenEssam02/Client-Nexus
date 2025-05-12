@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -43,7 +43,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BookingScreen from "./screens/BookingScreen";
-// import { Offers } from "./API/https";
+import * as Notifications from "expo-notifications";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -374,7 +374,14 @@ function UnAuthenticatedStack() {
     </Stack.Navigator>
   );
 }
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 export default function App() {
   const { isInitialized, user } = useAuthStore();
   const fontsLoaded = useLoadFonts();

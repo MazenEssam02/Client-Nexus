@@ -23,6 +23,8 @@ export default function EmergencyScreens({ navigation }) {
         component={EmergencyForm}
         options={{
           title: "محامى عاجل",
+          gestureEnabled: false,
+
           headerLeft: () => (
             <Ionicons
               name="chevron-back-outline"
@@ -42,6 +44,7 @@ export default function EmergencyScreens({ navigation }) {
         component={EmergencyRequests}
         options={{
           title: "اختر محامى",
+          gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

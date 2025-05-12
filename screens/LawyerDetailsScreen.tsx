@@ -56,6 +56,7 @@ export default function LawyerDetailsScreen({ route }) {
           name={lawyer.firstName + " " + lawyer.lastName}
           rate={lawyer.rate}
           speciality={lawyer.main_Specialization}
+          gender={lawyer.gender}
           address={lawyer.city}
           imageURL={lawyer.mainImage}
           style={styles.card}

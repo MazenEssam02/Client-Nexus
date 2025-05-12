@@ -149,7 +149,8 @@ export default function SearchResultScreen({ route, navigation }) {
             <ResultLawyerCard
               name={lawyer.firstName + " " + lawyer.lastName}
               rate={lawyer.rate}
-              speciality={lawyer.specializationName?.[0]}
+              speciality={lawyer.main_Specialization}
+              gender={lawyer.gender}
               vezita={lawyer.office_consultation_price}
               address={lawyer.city}
               imageURL={lawyer.mainImage}

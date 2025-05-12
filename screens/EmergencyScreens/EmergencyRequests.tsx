@@ -93,6 +93,7 @@ export default function EmergencyRequests({ navigation }) {
         try {
           const newOffer = JSON.parse(event.data);
           setOffers((prev) => [...prev, newOffer]);
+          console.log("New offer received:", newOffer);
         } catch (err) {
           console.error("Error parsing offer:", err);
         }

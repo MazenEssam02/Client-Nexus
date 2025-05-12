@@ -13,8 +13,15 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 
 export default function EmergencyRequests({ navigation }) {
   const route =
-    useRoute<RouteProp<{ params: { emergencyCaseId: string } }, "params">>();
+    useRoute<
+      RouteProp<
+        { params: { emergencyCaseId: string; emergencyCaseLimit: Number } },
+        "params"
+      >
+    >();
   const emergencyCaseId = route.params.emergencyCaseId;
+  const emergencyCaseLimit = route.params.emergencyCaseLimit;
+
   const [offers, setOffers] = useState<any[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -63,7 +70,6 @@ export default function EmergencyRequests({ navigation }) {
   }, [navigation]);
   useEffect(() => {
     if (emergencyCaseId) {
-      // Construct the full URL using your apiClient baseURL
       const path = `/api/emergency-cases/${emergencyCaseId}/offers-sse`;
       const url = `${apiClient.defaults.baseURL}${path}`;
       const authHeader =
@@ -91,7 +97,6 @@ export default function EmergencyRequests({ navigation }) {
           console.error("Error parsing offer:", err);
         }
       });
-
       eventSource.addEventListener("error", (event) => {
         if (event.type === "error") {
           console.error("SSE error:", event);

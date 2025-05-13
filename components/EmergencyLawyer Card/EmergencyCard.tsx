@@ -4,23 +4,57 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import LawyerSummarylist from "../LawyerSummarylist/LawyerSummarylist";
-export default function EmergencyCard({ lawyer, onPress = null }) {
+import { EmeregencyCases } from "../../API/https";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigation } from "@react-navigation/native";
+export default function EmergencyCard({ lawyer, emergencyCaseId }) {
+  const navigation = useNavigation();
+  const { mutate: acceptLawyer } = useMutation({
+    mutationFn: () =>
+      EmeregencyCases.acceptEmergency(
+        emergencyCaseId,
+        lawyer.ServiceProviderId
+      ),
+    onSuccess: (data) => {
+      console.log("lawyer accepted", data.data.phoneNumber);
+      navigation.navigate("EmergencyDetails" as never, {
+        lawyerPhone: data.data.phoneNumber,
+        lawyer: lawyer,
+        emergencyCaseId: emergencyCaseId,
+      });
+      // console.log("lawyer accepted");
+    },
+    onError: (error) => {
+      console.log("Error " + error);
+    },
+  });
+  const onPressHandler = () => {
+    acceptLawyer();
+  };
   return (
     <View style={styles.container}>
       <View style={styles.cardHeader}>
-        <View style={styles.imageContainer}>
+        {/* <View style={styles.imageContainer}>
           <Image source={require("../../assets/LawyerPic/image.png")} />
+          </View> */}
+        <View style={styles.priceContainer}>
+          <Text style={styles.priceText}>{lawyer.Price}ج</Text>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{lawyer.name}</Text>
+          <Text style={styles.title}>
+            {lawyer.FirstName + " " + lawyer.LastName}
+          </Text>
         </View>
       </View>
       <View style={styles.SummaryContainer}>
-        <LawyerSummarylist lawyer={lawyer} />
+        <LawyerSummarylist
+          rate={lawyer.Rating}
+          yearsOfExperience={lawyer.YearsOfExperience}
+        />
       </View>
 
       <View style={styles.buttonContainer}>
-        <MainButton title="قبول" onPress={() => {}} />
+        <MainButton title="قبول" onPress={onPressHandler} />
       </View>
     </View>
   );
@@ -28,7 +62,7 @@ export default function EmergencyCard({ lawyer, onPress = null }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 260,
+    height: 280,
     backgroundColor: "white",
     padding: 8,
     margin: 10,
@@ -37,22 +71,31 @@ const styles = StyleSheet.create({
   cardHeader: {
     flex: 1,
     width: "100%",
-    flexDirection: "row-reverse",
+    // height: 50,
+    // flexDirection: "row-reverse",
     alignItems: "center",
-    padding: 20,
+    // padding: 20,
   },
 
   imageContainer: {
     flex: 1,
   },
+  priceContainer: {
+    flex: 1,
+  },
   infoContainer: {
-    flex: 3,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   title: {
     color: Colors.SecondaryColor,
     ...font.headline,
+  },
+  priceText: {
+    color: Colors.SecondaryColor,
+    ...font.headline,
+    fontSize: 25,
   },
   SummaryContainer: {
     width: "100%",

@@ -12,6 +12,7 @@ const LawyerCard = ({
   name = "",
   rate = "",
   speciality = "",
+  gender = 77,
   vezita = "",
   address = "",
   onPress = null,
@@ -56,7 +57,7 @@ const LawyerCard = ({
         </View>
         <View style={styles.infoContainer}>
           <Text numberOfLines={1} style={styles.title}>
-            المحامي {name}
+            {gender === 77 ? "المحامى" : "المحامية"} {name}
           </Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />

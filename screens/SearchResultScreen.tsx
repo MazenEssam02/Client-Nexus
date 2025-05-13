@@ -7,7 +7,6 @@ import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 import { useCallback, useLayoutEffect, useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
 import { font } from "../constants/Font";
-
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { ServiceProvider } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
@@ -149,7 +148,8 @@ export default function SearchResultScreen({ route, navigation }) {
             <ResultLawyerCard
               name={lawyer.firstName + " " + lawyer.lastName}
               rate={lawyer.rate}
-              speciality={lawyer.specializationName?.[0]}
+              speciality={lawyer.main_Specialization}
+              gender={lawyer.gender}
               vezita={lawyer.office_consultation_price}
               address={lawyer.city}
               imageURL={lawyer.mainImage}

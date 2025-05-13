@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { EmeregencyCases } from "../..//API/https";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Platform } from "react-native";
-import EventSource from "react-native-sse";
+import EventSource, { EventType } from "react-native-sse";
 import { apiClient } from "../../API/https";
 import EmergencyCard from "../../components/EmergencyLawyer Card/EmergencyCard";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,15 +13,8 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 
 export default function EmergencyRequests({ navigation }) {
   const route =
-    useRoute<
-      RouteProp<
-        { params: { emergencyCaseId: string; emergencyCaseLimit: Number } },
-        "params"
-      >
-    >();
+    useRoute<RouteProp<{ params: { emergencyCaseId: string } }, "params">>();
   const emergencyCaseId = route.params.emergencyCaseId;
-  const emergencyCaseLimit = route.params.emergencyCaseLimit;
-
   const [offers, setOffers] = useState<any[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -69,51 +62,50 @@ export default function EmergencyRequests({ navigation }) {
     });
   }, [navigation]);
   useEffect(() => {
-    if (emergencyCaseId) {
-      const path = `/api/emergency-cases/${emergencyCaseId}/offers-sse`;
-      const url = `${apiClient.defaults.baseURL}${path}`;
-      const authHeader =
-        apiClient.defaults.headers.common["Authorization"] || "";
+    if (!emergencyCaseId) return;
 
-      const eventSource = new EventSource(url, {
-        headers: {
-          ...apiClient.defaults.headers.common,
-          "Cache-Control": "no-cache",
-          Accept: "text/event-stream",
-        },
-      });
+    const url = `${apiClient.defaults.baseURL}/api/emergency-cases/${emergencyCaseId}/offers-sse`;
+    const token = `${apiClient.defaults.headers.common.Authorization}`;
+    const eventSource = new EventSource(url, {
+      headers: {
+        Authorization: token,
+        Connection: "keep-alive",
+      },
+    });
 
-      eventSource.addEventListener("open", () => {
-        setIsConnected(true);
-        setError(null);
-        console.log("SSE connection opened");
-      });
+    eventSource.addEventListener("open", () => {
+      console.log("SSE connection opened");
+      setIsConnected(true);
+      setError(null);
+    });
 
-      eventSource.addEventListener("message", (event) => {
-        try {
-          const newOffer = JSON.parse(event.data);
-          setOffers((prev) => [...prev, newOffer]);
-        } catch (err) {
-          console.error("Error parsing offer:", err);
+    eventSource.addEventListener("offer" as EventType, (event) => {
+      try {
+        if ("data" in event) {
+          const data = JSON.parse(event.data);
+          setOffers((prev) => [...prev, data]);
+        } else {
+          console.error("Event does not contain data:", event);
         }
-      });
-      eventSource.addEventListener("error", (event) => {
-        if (event.type === "error") {
-          console.error("SSE error:", event);
-          setError(new Error("Connection error"));
-          setIsConnected(false);
-        }
-      });
+      } catch (err) {
+        console.error("Error parsing SSE message:", err);
+      }
+    });
 
-      eventSource.addEventListener("close", () => {
-        console.log("SSE connection closed");
-        setIsConnected(false);
-      });
+    eventSource.addEventListener("error", (err) => {
+      console.error("SSE error:", err);
+      const errorMessage =
+        err instanceof ErrorEvent ? err.message : "An unknown error occurred";
+      setError(new Error(errorMessage));
+      setIsConnected(false);
+    });
 
-      return () => {
-        eventSource.close();
-      };
-    }
+    // Connection is automatically established when EventSource is instantiated
+
+    return () => {
+      eventSource.close();
+      console.log("SSE connection closed");
+    };
   }, [emergencyCaseId]);
 
   return (
@@ -122,8 +114,10 @@ export default function EmergencyRequests({ navigation }) {
         <FlatList
           showsVerticalScrollIndicator={false}
           data={offers}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <EmergencyCard lawyer={item} />}
+          keyExtractor={(item) => item.ServiceProviderId}
+          renderItem={({ item }) => (
+            <EmergencyCard lawyer={item} emergencyCaseId={emergencyCaseId}  />
+          )}
         />
       ) : (
         <Text style={styles.waitText}>فى انتظار قبول محامى للطلب ........</Text>

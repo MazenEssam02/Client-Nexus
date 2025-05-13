@@ -63,7 +63,7 @@ export default function LawyerDetailsScreen({ route }) {
           isLawyerDetailsCard={true}
         />
         <View style={styles.summaryContainer}>
-          <LawyerSummarylist lawyer={lawyer} />
+          <LawyerSummarylist {...lawyer} />
         </View>
         <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
         <AboutLawyer Description={lawyer.description} />

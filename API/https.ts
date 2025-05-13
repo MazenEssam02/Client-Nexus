@@ -95,6 +95,10 @@ export const EmeregencyCases = {
       meetingTextAddress: meetingTextAddress,
     }),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
+  acceptEmergency: (id, serviceProviderId) =>
+    apiClient.patch(`/api/emergency-cases/${id}/accept`, {
+      serviceProviderId: serviceProviderId,
+    }),
 };
 export const Filter = {
   getCity: () => apiClient.get("api/City"),

@@ -328,7 +328,11 @@ function AuthenticatedStack() {
       <Stack.Screen
         name="EmergencyLawyer"
         component={EmergencyScreens}
-        options={{ title: "محامى عاجل", headerShown: false }}
+        options={{
+          title: "محامى عاجل",
+          headerShown: false,
+          gestureEnabled: false,
+        }}
       />
     </Stack.Navigator>
   );

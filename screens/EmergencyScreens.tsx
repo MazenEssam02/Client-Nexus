@@ -4,6 +4,7 @@ import EmergencyForm from "./EmergencyScreens/EmergencyForm";
 import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
+import EmergencyLawyerDetails from "./EmergencyLawyerDetails";
 const Stack = createNativeStackNavigator();
 export default function EmergencyScreens({ navigation }) {
   return (
@@ -24,7 +25,6 @@ export default function EmergencyScreens({ navigation }) {
         options={{
           title: "محامى عاجل",
           gestureEnabled: false,
-
           headerLeft: () => (
             <Ionicons
               name="chevron-back-outline"
@@ -44,6 +44,14 @@ export default function EmergencyScreens({ navigation }) {
         component={EmergencyRequests}
         options={{
           title: "اختر محامى",
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="EmergencyDetails"
+        component={EmergencyLawyerDetails}
+        options={{
+          title: "تفاصيل المحامى",
           gestureEnabled: false,
         }}
       />

@@ -60,7 +60,9 @@ export default function ProfileScreen() {
       setEditable(false);
       setOriginalInfo(null);
       setOriginalImageUri(null);
-      refetchClientData();
+      refetchClientData().then(()=>{
+        console.log("The new Data has been Successfully Fetched")
+      });
       resetUpdateMutation();
     },
     onError: (err) => {
@@ -80,7 +82,7 @@ export default function ProfileScreen() {
         },
         email: {
           header: "البريد الالكتروني",
-          value: `Georgegeham@outlook.com`,
+          value: `${ClientData.data.data.email}` || "",
         },
         mobile: {
           header: "التليفون",

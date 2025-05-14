@@ -3,6 +3,7 @@ import { ActivityIndicator } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { Ionicons } from "@expo/vector-icons";
@@ -44,13 +45,39 @@ import { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import BookingScreen from "./screens/BookingScreen";
 import * as Notifications from "expo-notifications";
+import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 SplashScreen.preventAutoHideAsync().catch(console.warn);
-
+function ScheduleStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="MainSchedule"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="EmergencySchedule"
+        component={EmergencyScheduleScreen}
+        options={{ title: "الطلبات العاجلة" }}
+      />
+      <TopTab.Screen
+        name="MainSchedule"
+        component={ScheduleScreen}
+        options={{ title: "مواعيدى" }}
+      />
+    </TopTab.Navigator>
+  );
+}
 function HomeStack() {
   return (
     <Stack.Navigator
@@ -263,9 +290,9 @@ function UserTabs() {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Schedule"
-        component={ScheduleScreen}
+        component={ScheduleStack}
         options={{
           title: "مواعيدى",
           tabBarLabel: "مواعيدى",
@@ -273,7 +300,7 @@ function UserTabs() {
             <Ionicons name="calendar-outline" size={size} color={color} />
           ),
         }}
-      />  */}
+      />
 
       <Tab.Screen
         name="HomeStack"

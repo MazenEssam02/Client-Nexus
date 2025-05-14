@@ -7,8 +7,8 @@ import LawyerSummarylist from "../LawyerSummarylist/LawyerSummarylist";
 import { EmeregencyCases } from "../../API/https";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
-export default function EmergencyCard({ lawyer, emergencyCaseId }) {
-  const navigation = useNavigation();
+import useEmergencyStore from "../../store/EmergencyStore";
+export default function EmergencyCard({ lawyer, emergencyCaseId, navigation }) {
   const { mutate: acceptLawyer } = useMutation({
     mutationFn: () =>
       EmeregencyCases.acceptEmergency(
@@ -17,11 +17,12 @@ export default function EmergencyCard({ lawyer, emergencyCaseId }) {
       ),
     onSuccess: (data) => {
       console.log("lawyer accepted", data.data.phoneNumber);
-      navigation.navigate("EmergencyDetails" as never, {
-        lawyerPhone: data.data.phoneNumber,
-        lawyer: lawyer,
-        emergencyCaseId: emergencyCaseId,
+      useEmergencyStore.getState().updateLawyer({
+        phone: data.data.phoneNumber,
+        id: lawyer.ServiceProviderId,
+        price: lawyer.Price,
       });
+      navigation.navigate("EmergencyDetails");
       // console.log("lawyer accepted");
     },
     onError: (error) => {
@@ -41,9 +42,7 @@ export default function EmergencyCard({ lawyer, emergencyCaseId }) {
           <Text style={styles.priceText}>{lawyer.Price}ج</Text>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>
-            {lawyer.FirstName + " " + lawyer.LastName}
-          </Text>
+          <Text style={styles.title}>{lawyer.FirstName + lawyer.LastName}</Text>
         </View>
       </View>
       <View style={styles.SummaryContainer}>

@@ -17,10 +17,25 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import { EmeregencyCases } from "../../API/https";
 import { useMutation } from "@tanstack/react-query";
+import useEmergencyStore from "../../store/EmergencyStore";
 export default function EmergencyForm({ navigation }) {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [inputText, setInputText] = useState({
+    title: {
+      value: "",
+      isValid: true,
+    },
+    address: {
+      value: "",
+      isValid: true,
+    },
+    description: {
+      value: "",
+      isValid: true,
+    },
+  });
   const { mutate: requestEmergency, reset: resetRequestMutation } = useMutation(
     {
       mutationFn: EmeregencyCases.requestEmergency,
@@ -28,7 +43,13 @@ export default function EmergencyForm({ navigation }) {
         const emergencyCaseId = data.data.id;
         const emergencyCaseLimit = data.data.timeoutInMinutes;
         console.log("Created emergency case ID:", emergencyCaseId);
-
+        useEmergencyStore.getState().setLawyer({
+          id: 0,
+          phone: "",
+          price: 0,
+          title: inputText.title.value,
+          description: inputText.description.value,
+        });
         navigation.navigate("Requests", {
           emergencyCaseId: emergencyCaseId,
           emergencyCaseLimit: emergencyCaseLimit,
@@ -37,7 +58,10 @@ export default function EmergencyForm({ navigation }) {
         resetRequestMutation();
       },
       onError: (err) => {
-        Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+        Alert.alert(
+          "خطأ",
+          "لديك طلب مفتوح بالفعل او لا يوجد هاتف مع الحساب"
+        );
         console.error("request error:", err);
         if ("response" in err && (err as any).response?.data) {
           console.error("Full error:", (err as any).response?.data); // Server's validation messages
@@ -68,21 +92,6 @@ export default function EmergencyForm({ navigation }) {
       setLoading(false);
     })();
   }, []);
-
-  const [inputText, setInputText] = useState({
-    title: {
-      value: "",
-      isValid: true,
-    },
-    address: {
-      value: "",
-      isValid: true,
-    },
-    description: {
-      value: "",
-      isValid: true,
-    },
-  });
 
   function inputTextHandler(inputPicker, inputNewText) {
     setInputText((curInputText) => {
@@ -149,18 +158,18 @@ export default function EmergencyForm({ navigation }) {
       >
         <View style={styles.innerContainer}>
           <Input
-            label="عنوان المشكلة"
-            isValid={inputText.title.isValid}
-            inputConfig={{
-              onChangeText: inputTextHandler.bind(this, "title"),
-            }}
-          />
-          <Input
             label="العنوان"
             isValid={inputText.address.isValid}
             inputConfig={{
               // keyboardType: "decimal-pad",
               onChangeText: inputTextHandler.bind(this, "address"),
+            }}
+          />
+          <Input
+            label="عنوان المشكلة"
+            isValid={inputText.title.isValid}
+            inputConfig={{
+              onChangeText: inputTextHandler.bind(this, "title"),
             }}
           />
 

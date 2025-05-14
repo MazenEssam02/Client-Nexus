@@ -11,7 +11,7 @@ export default function EmergencyScreens({ navigation }) {
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
+        // headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
@@ -51,7 +51,7 @@ export default function EmergencyScreens({ navigation }) {
         name="EmergencyDetails"
         component={EmergencyLawyerDetails}
         options={{
-          title: "تفاصيل المحامى",
+          title: "تفاصيل الطلب",
           gestureEnabled: false,
         }}
       />

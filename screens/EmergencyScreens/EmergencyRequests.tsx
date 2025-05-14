@@ -7,7 +7,7 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import { Platform } from "react-native";
 import EventSource, { EventType } from "react-native-sse";
 import { apiClient } from "../../API/https";
-import EmergencyCard from "../../components/EmergencyLawyer Card/EmergencyCard";
+import EmergencyCard from "../../components/EmergencyLawyerCards/EmergencyCard";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
 
@@ -116,7 +116,11 @@ export default function EmergencyRequests({ navigation }) {
           data={offers}
           keyExtractor={(item) => item.ServiceProviderId}
           renderItem={({ item }) => (
-            <EmergencyCard lawyer={item} emergencyCaseId={emergencyCaseId}  />
+            <EmergencyCard
+              lawyer={item}
+              emergencyCaseId={emergencyCaseId}
+              navigation={navigation}
+            />
           )}
         />
       ) : (

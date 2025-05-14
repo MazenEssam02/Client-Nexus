@@ -94,11 +94,14 @@ export const EmeregencyCases = {
       meetingLongitude: meetingLongitude,
       meetingTextAddress: meetingTextAddress,
     }),
+  getEmergencies: () =>
+    apiClient.get(`/api/emergency-cases?clientId=4&offset=0&limit=10`),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
   acceptEmergency: (id, serviceProviderId) =>
     apiClient.patch(`/api/emergency-cases/${id}/accept`, {
       serviceProviderId: serviceProviderId,
     }),
+  endEmergency: (id) => apiClient.patch(`/api/emergency-cases/${id}/status`),
 };
 export const Filter = {
   getCity: () => apiClient.get("api/City"),

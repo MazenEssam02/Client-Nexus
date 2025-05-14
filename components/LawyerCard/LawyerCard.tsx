@@ -71,7 +71,9 @@ const LawyerCard = ({
             {!isLawyerDetailsCard ? (
               <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
             ) : (
-              <Text style={styles.specialitiyText}>محامي {speciality}</Text>
+              <Text style={styles.specialitiyText}>
+                {speciality && `محامي ${speciality}`}
+              </Text>
             )}
             {!!address ? (
               <Text style={styles.vezitaText}>العنوان: {address}</Text>

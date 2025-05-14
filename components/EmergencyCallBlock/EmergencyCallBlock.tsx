@@ -6,7 +6,7 @@ import { MainButton } from "../Buttons/MainButton";
 
 import Wallet from "../Icons/Wallet";
 
-export default function EmergencyCallBlock({ lawyer, lawyerPhone }) {
+export default function EmergencyCallBlock({ price, lawyerPhone }) {
   const onSubmitHandler = async () => {
     const url = `tel:${lawyerPhone}`;
     // Check if the device supports calling
@@ -25,13 +25,17 @@ export default function EmergencyCallBlock({ lawyer, lawyerPhone }) {
         <View style={styles.bookInfoOuterContainer}>
           <View style={styles.bookInfoInnerContainer}>
             <Wallet />
-            <Text style={styles.Text}>السعر : {lawyer.Price}ج</Text>
+            <Text style={styles.priceText}>السعر : {price}ج</Text>
           </View>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <MainButton title="الاتصال بالمحامى" onPress={onSubmitHandler} />
-      </View>
+      {lawyerPhone ? (
+        <View style={styles.buttonContainer}>
+          <MainButton title="اتصل بالمحامى" onPress={onSubmitHandler} />
+        </View>
+      ) : (
+        <Text style={styles.Text}>لا يمكن التواصل مع المحامى</Text>
+      )}
     </View>
   );
 }
@@ -61,10 +65,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
   },
-  Text: {
-    paddingRight: 10,
+  priceText: {
     color: Colors.SecondaryColor,
     ...font.headline,
+  },
+  Text: {
+    color: Colors.SecondaryColor,
+    ...font.body,
   },
   buttonContainer: {
     marginTop: 20,

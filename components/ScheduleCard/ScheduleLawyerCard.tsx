@@ -1,30 +1,12 @@
-import { View, Text, Image, StyleSheet } from "react-native";
-import { Rate1 } from "../Icons/Rate1";
-import { Rate2 } from "../Icons/Rate2";
-import { Rate3 } from "../Icons/Rate3";
-import { Rate4 } from "../Icons/Rate4";
-import { Rate5 } from "../Icons/Rate5";
+import { View, Text, StyleSheet } from "react-native";
 import FavouriteLawyerCard from "../LawyerCard/FavouriteLawyerCard";
 
 const ScheduleLawyerCard = ({ item }) => {
-  function RateHandler() {
-    switch (item.rate) {
-      case 1:
-        return <Rate1 />;
-      case 2:
-        return <Rate2 />;
-      case 3:
-        return <Rate3 />;
-      case 4:
-        return <Rate4 />;
-      case 5:
-        return <Rate5 />;
-    }
-  }
   return (
     <View style={styles.card}>
       <View style={styles.dateContainer}>
         <Text style={styles.day}>{item.day}</Text>
+        <Text style={styles.day}>{item.type}</Text>
         <Text style={styles.date}>{item.date}</Text>
       </View>
       <FavouriteLawyerCard {...item} />

@@ -269,7 +269,7 @@ function UserTabs() {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name="Schedule"
         component={ScheduleScreen}
         options={{
@@ -279,7 +279,7 @@ function UserTabs() {
             <Ionicons name="calendar-outline" size={size} color={color} />
           ),
         }}
-      />  */}
+      />
 
       <Tab.Screen
         name="HomeStack"

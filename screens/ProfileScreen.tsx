@@ -12,6 +12,7 @@ import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import InfoArea from "../components/InfoProfile/InfoArea";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
+import InfoUpdate from "../components/InfoProfile/InfoUpdate";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Client } from "../API/https";
@@ -20,26 +21,16 @@ import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePict
 import IsError from "../components/IsError/IsError";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { useAuthStore } from "../store/auth";
+import useProfileStore from "../store/Profile";
 export default function ProfileScreen() {
   const login = useAuthStore((state) => state.login);
   const [editable, setEditable] = useState(false);
   const [originalInfo, setOriginalInfo] = useState(null);
   const [originalImageUri, setOriginalImageUri] = useState(null);
   const [currentImageUri, setCurrentImageUri] = useState(null);
-
-  const [info, setInfo] = useState<{
-    name: { value: string; header?: string };
-    email: { value: string; header?: string };
-    mobile: { value: string; header?: string };
-    birthday: { value: string; header?: string };
-    password: { value: string; header?: string };
-  }>({
-    name: { value: "" },
-    email: { value: "" },
-    mobile: { value: "" },
-    birthday: { value: "" },
-    password: { value: "" },
-  });
+  const profileData = useProfileStore((state) => state.profileData);
+  const resetProfileData = useProfileStore((state) => state.resetProfileData);
+  const clearPassword = useProfileStore((state) => state.clearPassword);
   const {
     data: ClientData,
     isLoading: isGetLoading,
@@ -65,7 +56,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (ClientData?.data) {
       console.log(ClientData.data);
-      setInfo({
+      const initialData = {
         name: {
           header: "الاسم",
           value: `${ClientData.data.data.firstName || ""} ${
@@ -84,16 +75,18 @@ export default function ProfileScreen() {
           header: "تاريخ الميلاد",
           value: `${ClientData.data.data.birthDate}` || "",
         },
-        password: { header: "كلمة السر", value: "" },
-      });
+        password: { header: "كلمة السر الجديدة", value: "" },
+      };
+      resetProfileData(initialData);
+      setOriginalInfo(initialData);
     } else if (ClientData) {
       console.log(ClientData);
     }
-  }, [ClientData]);
+  }, [ClientData, resetProfileData]);
   function editableHandler() {
     setEditable((prevEditable) => {
       if (!prevEditable) {
-        setOriginalInfo(info);
+        setOriginalInfo(useProfileStore.getState().profileData);
         setOriginalImageUri(currentImageUri);
       }
       return !prevEditable;
@@ -103,7 +96,7 @@ export default function ProfileScreen() {
   function exitEditing() {
     setEditable(false);
     if (originalInfo) {
-      setInfo(originalInfo);
+      resetProfileData(originalInfo);
       setOriginalInfo(null);
     }
     if (originalImageUri) {
@@ -111,70 +104,72 @@ export default function ProfileScreen() {
       setOriginalImageUri(null);
     }
   }
-  function saveChanges() {
-    if (info) {
-      const newPasswordValue = info.password.value || "123456789";
+  function saveChanges(formData) {
+    console.log("Starting Saving Changes");
+    const newPasswordValue = formData.password || undefined;
 
-      if (newPasswordValue) {
-        const clientDataToSend = {
-          email: info.email.value,
-          firstName: info.name.value.split(" ")[0] || "",
-          lastName: info.name.value.split(" ")[1] || "",
-          birthDate: info.birthday.value,
-          phoneNumber: info.mobile.value,
-          newPassword: newPasswordValue,
-        };
+    if (newPasswordValue) {
+      const clientDataToSend = {
+        email: formData.email,
+        firstName: formData.name.split(" ")[0] || "",
+        lastName: formData.name.split(" ")[1] || "",
+        birthDate: formData.birthday,
+        phoneNumber: formData.mobile,
+        newPassword: newPasswordValue,
+      };
 
-        updateClient(
-          { ...clientDataToSend },
-          {
-            onSuccess: () => {
-              Alert.alert("نجحت العملية", "تم تحديث كلمة السر بنجاح!.");
-              setEditable(false);
-              setOriginalInfo(null);
-              setOriginalImageUri(null);
-              resetUpdateMutation();
+      updateClient(
+        { ...clientDataToSend },
+        {
+          onSuccess: () => {
+            Alert.alert("نجحت العملية", "تم تحديث كلمة السر بنجاح!.");
+            setEditable(false);
+            setOriginalInfo(null);
+            setOriginalImageUri(null);
+            resetUpdateMutation();
+            clearPassword();
 
-              // Re-login with the new password
-              login({ email: info.email.value, password: newPasswordValue });
-            },
-            onError: (err) => {
-              Alert.alert(
-                "خطأ",
-                "برجاء المحاولة مره اخري عند تحديث كلمة السر."
-              );
-              console.error("Update password error:", err);
-            },
-          }
-        );
-      } else {
-        const clientDataToSend = {
-          email: info.email.value,
-          firstName: info.name.value.split(" ")[0] || "",
-          lastName: info.name.value.split(" ")[1] || "",
-          birthDate: info.birthday.value,
-          phoneNumber: info.mobile.value,
-          newPassword: newPasswordValue,
-        };
-        updateClient(
-          { ...clientDataToSend },
-          {
-            onSuccess: () => {
-              Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
-              setEditable(false);
-              setOriginalInfo(null);
-              setOriginalImageUri(null);
-              refetchClientData().then(() => {});
-              resetUpdateMutation();
-            },
-            onError: (err) => {
-              Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث البيانات.");
-              console.error("Update data error:", err);
-            },
-          }
-        );
-      }
+            // Re-login with the new password
+            login({
+              email: formData.email,
+              password: newPasswordValue,
+            });
+          },
+          onError: (err) => {
+            Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث كلمة السر.");
+            clearPassword();
+            console.error("Update password error:", err);
+          },
+        }
+      );
+    } else {
+      const clientDataToSend = {
+        email: formData.email,
+        firstName: formData.name.split(" ")[0] || "",
+        lastName: formData.name.split(" ")[1] || "",
+        birthDate: formData.birthday,
+        phoneNumber: formData.mobile,
+        newPassword: "123456789",
+      };
+      updateClient(
+        { ...clientDataToSend },
+        {
+          onSuccess: () => {
+            Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
+            setEditable(false);
+            setOriginalInfo(null);
+            setOriginalImageUri(null);
+            refetchClientData().then(() => {});
+            resetUpdateMutation();
+          },
+          onError: (err) => {
+            Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث البيانات.");
+            console.error("Update data error:", err);
+          },
+        }
+      );
     }
+    console.log("Finished Saving");
   }
   if (isGetLoading) {
     return <LoadingSpinner />;
@@ -198,20 +193,7 @@ export default function ProfileScreen() {
           <View style={styles.container}>
             <View style={styles.optionContainer}>
               {editable ? (
-                <>
-                  <Pressable
-                    style={({ pressed }) => [pressed && styles.pressed]}
-                    onPress={saveChanges}
-                  >
-                    <Text style={styles.editText}>حفظ</Text>
-                  </Pressable>
-                  <Pressable
-                    style={({ pressed }) => [pressed && styles.pressed]}
-                    onPress={exitEditing}
-                  >
-                    <Text style={styles.editText}>إلغاء</Text>
-                  </Pressable>
-                </>
+                <></>
               ) : (
                 <Pressable
                   style={({ pressed }) => [pressed && styles.pressed]}
@@ -226,8 +208,14 @@ export default function ProfileScreen() {
               onImageChange={setCurrentImageUri}
               currentImage={currentImageUri}
             />
-            <InfoArea editable={editable} info={info} onChange={setInfo} />
-            <QuickAccessArea editable={editable} />
+            {editable ? (
+              <InfoUpdate onCancel={exitEditing} save={saveChanges} />
+            ) : (
+              <>
+                <InfoArea editable={editable} />
+                <QuickAccessArea editable={editable} />
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

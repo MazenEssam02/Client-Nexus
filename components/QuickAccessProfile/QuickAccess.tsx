@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.invalidColor200,
   },
   pressed: {
-    backgroundColor: Colors.mainColor,
+    opacity: 0.5,
   },
   container: {
     padding: 7,

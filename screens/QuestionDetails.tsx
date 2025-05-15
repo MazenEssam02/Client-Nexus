@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   questionText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
     textAlign: "right",
   },
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   answerText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
   },
   feedbackContainer: {
@@ -125,13 +125,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     width: "45%",
+    borderWidth: 1,
+    borderColor: Colors.SecondaryColorLight,
   },
   selectedButton: {
     backgroundColor: "#A56A39",
   },
   feedbackText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
   },
 });
 

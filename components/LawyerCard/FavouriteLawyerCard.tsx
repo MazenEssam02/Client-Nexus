@@ -31,7 +31,6 @@ const FavouriteLawyerCard = ({
     }
   }
   function deleteHandler(id) {
-    //Delete api for the favourites
     console.log("Deleted");
   }
   return (

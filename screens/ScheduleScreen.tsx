@@ -4,9 +4,19 @@ import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import { useQuery } from "@tanstack/react-query";
-import { Client, ServiceProvider } from "../API/https";
+import { Client } from "../API/https";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import IsError from "../components/IsError/IsError";
+const weekday = [
+  "الاحد",
+  "الاثنين",
+  "الثلاثاء",
+  "الاربعاء",
+  "الخميس",
+  "الجمعة",
+  "السبت",
+];
 export default function ScheduleScreen() {
-  const [lawyerData, setLawyerData] = useState([]);
   const [transactions, setTransactions] = useState([
     {
       id: undefined,
@@ -29,43 +39,30 @@ export default function ScheduleScreen() {
     queryKey: ["Appointments"],
     queryFn: Client.getAppointments,
   });
-  const fetchLawyer = async (lawyerId) => {
-    try {
-      const response = await ServiceProvider.getById(lawyerId);
-      if (response && response.data) {
-        return response.data.data;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      console.log("Error While Fetching Lawyer with ID:" + lawyerId, err);
-      throw err;
-    }
-  };
   useEffect(() => {
-    const processAppointments = async () => {
-      if (Appointments?.data) {
-        const appointmentList = [];
-        const lawyerIds = new Set();
-        Appointments.data.data.forEach((appointment) => {
-          lawyerIds.add(appointment.serviceProviderId);
-        });
-        try {
-          const lawyerPromises = Array.from(lawyerIds).map(fetchLawyer);
-          const lawyers = await Promise.all(lawyerPromises);
-          const lawyerMap = {};
-          lawyers.forEach((lawyer) => {
-            if (lawyer) {
-              lawyerMap[lawyer.id] = lawyer;
-            }
-          });
-          setLawyerData(lawyerMap);
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
-  }, []);
+    if (Appointments?.data) {
+      setTransactions(
+        Appointments.data.map((Appointment) => ({
+          id: Appointment.id,
+          date: new Date(Appointment.slotDate).toLocaleDateString(),
+          rate: Appointment.serviceProviderRate.toString(),
+          day: weekday[new Date(Appointment.slotDate).getDay()],
+          name: `${Appointment.serviceProviderFirstName}${Appointment.serviceProviderLastName}`,
+          speciality: Appointment.serviceProviderMainSpecialization,
+          time: new Date(Appointment.slotDate).getTime(),
+          type: "مكتبي",
+          image: Appointment.serviceProviderMainImage,
+        }))
+      );
+      console.log(transactions[0].type);
+    }
+  }, [Appointments]);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+  if (isError) {
+    return <IsError error={error} />;
+  }
   return (
     <View style={styles.container}>
       {transactions.length === 0 ? (

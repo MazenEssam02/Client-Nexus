@@ -129,10 +129,7 @@ export default function ProfileScreen() {
           { ...clientDataToSend },
           {
             onSuccess: () => {
-              Alert.alert(
-                "نجحت العملية",
-                "تم تحديث كلمة السر بنجاح! سيتم تسجيل الدخول مرة أخرى."
-              );
+              Alert.alert("نجحت العملية", "تم تحديث كلمة السر بنجاح!.");
               setEditable(false);
               setOriginalInfo(null);
               setOriginalImageUri(null);

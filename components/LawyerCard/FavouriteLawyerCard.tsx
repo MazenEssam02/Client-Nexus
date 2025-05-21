@@ -8,10 +8,10 @@ import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
 import LawyerList from "../../api-mock/LawyerList";
 const FavouriteLawyerCard = ({
-  name = "المحامي عبدالكريم غفار",
-  rate = "3",
-  speciality = "جنائي",
-  address = "وسط البلد",
+  name,
+  rate,
+  speciality,
+  address,
   onPress = null,
   id = null,
   editable = null,

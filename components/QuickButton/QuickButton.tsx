@@ -18,7 +18,10 @@ export default function QuickButton({ title, iconName, onPress }) {
     }
   }
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
         <LogoPicker />
       </View>
@@ -37,6 +40,9 @@ const styles = StyleSheet.create({
     width: "30%",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  pressed: {
+    opacity: 0.6,
   },
   iconContainer: {
     height: "90%",

@@ -77,7 +77,10 @@ export default function HomeScreen({ navigation }) {
         />
       </ScrollView>
       <Pressable
-        style={styles.chatBotContainer}
+        style={({ pressed }) => [
+          styles.chatBotContainer,
+          pressed && styles.pressed,
+        ]}
         onPress={() => navigation.navigate("ChatBotScreen" as never)}
       >
         <Bot width={50} height={50} />
@@ -107,5 +110,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 15,
+  },
+  pressed: {
+    opacity: 0.6,
   },
 });

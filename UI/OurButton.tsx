@@ -1,9 +1,9 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
-const OurButton = ({ onPress, children }) => {
+const OurButton = ({ onPress = null, children, style = null }) => {
   return (
-    <Pressable style={styles.closeButton} onPress={onPress}>
+    <Pressable style={[styles.closeButton, style]} onPress={onPress}>
       <Text style={styles.closeButtonText}>{children}</Text>
     </Pressable>
   );

@@ -23,8 +23,24 @@ import CheckBox from "react-native-check-box";
 import { useNavigation } from "@react-navigation/native";
 import { PrivacyPolicyModal } from "../components/PrivacyPolicyModal/PrivacyPolicyModal";
 import { apiClient } from "../API/https";
+import {
+  FileUploadButton,
+  SelectedAsset,
+} from "../components/FileUploadButton/FileUploadButton";
+import { useAuthStore } from "../store/auth";
+
+type FormData = {
+  fullName: string;
+  email: string;
+  birthdate: Date | null;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  gender: boolean;
+};
 
 const RegisterScreen = () => {
+  const { register } = useAuthStore();
   const navigation = useNavigation<AuthNavigationType>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +49,7 @@ const RegisterScreen = () => {
   const [selectedRole, setSelectedRole] = useState<"lawyer" | "client">(
     "client"
   );
+  const [profilePic, setProfilePic] = useState<SelectedAsset | null>(null);
 
   // For accepting Terms & Privacy
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
@@ -43,7 +60,8 @@ const RegisterScreen = () => {
     handleSubmit,
     watch,
     formState: { errors, isValid },
-  } = useForm({
+    setValue,
+  } = useForm<FormData>({
     defaultValues: {
       fullName: "",
       email: "",
@@ -59,7 +77,7 @@ const RegisterScreen = () => {
   // Watch password to compare with confirm password
   const passwordValue = watch("password");
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormData) => {
     if (!acceptedPolicy) {
       alert("الرجاء الموافقة على سياسة الاستخدام والخصوصية أولاً");
       return;
@@ -70,31 +88,23 @@ const RegisterScreen = () => {
     setIsLoading(true);
     setError(null);
     console.log("Registering user", data);
-    apiClient
-      .post(
-        "/api/auth/register",
-        {
-          FirstName: data.fullName.split(" ")[0],
-          LastName: data.fullName.split(" ").slice(1).join(" "),
-          Email: data.email,
-          UserType: 67,
-          BirthDate: data.birthdate.toISOString().split("T")[0],
-          PhoneNumber: data.phone,
-          Password: data.password,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((res) => {
-        console.log("Registration successful", res.data);
+    register({
+      firstName: data.fullName.split(" ")[0],
+      lastName: data.fullName.split(" ").slice(1).join(" "),
+      email: data.email,
+      role: selectedRole,
+      birthDate: data.birthdate?.toISOString().split("T")[0] || "",
+      phoneNumber: data.phone,
+      password: data.password,
+      gender: data.gender,
+      mainImage: profilePic,
+    })
+      .then(() => {
+        console.log("Registration successful");
         setIsLoading(false);
-        navigation.navigate("Login");
       })
       .catch((err) => {
-        console.warn("Registration error", err.response.data);
+        console.warn("Registration error", err.response);
         setIsLoading(false);
         setError(err.response.data.message || "حدث خطأ أثناء التسجيل");
       });
@@ -111,6 +121,28 @@ const RegisterScreen = () => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {__DEV__ && (
+          // button to fill the form with test data
+          <TouchableOpacity
+            onPress={() => {
+              setValue("fullName", "John Doe");
+              setValue("email", "john.doe@gmail.com");
+              setValue("birthdate", new Date("1990-01-01"));
+              setValue("phone", "01090909090");
+              setValue("password", "password123");
+              setValue("confirmPassword", "password123");
+              setValue("gender", false);
+            }}
+            style={{
+              backgroundColor: Colors.mainColor,
+              padding: 10,
+              borderRadius: 5,
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ color: "#fff" }}>ملئ البيانات التجريبية</Text>
+          </TouchableOpacity>
+        )}
         {/* Illustration */}
         <RegisterIllustration style={styles.illustration} />
 
@@ -286,11 +318,17 @@ const RegisterScreen = () => {
           <Controller
             control={control}
             name="gender"
-            render={({ field: { onChange, value } }) => (
-              <GenderPicker value={value} onChange={onChange} />
-            )}
+            rules={{ required: "الرجاء اختيار النوع" }}
+            render={({ field: { onChange, value } }) => {
+              return <GenderPicker value={value} onChange={onChange} />;
+            }}
           />
         </View>
+        <FileUploadButton
+          label="صورة الحساب:"
+          onFileSelected={(asset) => setProfilePic(asset)}
+          selectedFileName={profilePic?.name}
+        />
 
         {/* Terms & Privacy Checkbox */}
         <View style={styles.termsContainer}>
@@ -324,7 +362,7 @@ const RegisterScreen = () => {
 
         <SocialLogin
           onPress={(authSource) =>
-            console.log("Attempt to login with social Not IMplemeneted")
+            console.log("Attempt to login with social Not Iplemeneted")
           }
         />
 

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../API/https";
+import { SelectedAsset } from "../components/FileUploadButton/FileUploadButton";
 
 export type User = {
   firstName: string;
@@ -9,7 +10,7 @@ export type User = {
   birthDate: string;
   phoneNumber: string;
   email: string;
-  type: "admin" | "user" | "lawyer";
+  type: "admin" | "client" | "lawyer";
   authToken: string;
 };
 
@@ -24,6 +25,17 @@ type AuthStore = {
   login: (options: {
     email: string;
     password: string;
+  }) => Promise<void>;
+  register: (options: {
+    role: "client" | "lawyer";
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    birthDate: string;
+    phoneNumber: string;
+    gender: boolean;
+    mainImage: SelectedAsset | null;
   }) => Promise<void>;
   logout: () => void;
 };
@@ -73,7 +85,7 @@ export const useAuthStore = create<AuthStore>()(persist(
           birthDate: userData.birthDate,
           phoneNumber: userData.phoneNumber,
           email: userEmail,
-          type: userType === "Client" ? "user" : "admin",
+          type: userType === "Client" ? "client" : "admin",
           authToken: token,
         },
         isLoading: false,
@@ -81,6 +93,82 @@ export const useAuthStore = create<AuthStore>()(persist(
     } catch (error) {
       console.log(JSON.stringify(error, null, 2));
       set({ error: "لا يوجد الحساب", isLoading: false });
+    }
+  },
+  register: async ({
+    role,
+    email,
+    password,
+    firstName,
+    lastName,
+    birthDate,
+    phoneNumber,
+    gender,
+    mainImage
+  }) => {
+    if (role === "lawyer") {
+      throw new Error("Lawyer registration is not supported yet.");
+    }
+    set({ isLoading: true, error: null });
+    const formData = new FormData();
+    formData.append("FirstName", firstName);
+    formData.append("LastName", lastName);
+    formData.append("Email", email);
+    formData.append("UserType", "67");
+    formData.append("BirthDate", birthDate);
+    formData.append("PhoneNumber", phoneNumber);
+    formData.append("Password", password);
+    formData.append("Gender", gender ? "77" : "70");
+    
+    try {
+      const { data } = await apiClient
+      .post<{
+        data: {
+          email: string;
+          token: string;
+          userType: string;
+        }
+      }>(
+        "/api/auth/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const {
+        data: { email: userEmail, token, userType },
+      } = data;
+      apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      if (mainImage) {
+        formData.delete("Password");
+        formData.append("NewPassword", password);
+        formData.append("MainImage", mainImage as any);
+        await apiClient.put("api/client", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      set({
+        user: {
+          firstName,
+          lastName,
+          birthDate,
+          phoneNumber,
+          email: userEmail,
+          type: userType === "Client" ? "client" : "admin",
+          authToken: token,
+        },
+        isLoading: false,
+      });
+    }
+    catch (error) {
+      console.log(JSON.stringify(error, null, 2));
+      set({ error: "خطأ في التسجيل", isLoading: false });
+      throw error;
     }
   },
   logout: async () => {

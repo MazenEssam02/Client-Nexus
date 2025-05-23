@@ -1,4 +1,3 @@
-// screens/LawyerRegisterScreen.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -46,13 +45,14 @@ interface LawyerRegisterFormData {
   workType: "private" | "company";
 }
 
-const LawyerRegisterScreen: React.FC = () => {
+const LawyerRegisterScreen = ({ route }) => {
   const [specializations, setSpecializations] = useState<IChip[]>([
     { id: "spec1", label: "تخصص 1" },
     { id: "spec2", label: "تخصص 2" },
   ]);
   const [currentSpecializationText, setCurrentSpecializationText] =
     useState<string>("");
+  const commonFormData = route.params.data;
 
   const [profilePic, setProfilePic] = useState<SelectedAsset | null>(null);
   const [idCardPic, setIdCardPic] = useState<SelectedAsset | null>(null);

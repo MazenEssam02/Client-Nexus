@@ -36,7 +36,6 @@ type FormData = {
   phone: string;
   password: string;
   confirmPassword: string;
-  gender: boolean;
 };
 
 const RegisterScreen = () => {
@@ -50,6 +49,7 @@ const RegisterScreen = () => {
     "client"
   );
   const [profilePic, setProfilePic] = useState<SelectedAsset | null>(null);
+  const [isMale, setIsMale] = useState(true);
 
   // For accepting Terms & Privacy
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
@@ -69,7 +69,6 @@ const RegisterScreen = () => {
       phone: "",
       password: "",
       confirmPassword: "",
-      gender: true, // true for male, false for female
     },
     mode: "onChange",
   });
@@ -82,13 +81,7 @@ const RegisterScreen = () => {
       alert("الرجاء الموافقة على سياسة الاستخدام والخصوصية أولاً");
       return;
     }
-    if (selectedRole === "lawyer") {
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    console.log("Registering user", data);
-    register({
+    const formData = {
       firstName: data.fullName.split(" ")[0],
       lastName: data.fullName.split(" ").slice(1).join(" "),
       email: data.email,
@@ -96,9 +89,19 @@ const RegisterScreen = () => {
       birthDate: data.birthdate?.toISOString().split("T")[0] || "",
       phoneNumber: data.phone,
       password: data.password,
-      gender: data.gender,
+      gender: isMale,
       mainImage: profilePic,
-    })
+    };
+    if (selectedRole === "lawyer") {
+      navigation.navigate("RegisterLawyer", {
+        data: formData,
+      });
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    console.log("Registering user", data);
+    register(formData)
       .then(() => {
         console.log("Registration successful");
         setIsLoading(false);
@@ -109,7 +112,6 @@ const RegisterScreen = () => {
         setError(err.response.data.message || "حدث خطأ أثناء التسجيل");
       });
   };
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -124,14 +126,24 @@ const RegisterScreen = () => {
         {__DEV__ && (
           // button to fill the form with test data
           <TouchableOpacity
-            onPress={() => {
+            onPress={async () => {
               setValue("fullName", "John Doe");
               setValue("email", "john.doe@gmail.com");
               setValue("birthdate", new Date("1990-01-01"));
               setValue("phone", "01090909090");
               setValue("password", "password123");
               setValue("confirmPassword", "password123");
-              setValue("gender", false);
+              setIsMale(true);
+              setAcceptedPolicy(true);
+              setSelectedRole("lawyer");
+              onSubmit({
+                fullName: "John Doe",
+                email: "john.doe@gmail.com",
+                birthdate: new Date("1990-01-01"),
+                phone: "01090909090",
+                password: "password123",
+                confirmPassword: "password123",
+              });
             }}
             style={{
               backgroundColor: Colors.mainColor,
@@ -315,14 +327,7 @@ const RegisterScreen = () => {
         {/* Gender */}
         <View style={styles.genderContainer}>
           <Text style={styles.genderLabel}>النوع</Text>
-          <Controller
-            control={control}
-            name="gender"
-            rules={{ required: "الرجاء اختيار النوع" }}
-            render={({ field: { onChange, value } }) => {
-              return <GenderPicker value={value} onChange={onChange} />;
-            }}
-          />
+          <GenderPicker value={isMale} onChange={setIsMale} />
         </View>
         <FileUploadButton
           label="صورة الحساب:"

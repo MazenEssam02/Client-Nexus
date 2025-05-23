@@ -42,6 +42,7 @@ import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import LawyerRegisterScreen from "./screens/LawyerRegisterScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -337,6 +338,11 @@ function UnAuthenticatedStack() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RegisterLawyer"
+        component={LawyerRegisterScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

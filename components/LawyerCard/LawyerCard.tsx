@@ -69,7 +69,7 @@ const LawyerCard = ({
           </View>
           <View style={styles.vezitaContainer}>
             {!isLawyerDetailsCard ? (
-              <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
+              <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}ج</Text>
             ) : (
               <Text style={styles.specialitiyText}>
                 {speciality && `محامي ${speciality}`}

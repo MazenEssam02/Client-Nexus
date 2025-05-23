@@ -167,6 +167,7 @@
 //     backgroundColor: Colors.background,
 //   },
 // });
+import * as Clipboard from "expo-clipboard";
 import { Colors } from "../constants/Color";
 import Bot from "../components/Icons/Bot";
 import SendIcon from "../components/Icons/SendIcon";
@@ -184,17 +185,38 @@ import {
   Platform,
   Keyboard,
   ActivityIndicator,
+  Pressable,
+  Alert,
 } from "react-native";
 import { useMutation } from "@tanstack/react-query";
 import TypingIndicator from "../components/Icons/AnimatedTyping";
+import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 
 interface Message {
   id: string;
   text: string;
   sender: "user" | "bot" | "typing";
+  suggestion?: any; // Add this line to allow suggestion property (adjust type as needed)
 }
-
-const ChatBotScreen = () => {
+// const suggestion = {
+//   text: "نظرًا لأن الاستفسار يتعلق بإجراءات قانونية قد تتطلب متابعة قانونية، يُوصى بالتواصل مع محامٍ متخصص في القانون المدني.",
+//   lawyers: [
+//     {
+//       id: 42,
+//       firstName: "مصطفى",
+//       lastName: "حسن",
+//       description: "محامى عام و مدنى ذات خبرة",
+//       mainImage:
+//         "https://clientnexus.s3.amazonaws.com/images/5848f538-d622-4375-9891-4b2704434492.png",
+//       city: "التجمع",
+//       state: "القاهرة",
+//       yearsOfExperience: 5,
+//       office_consultation_price: 200,
+//       telephone_consultation_price: 75,
+//     },
+//   ],
+// };
+const ChatBotScreen = ({ navigation }) => {
   const [messages, setMessages] = useState<Message[]>([
     { id: "1", text: "مرحبا كيف يمكننى مساعدتك؟", sender: "bot" },
   ]);
@@ -205,7 +227,7 @@ const ChatBotScreen = () => {
   const { mutate: sendMessage, isPending: isTyping } = useMutation({
     mutationFn: async (message: string) => {
       const response = await fetch(
-        "https://legalrag-app.happyforest-adceda20.uaenorth.azurecontainerapps.io/nlp/answer",
+        "https://legalrag-app.happyforest-adceda20.uaenorth.azurecontainerapps.io/agentic/answer",
         {
           method: "POST",
           headers: {
@@ -218,7 +240,6 @@ const ChatBotScreen = () => {
       );
 
       const responseClone = response.clone();
-
       if (!response.ok) {
         const errorData = await responseClone.json();
         throw new Error(
@@ -248,9 +269,12 @@ const ChatBotScreen = () => {
       setMessages((prev) => prev.filter((msg) => msg.sender !== "typing"));
       const botResponse: Message = {
         id: Math.random().toString(36).substring(7),
-        text: data.answer,
+        text: data.refined_answer,
+        suggestion: data.suggestion,
         sender: "bot",
       };
+      console.log(data.suggestion.lawyers);
+
       setMessages((prev) => [...prev, botResponse]);
     },
     onError: (error) => {
@@ -269,6 +293,7 @@ const ChatBotScreen = () => {
       sendMessage(text);
       setText("");
     }
+
     // // Uncomment the following lines if you want to simulate a delay
     // if (text.trim()) {
     //   // Add user message
@@ -309,6 +334,10 @@ const ChatBotScreen = () => {
 
   // Render individual chat message
   const renderMessage = ({ item }: { item: Message }) => {
+    const copyToClipboard = () => {
+      Clipboard.setStringAsync(item.text);
+      Alert.alert("تم النسخ");
+    };
     if (item.sender === "typing") {
       return (
         <View
@@ -332,20 +361,91 @@ const ChatBotScreen = () => {
         ]}
       >
         {item.sender === "bot" && <Bot style={styles.botIcon} />}
-        <View
-          style={[
-            styles.messageContainer,
-            item.sender === "user" ? styles.userMessage : styles.botMessage,
-          ]}
-        >
-          <Text
+        <View style={styles.messageInnerContainer}>
+          <Pressable
             style={[
-              styles.messageText,
-              item.sender === "user" ? { color: "white" } : {},
+              styles.messageContainer,
+              item.sender === "user" ? styles.userMessage : styles.botMessage,
             ]}
+            onLongPress={copyToClipboard}
           >
-            {item.text}
-          </Text>
+            <Text
+              style={[
+                styles.messageText,
+                item.sender === "user" ? { color: "white" } : {},
+              ]}
+            >
+              {item.text}
+            </Text>
+          </Pressable>
+          {item.sender === "bot" &&
+            Array.isArray(item.suggestion?.lawyers) &&
+            item.suggestion.lawyers.length > 0 && (
+              <Pressable
+                // style={{ flex: 1, marginTop: 20 }}
+                style={[
+                  { marginTop: 10, flex: 1 },
+                  styles.messageContainer,
+                  styles.botMessage,
+                ]}
+                // onLongPress={copyToClipboard}
+              >
+                <Text style={styles.messageText}>{item.suggestion.text}</Text>
+                {item.suggestion.lawyers.map((lawyer, index) => (
+                  <View key={index} style={{ flex: 1 }}>
+                    <ResultLawyerCard
+                      name={lawyer.firstName + " " + lawyer.lastName}
+                      rate={lawyer.rate}
+                      speciality={lawyer.main_Specialization}
+                      gender={lawyer.gender}
+                      vezita={lawyer.office_consultation_price}
+                      address={lawyer.city}
+                      imageURL={lawyer.mainImage}
+                      onPress={() => {
+                        navigation.navigate("UserTabs", {
+                          screen: "HomeStack",
+                          params: {
+                            screen: "LawyerDetails",
+                            params: {
+                              lawyer: lawyer,
+                            },
+                          },
+                        });
+                      }}
+                    />
+                  </View>
+                ))}
+                {/* <FlatList
+                data={item.suggestion.lawyers}
+                keyExtractor={(lawyer) => lawyer.id.toString()}
+                renderItem={({ item: lawyer }) => (
+                  <ResultLawyerCard
+                    name={lawyer.firstName + " " + lawyer.lastName}
+                    rate={lawyer.rate}
+                    speciality={lawyer.main_Specialization}
+                    gender={lawyer.gender}
+                    vezita={lawyer.office_consultation_price}
+                    address={lawyer.city}
+                    imageURL={lawyer.mainImage}
+                    // onPress={() =>
+                    //   navigation.navigate(
+                    //     "UserTabs",{
+                    //       screen:"HomeStack",{
+                    //         "LawyerDetails"
+                    //       }
+                    //     }
+                    //     "LawyerDetails" as never,
+                    //     {
+                    //       lawyer: lawyer,
+                    //       type: route.params.type,
+                    //     } as never
+                    //   )
+                    // }
+                  />
+                )}
+              /> */}
+              </Pressable>
+            )}
         </View>
       </View>
     );
@@ -422,13 +522,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  messageInnerContainer: {
+    flex: 1,
+    // padding: 5,
+    // borderRadius: 20,
+    // marginVertical: 10,
+    flexDirection: "column",
+    // alignItems: "center",
+  },
   messageContainer: {
-    maxWidth: "90%",
-    padding: 10,
-    borderRadius: 20,
+    // maxWidth: "90%",
+    padding: 12,
+    borderRadius: 30,
     // marginVertical: 10,
     // flexDirection: "row",
-    alignItems: "center",
+    // alignItems: "center",
   },
   userMessage: {
     backgroundColor: Colors.mainColor,

@@ -13,7 +13,7 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import { ModalHeader } from "./ModalHeader"; // Assuming ModalHeader is correctly defined
 import { AddressListItem } from "./AddressListItem";
-import { AddAddressFormView, NewAddressData } from "./AddAddressFormView"; // Import the new view
+import { AddAddressFormView } from "./AddAddressFormView"; // Import the new view
 
 export interface Address {
   id: string;
@@ -27,7 +27,7 @@ interface AddressListModalProps {
   onClose: () => void;
   addresses: Address[];
   onRemoveAddress: (addressId: string) => void;
-  onAddressAdded: (newAddress: NewAddressData) => void; // Changed from onAddNewAddress
+  onAddressAdded: (newAddress: Address) => void; // Changed from onAddNewAddress
 }
 
 type ModalView = "list" | "addForm";
@@ -46,7 +46,7 @@ export const AddressListModal: React.FC<AddressListModalProps> = ({
     onClose();
   };
 
-  const handleSaveNewAddress = (newAddress: NewAddressData) => {
+  const handleSaveNewAddress = (newAddress: Address) => {
     onAddressAdded(newAddress);
     setCurrentView("list"); // Go back to list view after saving
   };

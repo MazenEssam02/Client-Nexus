@@ -1,65 +1,31 @@
-// components/Address/AddAddressFormView.tsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Alert,
-  ActivityIndicator,
 } from "react-native";
 import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import MapView, { Region, LatLng } from "react-native-maps";
-import * as Location from "expo-location";
+import Dropdown from "react-native-input-select";
 
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { LabeledInput } from "./LabeledInput";
 import { MainButton } from "../Buttons/MainButton";
-
-const LocationPinIcon = ({ style }: { style?: any }) => (
-  <Text style={[{ fontSize: 22, color: Colors.SecondaryColor }, style]}>
-    📍
-  </Text>
-);
-const CloseIcon = ({ style }: { style?: any }) => (
-  <Text style={[{ fontSize: 24, color: Colors.gray700 }, style]}>✕</Text>
-); // Will be used by ModalHeader now
-const CurrentLocationIcon = ({ style }: { style?: any }) => (
-  <Text style={[{ fontSize: 28, color: Colors.SecondaryColor }, style]}>
-    🎯
-  </Text>
-);
-const MapCenterMarker = ({ style }: { style?: any }) => (
-  <Text style={[{ fontSize: 40, color: "red", position: "absolute" }, style]}>
-    📍
-  </Text>
-);
-
-export interface NewAddressData {
-  // Data structure for the newly created address
-  id: string;
-  text: string; // Formatted text for display in the list
-  fullAddressDetails?: {
-    // Optional: if you want to store more structured data
-    detectedOnMap: string;
-    coordinates?: LatLng;
-    formInput: AddAddressFormData;
-  };
-}
+import { Address } from "./AddressListModal";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "../../API/https";
 
 interface AddAddressFormData {
-  governorate: string;
-  area: string;
+  stateId: number | null;
+  cityId: number | null;
   detailedAddress: string;
-  addressNickname: string;
 }
 
 interface AddAddressFormViewProps {
-  onAddressSaved: (newAddress: NewAddressData) => void;
+  onAddressSaved: (newAddress: Address) => void;
   onCancel: () => void; // To switch view back to list
 }
 
@@ -72,17 +38,6 @@ export const AddAddressFormView: React.FC<AddAddressFormViewProps> = ({
   onAddressSaved,
   onCancel,
 }) => {
-  const [selectedAddress, setSelectedAddress] = useState<string>(
-    "جاري تحديد الموقع..."
-  );
-  const [mapRegion, setMapRegion] = useState<Region | undefined>(undefined);
-  const [currentMarkerCoords, setCurrentMarkerCoords] = useState<
-    LatLng | undefined
-  >(undefined);
-  const [isMapReady, setIsMapReady] = useState(false);
-  const [isGeocoding, setIsGeocoding] = useState(false);
-  const mapRef = useRef<MapView>(null);
-
   const {
     control,
     handleSubmit,
@@ -90,175 +45,42 @@ export const AddAddressFormView: React.FC<AddAddressFormViewProps> = ({
     setValue,
   } = useForm<AddAddressFormData>({
     defaultValues: {
-      governorate: "",
-      area: "",
+      stateId: null,
+      cityId: null,
       detailedAddress: "",
-      addressNickname: "",
     },
     mode: "onChange",
   });
-
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (!isMounted) return;
-      if (status !== "granted") {
-        Alert.alert("Permission Denied", "Location permission is needed.");
-        setSelectedAddress("Location permission denied.");
-        setMapRegion({
-          latitude: 30.0444,
-          longitude: 31.2357,
-          ...initialRegionDelta,
-        });
-        setCurrentMarkerCoords({ latitude: 30.0444, longitude: 31.2357 });
-        return;
-      }
-      try {
-        let location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
-        if (!isMounted) return;
-        const initialCoords = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        };
-        setMapRegion({ ...initialCoords, ...initialRegionDelta });
-        setCurrentMarkerCoords(initialCoords);
-        reverseGeocodeCoordinates(initialCoords);
-      } catch (error) {
-        if (!isMounted) return;
-        setSelectedAddress("Could not fetch current location.");
-        setMapRegion({
-          latitude: 30.0444,
-          longitude: 31.2357,
-          ...initialRegionDelta,
-        });
-        setCurrentMarkerCoords({ latitude: 30.0444, longitude: 31.2357 });
-      }
-    })();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const reverseGeocodeCoordinates = async (coords: LatLng) => {
-    if (!coords) return;
-    setIsGeocoding(true);
-    try {
-      let geocodedAddresses = await Location.reverseGeocodeAsync(coords);
-      if (geocodedAddresses && geocodedAddresses.length > 0) {
-        const g = geocodedAddresses[0];
-        const addressString = [
-          g.streetNumber,
-          g.street,
-          g.district,
-          g.city,
-          g.subregion,
-          g.country,
-        ]
-          .filter(Boolean)
-          .join(", ");
-        setSelectedAddress(addressString || "Address details not found");
-        if (g.city) setValue("governorate", g.city);
-        if (g.subregion) setValue("area", g.subregion);
-        if (g.street)
-          setValue(
-            "detailedAddress",
-            `${g.streetNumber || ""} ${g.street}`.trim()
-          );
-      } else {
-        setSelectedAddress("Address details not found");
-      }
-    } catch (error) {
-      setSelectedAddress("Could not determine address from map.");
-    } finally {
-      setIsGeocoding(false);
-    }
-  };
-
-  const handleRegionChangeComplete = (region: Region) => {
-    setMapRegion(region);
-    const newCenterCoords = {
-      latitude: region.latitude,
-      longitude: region.longitude,
-    };
-    setCurrentMarkerCoords(newCenterCoords);
-    reverseGeocodeCoordinates(newCenterCoords);
-  };
-
-  const goToCurrentLocation = async () => {
-    let { status } = await Location.getForegroundPermissionsAsync();
-    if (status !== "granted") {
-      status = (await Location.requestForegroundPermissionsAsync()).status;
-      if (status !== "granted") {
-        Alert.alert("Permission Denied", "Location permission is needed.");
-        return;
-      }
-    }
-    try {
-      let location = await Location.getCurrentPositionAsync({});
-      const currentCoords = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-      mapRef.current?.animateToRegion(
-        { ...currentCoords, ...initialRegionDelta },
-        1000
-      );
-    } catch (error) {
-      Alert.alert("Error", "Could not fetch current location.");
-    }
-  };
+  const { data: availableStates, isLoading: statesLoading } = useQuery<
+    {
+      id: number;
+      name: string;
+    }[]
+  >({
+    queryKey: ["getStates"],
+    queryFn: () => apiClient.get("/api/City").then((res) => res.data.data),
+  });
+  const { data: availableCities, isLoading: citiesLoading } = useQuery<
+    {
+      id: number;
+      name: string;
+    }[]
+  >({
+    queryKey: ["getCities"],
+    queryFn: () => apiClient.get("/api/State").then((res) => res.data.data),
+  });
 
   const onSubmit: SubmitHandler<AddAddressFormData> = (data) => {
-    const displayAddressText = `${
-      data.addressNickname ? data.addressNickname + ": " : ""
-    }${data.detailedAddress || "N/A"}, ${data.area || "N/A"}, ${
-      data.governorate || "N/A"
-    }`.replace(/ ,|, $/g, "");
-
-    const newAddress: NewAddressData = {
-      id: `addr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-      text: displayAddressText,
-      fullAddressDetails: {
-        detectedOnMap: selectedAddress,
-        coordinates: currentMarkerCoords,
-        formInput: data,
-      },
-    };
-    onAddressSaved(newAddress);
+    onAddressSaved({
+      id: Date.now().toString(),
+      detailedAddress: data.detailedAddress,
+      cityId: data.cityId || 0,
+      stateId: data.stateId || 0,
+    });
   };
 
   return (
     <View style={styles.fullFormContainer}>
-      <View style={styles.mapWrapper}>
-        {mapRegion ? (
-          <MapView
-            ref={mapRef}
-            style={StyleSheet.absoluteFill}
-            initialRegion={mapRegion}
-            onRegionChangeComplete={handleRegionChangeComplete}
-            onMapReady={() => setIsMapReady(true)}
-            showsUserLocation={false}
-            showsMyLocationButton={false}
-          />
-        ) : (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={Colors.mainColor} />
-            <Text style={styles.loadingText}>Loading Map...</Text>
-          </View>
-        )}
-        <MapCenterMarker style={styles.mapCenterPin} />
-        <TouchableOpacity
-          style={styles.currentLocationButton}
-          onPress={goToCurrentLocation}
-          disabled={!isMapReady}
-        >
-          <CurrentLocationIcon />
-        </TouchableOpacity>
-      </View>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined} // 'height' might be too aggressive inside a modal
         style={styles.keyboardAvoiding}
@@ -270,48 +92,54 @@ export const AddAddressFormView: React.FC<AddAddressFormViewProps> = ({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.selectedAddressContainer}>
-            {isGeocoding ? (
-              <ActivityIndicator
-                size="small"
-                color={Colors.mainColor}
-                style={styles.addressActivityIndicator}
-              />
-            ) : null}
-            <Text style={styles.selectedAddressText} numberOfLines={2}>
-              {selectedAddress}
-            </Text>
+          <View style={styles.labelContainer}>
+            <Text style={[styles.label]}>الولاية</Text>
+            <Text style={styles.requiredAsterisk}>*</Text>
           </View>
-
           <Controller
             control={control}
-            name="governorate"
-            rules={{ required: "المحافظة مطلوبة" }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <LabeledInput
-                label="المحافظة"
-                placeholder="المحافظة"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.governorate?.message}
-                required
+            name="stateId"
+            rules={{ required: "الولاية مطلوبة" }}
+            render={({ field: { onChange, value } }) => (
+              <Dropdown
+                placeholder="اختر الولاية"
+                options={
+                  availableStates?.map((state) => ({
+                    label: state.name,
+                    value: state.id,
+                  })) || []
+                }
+                disabled={statesLoading}
+                selectedValue={value}
+                onValueChange={(itemValue) => {
+                  onChange(itemValue);
+                  setValue("cityId", null); // Reset city when state changes
+                }}
+                error={errors.stateId?.message}
               />
             )}
           />
+          <View style={styles.labelContainer}>
+            <Text style={[styles.label]}>المدينة</Text>
+            <Text style={styles.requiredAsterisk}>*</Text>
+          </View>
           <Controller
             control={control}
-            name="area"
-            rules={{ required: "المنطقة مطلوبة" }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <LabeledInput
-                label="المنطقة"
-                placeholder="المنطقة / الحي"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.area?.message}
-                required
+            name="cityId"
+            rules={{ required: "المدينة مطلوبة" }}
+            render={({ field: { onChange, value } }) => (
+              <Dropdown
+                placeholder="اختر المدينة"
+                options={
+                  availableCities?.map((city) => ({
+                    label: city.name,
+                    value: city.id,
+                  })) || []
+                }
+                disabled={citiesLoading || !availableStates}
+                selectedValue={value}
+                onValueChange={onChange}
+                error={errors.cityId?.message}
               />
             )}
           />
@@ -331,25 +159,11 @@ export const AddAddressFormView: React.FC<AddAddressFormViewProps> = ({
               />
             )}
           />
-          <Controller
-            control={control}
-            name="addressNickname"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <LabeledInput
-                label="اسم العنوان (مثال: المنزل، العمل)"
-                placeholder="الاسم"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.addressNickname?.message}
-              />
-            )}
-          />
           <View style={styles.saveButtonContainer}>
             <MainButton
               title="حفظ العنوان"
               onPress={handleSubmit(onSubmit)}
-              disabled={!isValid || isGeocoding}
+              disabled={!isValid || statesLoading || citiesLoading}
               style={styles.saveButton}
             />
           </View>
@@ -411,4 +225,20 @@ const styles = StyleSheet.create({
   saveButton: { marginTop: 15 },
   cancelButton: { marginTop: 10, paddingVertical: 10, alignItems: "center" },
   cancelButtonText: { ...font.Button, color: Colors.gray700, fontSize: 14 },
+  labelContainer: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  label: {
+    ...font.subtitle,
+    color: Colors.SecondaryColor,
+    textAlign: "right",
+  },
+  requiredAsterisk: {
+    color: Colors.invalidColor200 || "red",
+    marginLeft: 4,
+    fontSize: 16,
+    lineHeight: (font.subtitle?.fontSize || 16) * 1.1,
+  },
 });

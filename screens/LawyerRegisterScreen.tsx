@@ -26,12 +26,10 @@ import {
 } from "../components/AddressListModal/AddressListModal";
 import { LoginIllustration } from "../components/Icons/LoginIllustration";
 import { LoginInput } from "../components/LoginInput/LoginInput";
-import { NewAddressData } from "../components/AddressListModal/AddAddressFormView";
 import { apiClient } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
 import Dropdown from "react-native-input-select";
 import { useAuthStore } from "../store/auth";
-import { AxiosError } from "axios";
 
 interface LawyerRegisterFormData {
   name: string;
@@ -81,20 +79,7 @@ const LawyerRegisterScreen = ({ route }) => {
 
   const [isAddressModalVisible, setIsAddressModalVisible] =
     useState<boolean>(false);
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: "1",
-      cityId: 1,
-      detailedAddress: "عنوان 1",
-      stateId: 1,
-    },
-    {
-      id: "2",
-      cityId: 1,
-      detailedAddress: "عنوان 2",
-      stateId: 1,
-    },
-  ]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const {
     control,
     handleSubmit,
@@ -133,15 +118,8 @@ const LawyerRegisterScreen = ({ route }) => {
     );
   };
 
-  const handleAddNewAddressFromModal = (newAddress: NewAddressData) => {
-    const newAddressData: Address = {
-      id: Math.random().toString(),
-      cityId: 1,
-      detailedAddress: "sss",
-      stateId: 1,
-    };
-    setAddresses((prevAddresses) => [...prevAddresses, newAddressData]);
-    setIsAddressModalVisible(false);
+  const handleAddNewAddressFromModal = (newAddress: Address) => {
+    setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
   };
 
   return (
@@ -164,6 +142,20 @@ const LawyerRegisterScreen = ({ route }) => {
               setValue("details", "محامي متخصص في القضايا المدنية");
               setValue("workType", "private");
               setSelectedSpecializations(specializationsData.slice(0, 2));
+              setAddresses([
+                {
+                  id: "1",
+                  cityId: 1,
+                  detailedAddress: "عنوان 1",
+                  stateId: 1,
+                },
+                {
+                  id: "2",
+                  cityId: 1,
+                  detailedAddress: "عنوان 2",
+                  stateId: 1,
+                },
+              ]);
             }}
             style={{
               backgroundColor: Colors.mainColor,

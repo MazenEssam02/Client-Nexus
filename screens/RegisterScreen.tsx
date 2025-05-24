@@ -77,6 +77,10 @@ const RegisterScreen = () => {
   const passwordValue = watch("password");
 
   const onSubmit = async (data: FormData) => {
+    if (!acceptedPolicy) {
+      alert("الرجاء الموافقة على سياسة الاستخدام والخصوصية أولاً");
+      return;
+    }
     const formData = {
       firstName: data.fullName.split(" ")[0],
       lastName: data.fullName.split(" ").slice(1).join(" "),

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,12 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import { Controller, useForm, SubmitHandler, set } from "react-hook-form";
 
 import { font } from "../constants/Font";
 import { Colors } from "../constants/Color";
 import { MainButton } from "../components/Buttons/MainButton";
 import { TextAreaInput } from "../components/TextAreaInput/TextAreaInput";
-import { ChipList } from "../components/Chips/ChipList";
 import { RadioButtonGroup } from "../components/RadioButton/RadioButtonGroup";
 import {
   FileUploadButton,
@@ -25,11 +24,9 @@ import { AddressListModal } from "../components/AddressListModal/AddressListModa
 import { LoginIllustration } from "../components/Icons/LoginIllustration";
 import { LoginInput } from "../components/LoginInput/LoginInput";
 import { NewAddressData } from "../components/AddressListModal/AddAddressFormView";
-
-interface IChip {
-  id: string;
-  label: string;
-}
+import { apiClient } from "../API/https";
+import { useQuery } from "@tanstack/react-query";
+import Dropdown from "react-native-input-select";
 
 interface AddressListItemData {
   // This should align with NewAddressData's relevant parts
@@ -46,19 +43,32 @@ interface LawyerRegisterFormData {
 }
 
 const LawyerRegisterScreen = ({ route }) => {
-  const [specializations, setSpecializations] = useState<IChip[]>([
-    { id: "spec1", label: "تخصص 1" },
-    { id: "spec2", label: "تخصص 2" },
-  ]);
-  const [currentSpecializationText, setCurrentSpecializationText] =
-    useState<string>("");
+  const [selectedSpecializations, setSelectedSpecializations] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
   const commonFormData = route.params.data;
 
-  const [profilePic, setProfilePic] = useState<SelectedAsset | null>(null);
   const [idCardPic, setIdCardPic] = useState<SelectedAsset | null>(null);
   const [nationalIdPic, setNationalIdPic] = useState<SelectedAsset | null>(
     null
   );
+  const { data: specializationsData } = useQuery<
+    {
+      id: number;
+      name: string;
+    }[]
+  >({
+    queryKey: ["specializations"],
+    queryFn: () =>
+      apiClient
+        .get("/api/Specialization/GetAllSpecializations")
+        .then((res) =>
+          res.data.data.filter((item) => item.serviceProviderTypeId === 1)
+        ),
+  });
 
   const [isAddressModalVisible, setIsAddressModalVisible] =
     useState<boolean>(false);
@@ -69,6 +79,7 @@ const LawyerRegisterScreen = ({ route }) => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
     watch,
   } = useForm<LawyerRegisterFormData>({
@@ -85,80 +96,11 @@ const LawyerRegisterScreen = ({ route }) => {
   const handleFormSubmit: SubmitHandler<LawyerRegisterFormData> = async (
     data
   ) => {
-    const formData = new FormData();
-
-    formData.append("name", data.name);
-    formData.append("yearsOfExperience", data.yearsOfExperience);
-    formData.append("details", data.details);
-    formData.append("workType", data.workType);
-
-    specializations.forEach((spec, index) => {
-      formData.append(`specializations[${index}]`, spec.label);
-    });
-
-    addresses.forEach((addr, index) => {
-      formData.append(`addresses[${index}]`, addr.text);
-    });
-
-    formData.append("profileImageFile", {
-      uri: profilePic.uri,
-      name: profilePic.name,
-      type: profilePic.type,
-    } as any);
-    formData.append("idCardImageFile", {
-      uri: idCardPic.uri,
-      name: idCardPic.name,
-      type: idCardPic.type,
-    } as any);
-    formData.append("nationalIdImageFile", {
-      uri: nationalIdPic.uri,
-      name: nationalIdPic.name,
-      type: nationalIdPic.type,
-    } as any);
-
-    console.log("Lawyer Info FormData Prepared: ", formData);
-    Alert.alert("تم الحفظ", "بيانات المحامي جاهزة للإرسال.");
-    // Example API call:
-    // try {
-    //   const response = await axios.post('YOUR_API_ENDPOINT', formData, {
-    //     headers: { 'Content-Type': 'multipart/form-data' },
-    //   });
-    //   console.log('Server response:', response.data);
-    //   Alert.alert("نجاح", "تم حفظ بيانات المحامي بنجاح.");
-    // } catch (error) {
-    //   console.error('API Error:', error);
-    //   Alert.alert("خطأ", "لم يتم حفظ البيانات.");
-    // }
-  };
-  console.log("Form Data: ", {
-    name: watch("name"),
-    yearsOfExperience: watch("yearsOfExperience"),
-    details: watch("details"),
-    workType: watchedWorkType,
-    locations: addresses,
-    specializations: specializations,
-    images: {
-      profilePic,
+    console.log("Form Data:", {
+      ...data,
       idCardPic,
       nationalIdPic,
-    },
-  });
-
-  const handleAddSpecialization = () => {
-    if (currentSpecializationText.trim() !== "") {
-      const newSpec: IChip = {
-        id: `spec${Date.now()}`,
-        label: currentSpecializationText.trim(),
-      };
-      setSpecializations((prevSpecs) => [...prevSpecs, newSpec]);
-      setCurrentSpecializationText("");
-    }
-  };
-
-  const handleRemoveSpecialization = (idToRemove: string) => {
-    setSpecializations((prevSpecs) =>
-      prevSpecs.filter((spec) => spec.id !== idToRemove)
-    );
+    });
   };
 
   const handleRemoveAddress = (addressId: string) => {
@@ -187,6 +129,26 @@ const LawyerRegisterScreen = ({ route }) => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {__DEV__ && (
+          // button to fill the form with test data
+          <TouchableOpacity
+            onPress={async () => {
+              setValue("name", "مكتب النجاح");
+              setValue("yearsOfExperience", "5");
+              setValue("details", "محامي متخصص في القضايا المدنية");
+              setValue("workType", "private");
+              setSelectedSpecializations(specializationsData.slice(0, 2));
+            }}
+            style={{
+              backgroundColor: Colors.mainColor,
+              padding: 10,
+              borderRadius: 5,
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ color: "#fff" }}>ملئ البيانات التجريبية</Text>
+          </TouchableOpacity>
+        )}
         <LoginIllustration style={styles.illustration} />
         <Text style={styles.title}>أدخل معلومات المحامي</Text>
 
@@ -212,27 +174,42 @@ const LawyerRegisterScreen = ({ route }) => {
             onPress={() => setIsAddressModalVisible(true)}
           />
         </View>
-
-        <LoginInput
+        <Dropdown
           placeholder="التخصص (اكتب ثم اضغط إضافة)"
-          value={currentSpecializationText}
-          onChangeText={setCurrentSpecializationText}
-          placeholderTextColor={Colors.gray700}
-        />
-        {currentSpecializationText.trim() !== "" && (
-          <TouchableOpacity
-            onPress={handleAddSpecialization}
-            style={styles.addSpecButton}
-          >
-            <Text style={styles.addSpecButtonTextContent}>
-              + إضافة هذا التخصص
-            </Text>
-          </TouchableOpacity>
-        )}
-        <ChipList
-          items={specializations}
-          onRemoveItem={handleRemoveSpecialization}
-          containerStyle={styles.chipListContainer}
+          options={
+            specializationsData?.map((spec) => ({
+              label: spec.name,
+              value: spec.name,
+            })) || []
+          }
+          selectedValue={selectedSpecializations.map((spec) => spec.name)}
+          isMultiple
+          onValueChange={(value: string | string[]) => {
+            console.log("Selected value:", value);
+            if (Array.isArray(value)) {
+              const selectedSpecs = value.map((val) =>
+                specializationsData.find((spec) => spec.name === val)
+              );
+              setSelectedSpecializations(selectedSpecs);
+            } else {
+              setSelectedSpecializations(
+                specializationsData.filter((spec) => spec.name === value)
+              );
+            }
+          }}
+          primaryColor={Colors.mainColor}
+          isSearchable
+          dropdownIcon={<></>}
+          placeholderStyle={{
+            ...font.title,
+            textAlign: "right",
+            color: Colors.gray700,
+          }}
+          dropdownStyle={{
+            alignItems: "flex-end",
+            borderColor: Colors.SecondaryColorLight,
+            borderRadius: 8,
+          }}
         />
 
         <Controller
@@ -299,11 +276,6 @@ const LawyerRegisterScreen = ({ route }) => {
         />
 
         <FileUploadButton
-          label="صورة الحساب:"
-          onFileSelected={(asset) => setProfilePic(asset)}
-          selectedFileName={profilePic?.name}
-        />
-        <FileUploadButton
           label="صورة الكارنيه:"
           onFileSelected={(asset) => setIdCardPic(asset)}
           selectedFileName={idCardPic?.name}
@@ -321,10 +293,9 @@ const LawyerRegisterScreen = ({ route }) => {
             disabled={
               isValid ||
               Object.keys(errors).length > 0 ||
-              !profilePic ||
               !idCardPic ||
               !nationalIdPic ||
-              !specializations.length ||
+              !selectedSpecializations.length ||
               !addresses.length
             }
           />

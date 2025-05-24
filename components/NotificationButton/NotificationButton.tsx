@@ -4,7 +4,10 @@ import { Colors } from "../../constants/Color";
 
 export default function NotificationButton({ onPress }) {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      onPress={onPress}
+    >
       <Ionicons name="notifications" size={20} color={Colors.mainColor} />
     </Pressable>
   );
@@ -20,5 +23,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+  },
+  pressed: {
+    opacity: 0.6,
   },
 });

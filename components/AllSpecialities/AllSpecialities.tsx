@@ -3,7 +3,7 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import specialities from "../../api-mock/specialities.json";
 import SpecialitiyItem from "../SpecialityItem/SpecialityItem";
-export default function AllSpecialities({ specialities }) {
+export default function AllSpecialities({ specialities, type }) {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
@@ -14,7 +14,7 @@ export default function AllSpecialities({ specialities }) {
         data={specialities}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <SpecialitiyItem text={item.name} index={index} />
+          <SpecialitiyItem text={item.name} index={index} type={type} />
         )}
       />
     </View>

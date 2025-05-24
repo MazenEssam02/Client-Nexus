@@ -1,49 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
-import FavouriteLawyerCard from "../components/LawyerCard/FavouriteLawyerCard";
 import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
+import { useQuery } from "@tanstack/react-query";
+import { Client } from "../API/https";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import IsError from "../components/IsError/IsError";
+const weekday = [
+  "الاحد",
+  "الاثنين",
+  "الثلاثاء",
+  "الاربعاء",
+  "الخميس",
+  "الجمعة",
+  "السبت",
+];
 export default function ScheduleScreen() {
   const [transactions, setTransactions] = useState([
     {
-      id: "1",
-      date: "11/1/2025",
-      rate: "3",
-      day: "الأربعاء",
-      name: "المحامي جورج جيهام",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
-    },
-    {
-      id: "2",
-      date: "12/1/2025",
-      rate: "5",
-      day: "الخميس",
-      name: "المحامي عبدالكريم غفار",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
-    },
-    {
-      id: "3",
-      date: "13/1/2025",
-      rate: "4",
-      day: "الجمعة",
-      name: "المحامي عبدالكريم غفار",
-      speciality: "شرعي وأحوال",
-      time: "15:00",
-      type: "استشارة مكتبية",
-      image: "../assets/LawyerPic/image.png", // Replace with actual image URL
+      id: undefined,
+      date: "",
+      rate: "",
+      day: "",
+      name: "",
+      speciality: "",
+      time: "",
+      type: "",
+      image: "",
     },
   ]);
-
-  // Uncomment the next line to test the empty screen
-  // setTransactions([]);
-
+  const {
+    data: Appointments,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["Appointments"],
+    queryFn: Client.getAppointments,
+  });
+  useEffect(() => {
+    if (Appointments?.data) {
+      setTransactions(
+        Appointments.data.map((Appointment) => ({
+          id: Appointment.id,
+          date: new Date(Appointment.slotDate).toLocaleDateString(),
+          rate: Appointment.serviceProviderRate.toString(),
+          day: weekday[new Date(Appointment.slotDate).getDay()],
+          name: `${Appointment.serviceProviderFirstName}${Appointment.serviceProviderLastName}`,
+          speciality: Appointment.serviceProviderMainSpecialization,
+          time: new Date(Appointment.slotDate).getTime(),
+          type: "مكتبي",
+          image: Appointment.serviceProviderMainImage,
+        }))
+      );
+      console.log(transactions[0].type);
+    }
+  }, [Appointments]);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+  if (isError) {
+    return <IsError error={error} />;
+  }
   return (
     <View style={styles.container}>
       {transactions.length === 0 ? (

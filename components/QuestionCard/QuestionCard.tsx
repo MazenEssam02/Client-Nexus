@@ -1,15 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import { RateUp } from "../Icons/RateUp";
-import { RateDown } from "../Icons/RateDown";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
-import { useState } from "react";
-const QuestionCard = ({ questionItem }) => {
-  // to be updated soon: we need to fetch the user gender and age and lawyer name from their ids passed here
-  // questionItem.clientId / questionItem.serviceProviderId
-  const askedBy = null;
-  const name = null;
-  // const [support, setSupport] = useState(rating);
+const QuestionCard = ({ ...questionItem }) => {
   return (
     <View style={styles.card}>
       <Pressable
@@ -17,30 +9,23 @@ const QuestionCard = ({ questionItem }) => {
       >
         <View style={styles.infoSection}>
           <View style={styles.row}>
-            <Text style={styles.askedBy}>{askedBy}</Text>
-            <Text style={styles.question}>{questionItem.questionBody}</Text>
+            <Text style={styles.askedBy}>
+              {questionItem.askedBy ? questionItem.askedBy : "سأل ذكر 22 سنه"}
+            </Text>
+            <Text style={styles.question}>
+              {questionItem.questionBody ? questionItem.questionBody : "none"}
+            </Text>
           </View>
           <View style={styles.answerContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.answer}>{questionItem.answerBody}</Text>
+            <Text style={styles.name}>
+              {questionItem.name ? questionItem.name : "عبدالكريم غفار"}
+            </Text>
+            <Text style={styles.answer}>
+              {questionItem.answerBody ? questionItem.answerBody : "none"}
+            </Text>
           </View>
         </View>
       </Pressable>
-      {/* <View style={styles.ratingContainer}>
-        <Pressable
-          style={({ pressed }) => pressed && styles.pressed}
-          onPress={() => setSupport((support) => support + 1)}
-        >
-          <RateUp />
-        </Pressable>
-        <Text style={styles.rating}>{support}</Text>
-        <Pressable
-          style={({ pressed }) => pressed && styles.pressed}
-          onPress={() => setSupport((support) => support - 1)}
-        >
-          <RateDown />
-        </Pressable>
-      </View> */}
     </View>
   );
 };
@@ -67,13 +52,14 @@ const styles = StyleSheet.create({
   },
   answerContainer: {
     backgroundColor: Colors.background,
+    justifyContent: "center",
     padding: 10,
     borderRadius: 5,
     alignItems: "flex-end",
   },
   askedBy: {
     fontFamily: font.subtitle.fontFamily,
-    fontSize: font.subtitle.fontSize,
+    fontSize: 9,
   },
   name: {
     fontFamily: font.title.fontFamily,
@@ -81,12 +67,15 @@ const styles = StyleSheet.create({
     color: Colors.SecondaryColor,
   },
   question: {
-    fontFamily: font.subtitle.fontFamily,
-    fontSize: font.subtitle.fontSize,
-    marginTop: -5,
+    fontFamily: font.Caption.fontFamily,
+    fontSize: font.Caption.fontSize,
+    marginTop: -3,
+    color: Colors.mainColor,
   },
   answer: {
     textAlign: "right",
+    justifyContent: "center",
+    alignItems: "center",
     fontSize: 10,
     fontFamily: font.body.fontFamily,
     color: Colors.SecondaryColor,

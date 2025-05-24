@@ -5,8 +5,7 @@ import { font } from "../../constants/Font";
 const IsLoading = () => {
   return (
     <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color={Colors.mainColor} />
-      <Text style={styles.loadingText}>Searching...</Text>
+      <ActivityIndicator size="small" color={Colors.mainColor} />
     </View>
   );
 };

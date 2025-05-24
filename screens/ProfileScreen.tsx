@@ -12,24 +12,33 @@ import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import InfoArea from "../components/InfoProfile/InfoArea";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Client } from "../API/https";
 import QuickAccessArea from "../components/QuickAccessProfile/QuickAccessArea";
 import ProfilePicturePicker from "../components/ProfilePicturePicker/ProfilePicturePicker";
-import IsLoading from "../components/IsLoading/IsLoading";
 import IsError from "../components/IsError/IsError";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import { useAuthStore } from "../store/auth";
 export default function ProfileScreen() {
+  const login = useAuthStore((state) => state.login);
   const [editable, setEditable] = useState(false);
   const [originalInfo, setOriginalInfo] = useState(null);
   const [originalImageUri, setOriginalImageUri] = useState(null);
   const [currentImageUri, setCurrentImageUri] = useState(null);
-  const [info, setInfo] = useState({
-    name: {},
-    email: {},
-    mobile: {},
-    birthday: {},
-    password: {},
+
+  const [info, setInfo] = useState<{
+    name: { value: string; header?: string };
+    email: { value: string; header?: string };
+    mobile: { value: string; header?: string };
+    birthday: { value: string; header?: string };
+    password: { value: string; header?: string };
+  }>({
+    name: { value: "" },
+    email: { value: "" },
+    mobile: { value: "" },
+    birthday: { value: "" },
+    password: { value: "" },
   });
   const {
     data: ClientData,
@@ -48,14 +57,6 @@ export default function ProfileScreen() {
     reset: resetUpdateMutation,
   } = useMutation({
     mutationFn: Client.update,
-    onSuccess: () => {
-      Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
-      setEditable(false);
-      setOriginalInfo(null);
-      setOriginalImageUri(null);
-      refetchClientData();
-      resetUpdateMutation();
-    },
     onError: (err) => {
       Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
       console.error("Update error:", err);
@@ -73,7 +74,7 @@ export default function ProfileScreen() {
         },
         email: {
           header: "البريد الالكتروني",
-          value: `Georgegeham@outlook.com`,
+          value: `${ClientData.data.data.email}` || "",
         },
         mobile: {
           header: "التليفون",
@@ -83,7 +84,7 @@ export default function ProfileScreen() {
           header: "تاريخ الميلاد",
           value: `${ClientData.data.data.birthDate}` || "",
         },
-        password: { header: "كلمة السر", value: "123456789" },
+        password: { header: "كلمة السر", value: "" },
       });
     } else if (ClientData) {
       console.log(ClientData);
@@ -112,19 +113,71 @@ export default function ProfileScreen() {
   }
   function saveChanges() {
     if (info) {
-      const clientDataToSend = {
-        email: info.email.value,
-        firstName: info.name.value.split(" ")[0] || "",
-        lastName: info.name.value.split(" ")[1] || "",
-        birthDate: info.birthday.value,
-        phoneNumber: info.mobile.value,
-        newPassword: info.password.value,
-      };
-      updateClient({ ...clientDataToSend });
+      const newPasswordValue = info.password.value || "123456789";
+
+      if (newPasswordValue) {
+        const clientDataToSend = {
+          email: info.email.value,
+          firstName: info.name.value.split(" ")[0] || "",
+          lastName: info.name.value.split(" ")[1] || "",
+          birthDate: info.birthday.value,
+          phoneNumber: info.mobile.value,
+          newPassword: newPasswordValue,
+        };
+
+        updateClient(
+          { ...clientDataToSend },
+          {
+            onSuccess: () => {
+              Alert.alert("نجحت العملية", "تم تحديث كلمة السر بنجاح!.");
+              setEditable(false);
+              setOriginalInfo(null);
+              setOriginalImageUri(null);
+              resetUpdateMutation();
+
+              // Re-login with the new password
+              login({ email: info.email.value, password: newPasswordValue });
+            },
+            onError: (err) => {
+              Alert.alert(
+                "خطأ",
+                "برجاء المحاولة مره اخري عند تحديث كلمة السر."
+              );
+              console.error("Update password error:", err);
+            },
+          }
+        );
+      } else {
+        const clientDataToSend = {
+          email: info.email.value,
+          firstName: info.name.value.split(" ")[0] || "",
+          lastName: info.name.value.split(" ")[1] || "",
+          birthDate: info.birthday.value,
+          phoneNumber: info.mobile.value,
+          newPassword: newPasswordValue,
+        };
+        updateClient(
+          { ...clientDataToSend },
+          {
+            onSuccess: () => {
+              Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
+              setEditable(false);
+              setOriginalInfo(null);
+              setOriginalImageUri(null);
+              refetchClientData().then(() => {});
+              resetUpdateMutation();
+            },
+            onError: (err) => {
+              Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث البيانات.");
+              console.error("Update data error:", err);
+            },
+          }
+        );
+      }
     }
   }
   if (isGetLoading) {
-    return <IsLoading />;
+    return <LoadingSpinner />;
   }
   if (isGetError || isUpdateError) {
     return <IsError error={getError || updateError} />;
@@ -173,7 +226,7 @@ export default function ProfileScreen() {
               onImageChange={setCurrentImageUri}
               currentImage={currentImageUri}
             />
-            <InfoArea editable={editable} info={info} onChange={setInfo} />{" "}
+            <InfoArea editable={editable} info={info} onChange={setInfo} />
             <QuickAccessArea editable={editable} />
           </View>
         </ScrollView>

@@ -1,8 +1,9 @@
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, I18nManager } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { Ionicons } from "@expo/vector-icons";
@@ -43,13 +44,41 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import LawyerRegisterScreen from "./screens/LawyerRegisterScreen";
+import BookingScreen from "./screens/BookingScreen";
+import * as Notifications from "expo-notifications";
+import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 SplashScreen.preventAutoHideAsync().catch(console.warn);
-
+function ScheduleStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="MainSchedule"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="EmergencySchedule"
+        component={EmergencyScheduleScreen}
+        options={{ title: "الطلبات العاجلة" }}
+      />
+      <TopTab.Screen
+        name="MainSchedule"
+        component={ScheduleScreen}
+        options={{ title: "مواعيدى" }}
+      />
+    </TopTab.Navigator>
+  );
+}
 function HomeStack() {
   return (
     <Stack.Navigator
@@ -92,12 +121,12 @@ function HomeStack() {
         name="Article"
         component={Article}
         options={{ title: "التحكم في المقالات" }}
-      /> 
+      /> */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Search"
         component={SearchScreen}
@@ -112,6 +141,22 @@ function HomeStack() {
         name="LawyerDetails"
         component={LawyerDetailsScreen}
         options={{ title: "تفاصيل المحامى" }}
+      />
+      <Stack.Screen
+        name="BookingScreen"
+        component={BookingScreen}
+        options={({ navigation }) => ({
+          title: "ادخل بياناتك",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="WebView"
@@ -160,12 +205,6 @@ function HomeStack() {
             />
           ),
         })}
-      />
-
-      <Stack.Screen
-        name="EmergencyLawyer"
-        component={EmergencyScreens}
-        options={{ title: "محامى عاجل", headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -254,7 +293,7 @@ function UserTabs() {
       />
       <Tab.Screen
         name="Schedule"
-        component={ScheduleScreen}
+        component={ScheduleStack}
         options={{
           title: "مواعيدى",
           tabBarLabel: "مواعيدى",
@@ -314,6 +353,15 @@ function AuthenticatedStack() {
         component={ChatBotScreen}
         options={{ title: "CLIENT NEXUS BOT" }}
       />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreens}
+        options={{
+          title: "محامى عاجل",
+          headerShown: false,
+          gestureEnabled: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -363,6 +411,14 @@ function UnAuthenticatedStack() {
     </Stack.Navigator>
   );
 }
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 export default function App() {
   const { isInitialized, user } = useAuthStore();
   const fontsLoaded = useLoadFonts();
@@ -375,7 +431,6 @@ export default function App() {
   if (!isAppReady) {
     return <ActivityIndicator size="small" color="#0000ff" />;
   }
-
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
@@ -387,9 +442,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

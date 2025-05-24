@@ -1,26 +1,19 @@
-import {
-  StyleSheet,
-  View,
-  Image,
-  ScrollView,
-  Pressable,
-  Text,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View, ScrollView, Pressable, Text } from "react-native";
 import NotificationButton from "../components/NotificationButton/NotificationButton";
 import QuickButton from "../components/QuickButton/QuickButton";
 import SearchBlock from "../components/SearchBlock/SearchBlock";
 import AskQuestionBlock from "../components/AskQuestionBlock/AskQuestionBlock";
 import ArticlesSection from "../components/ArticlesSection/ArticlesSection";
-import { useNavigation } from "@react-navigation/native";
 import ScreensWrapper from "./ScreensWrapper/ScreensWrapper";
 import Bot from "../components/Icons/Bot";
 import { useQuery } from "@tanstack/react-query";
 import { Documents } from "../API/https";
 import MainLogo from "../components/Icons/MainLogo";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
-export default function HomeScreen() {
-  const navigation = useNavigation();
+import { usePushNotifications } from "../hooks/usePushNotifications";
+
+export default function HomeScreen({ navigation }) {
+  usePushNotifications(navigation);
   const {
     data: documents,
     isLoading,
@@ -32,11 +25,7 @@ export default function HomeScreen() {
   });
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <LoadingSpinner />
-      </View>
-    );
+    return <LoadingSpinner />;
   }
 
   if (isError) {
@@ -75,18 +64,23 @@ export default function HomeScreen() {
           <QuickButton
             title={"مكالمة محامى"}
             iconName={"Call"}
-            onPress={() => navigation.navigate("Search" as never)}
+            onPress={() =>
+              navigation.navigate("Search" as never, { type: false })
+            }
           />
         </View>
         <SearchBlock />
-        <AskQuestionBlock />
+        <AskQuestionBlock navigation={navigation} />
         <ArticlesSection
           navigation={navigation}
           documents={documents.data.data}
         />
       </ScrollView>
       <Pressable
-        style={styles.chatBotContainer}
+        style={({ pressed }) => [
+          styles.chatBotContainer,
+          pressed && styles.pressed,
+        ]}
         onPress={() => navigation.navigate("ChatBotScreen" as never)}
       >
         <Bot width={50} height={50} />
@@ -116,5 +110,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 15,
+  },
+  pressed: {
+    opacity: 0.6,
   },
 });

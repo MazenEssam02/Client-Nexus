@@ -6,7 +6,7 @@ import OnTime from "../Icons/OnTime";
 import Call from "../Icons/Call";
 import ConsultLarge from "../Icons/ConsultLarge";
 
-export default function NotificationButton({ title, iconName, onPress }) {
+export default function QuickButton({ title, iconName, onPress }) {
   function LogoPicker() {
     switch (iconName) {
       case "Consult":
@@ -18,7 +18,10 @@ export default function NotificationButton({ title, iconName, onPress }) {
     }
   }
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      onPress={onPress}
+    >
       <View style={styles.iconContainer}>
         <LogoPicker />
       </View>
@@ -37,6 +40,9 @@ const styles = StyleSheet.create({
     width: "30%",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  pressed: {
+    opacity: 0.6,
   },
   iconContainer: {
     height: "90%",

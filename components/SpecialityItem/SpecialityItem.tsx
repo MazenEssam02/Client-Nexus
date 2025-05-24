@@ -4,12 +4,12 @@ import { font } from "../../constants/Font";
 import { useNavigation } from "@react-navigation/native";
 import Consult from "../Icons/Consult";
 
-export default function SpecialitiyItem({ text, index }) {
+export default function SpecialitiyItem({ text, index, type }) {
   const navigation = useNavigation();
   function onPressHandler() {
     navigation.navigate(
       "SearchResult" as never,
-      { requestName: text } as never
+      { requestName: text, type: type } as never
     );
   }
   return (

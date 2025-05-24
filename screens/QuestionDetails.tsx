@@ -1,51 +1,60 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
+import { Client } from "../API/https";
 
-const QuestionDetails = () => {
+const QuestionDetails = ({ route }) => {
+  const data = route.params.Question;
   const [feedback, setFeedback] = useState(null); // Track user feedback
 
-  const question = "ما الأوراق المطلوبة لرفع دعوى قضائية للتمكين من شقة؟";
-  const answer = `ستحتاج إلى:
-  - عقد الإيجار
-  - بطاقة الرقم القومي
-  - إثبات الإقامة
-  - إيصالات سداد الإيجار
-
-  تم الرد بواسطة المحامي: هاني عبدالوهاب`;
-
+  const question =
+    data.questionBody || "ما الأوراق المطلوبة لرفع دعوى قضائية للتمكين من شقة؟";
+  const answer =
+    data.status === 68 ? data.answerBody : "لا توجد اجابة لهذا السؤال بعد";
+  useEffect(() => {
+    if (feedback) {
+      Client.submitQAFeedback(data.id, feedback)
+        .then((response) => Alert.alert("تم اضافة رأيك بنجاح"))
+        .catch((err) => {
+          Alert.alert("برجاء المحاولة مره اخري");
+          console.log(err);
+        });
+    }
+  }, [feedback]);
   return (
     <View style={styles.container}>
-      {/* Question */}
       <View style={styles.questionBubble}>
         <Text style={styles.questionText}>{question}</Text>
       </View>
 
-      {/* Lawyer's Response */}
-      <View style={styles.answerBubble}>
-        <Text style={styles.answerText}>{answer}</Text>
+      <View
+        style={[
+          styles.answerBubble,
+          data.status !== 68 && { backgroundColor: Colors.invalidColor600 },
+        ]}
+      >
+        <Text style={[styles.answerText]}>{answer}</Text>
       </View>
 
-      {/* Feedback Section */}
       <View style={styles.feedbackContainer}>
         <Text style={styles.feedbackTitle}>ما رأيك في الإجابة</Text>
         <View style={styles.feedbackButtons}>
           <TouchableOpacity
             style={[
               styles.feedbackButton,
-              feedback === "useful" && styles.selectedButton,
+              feedback === "true" && styles.selectedButton,
             ]}
-            onPress={() => setFeedback("useful")}
+            onPress={() => setFeedback("true")}
           >
             <Text style={styles.feedbackText}>مفيد ✅</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.feedbackButton,
-              feedback === "notUseful" && styles.selectedButton,
+              feedback === "fasle" && styles.selectedButton,
             ]}
-            onPress={() => setFeedback("notUseful")}
+            onPress={() => setFeedback("false")}
           >
             <Text style={styles.feedbackText}>غير مفيد ❌</Text>
           </TouchableOpacity>
@@ -71,8 +80,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   questionText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
     textAlign: "right",
   },
@@ -89,8 +98,8 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   answerText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
     color: Colors.SecondaryColor,
   },
   feedbackContainer: {
@@ -116,13 +125,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     width: "45%",
+    borderWidth: 1,
+    borderColor: Colors.SecondaryColorLight,
   },
   selectedButton: {
     backgroundColor: "#A56A39",
   },
   feedbackText: {
-    fontSize: font.headline.fontSize,
-    fontFamily: font.headline.fontFamily,
+    fontSize: font.subtitle.fontSize,
+    fontFamily: font.subtitle.fontFamily,
   },
 });
 

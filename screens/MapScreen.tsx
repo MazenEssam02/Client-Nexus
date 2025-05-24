@@ -70,9 +70,9 @@ export default function MapScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+     
         <LoadingSpinner />
-      </View>
+      
     );
   }
   if (errorMsg) {

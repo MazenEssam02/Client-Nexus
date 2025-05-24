@@ -1,38 +1,17 @@
-import { StyleSheet, View, Text, FlatList, Alert } from "react-native";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import EmergencyForm from "./EmergencyScreens/EmergencyForm";
 import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
-import MapScreen from "./MapScreen";
+import EmergencyLawyerDetails from "./EmergencyLawyerDetails";
 const Stack = createNativeStackNavigator();
 export default function EmergencyScreens({ navigation }) {
-  const handleBack = () => {
-    Alert.alert(
-      "الرجوع",
-      "هل انت متأكد انك تريد الرجوع و الغاء الطلب",
-      [
-        {
-          text: "الغاء",
-          onPress: () => navigation.goBack(),
-          style: "destructive",
-        },
-        {
-          text: "البقاء",
-
-          style: "cancel",
-        },
-      ],
-      { cancelable: true, userInterfaceStyle: "light" }
-    );
-  };
-
   return (
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
+        // headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
@@ -45,37 +24,35 @@ export default function EmergencyScreens({ navigation }) {
         component={EmergencyForm}
         options={{
           title: "محامى عاجل",
-        }}
-      />
-      <Stack.Screen
-        name="MapScreen"
-        component={MapScreen}
-        options={({ navigation }) => ({
-          title: "اختيار الموقع",
-          presentation: "modal",
+          gestureEnabled: false,
           headerLeft: () => (
             <Ionicons
-              name="close-outline"
+              name="chevron-back-outline"
+              style={{ marginLeft: -10 }}
               size={30}
               color="white"
-              onPress={navigation.goBack}
+              onPress={() => {
+                navigation.goBack();
+              }}
             />
           ),
-        })}
+        }}
       />
+
       <Stack.Screen
         name="Requests"
         component={EmergencyRequests}
         options={{
           title: "اختر محامى",
-          headerLeft: () => (
-            <Ionicons
-              name="close-outline"
-              size={30}
-              color="white"
-              onPress={handleBack}
-            />
-          ),
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="EmergencyDetails"
+        component={EmergencyLawyerDetails}
+        options={{
+          title: "تفاصيل الطلب",
+          gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

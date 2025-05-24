@@ -3,7 +3,7 @@ import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import UserCard from "../UserCard/UserCard";
 import { useNavigation } from "@react-navigation/native";
-export default function LawyerRatings({ feedbacks }) {
+export default function LawyerRatings({ feedbacks, isDisabled = false }) {
   const navigation = useNavigation();
   const moreHandler = () => {
     navigation.navigate("LawyerRatingScreen" as never, { feedbacks });
@@ -12,9 +12,13 @@ export default function LawyerRatings({ feedbacks }) {
     <View style={styles.ratingContainer}>
       <View style={styles.ratingUpperContainer}>
         <Text style={styles.title}>تقييمات الزائرين</Text>
-        <Pressable onPress={moreHandler} style={styles.arrowContainer}>
-          <Text style={styles.readMoreText}>المزيد</Text>
-        </Pressable>
+        {isDisabled ? (
+          ""
+        ) : (
+          <Pressable onPress={moreHandler} style={styles.arrowContainer}>
+            <Text style={styles.readMoreText}>المزيد</Text>
+          </Pressable>
+        )}
       </View>
       <View style={styles.list}>
         <FlatList

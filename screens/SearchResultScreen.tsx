@@ -1,4 +1,3 @@
-
 import { View, StyleSheet, FlatList } from "react-native";
 
 import { Colors } from "../constants/Color";
@@ -8,7 +7,6 @@ import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
 import { useCallback, useLayoutEffect, useState } from "react";
 import FilterResultModal from "../components/FilterResultModal/FilterResultModal";
 import { font } from "../constants/Font";
-
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import { ServiceProvider } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
@@ -36,6 +34,7 @@ export default function SearchResultScreen({ route, navigation }) {
     queryKey: ["Lawyers", searchText],
     queryFn: () => ServiceProvider.getBySearch(searchText),
     enabled: !!searchText,
+    refetchInterval: 5000,
   });
   const searchResults = searchResultsData?.data?.data || [];
   const noResponse =
@@ -94,6 +93,7 @@ export default function SearchResultScreen({ route, navigation }) {
       !!filterData.minRate ||
       !!filterData.specializationName ||
       !!filterData.state,
+    refetchInterval: 5000,
   });
   const lawyersToDisplay = filterUsed
     ? filteredSearchResult?.data?.data || []
@@ -104,7 +104,7 @@ export default function SearchResultScreen({ route, navigation }) {
       (filteredSearchResult?.data?.data?.length || 0) === 0
     : noResponse;
   if (searchIsLoading && searchText) {
-    return <IsLoading />;
+    return <LoadingSpinner />;
   }
   if (searchIsError && searchText) {
     return <IsError error={searchError} />;
@@ -146,9 +146,10 @@ export default function SearchResultScreen({ route, navigation }) {
           keyExtractor={(lawyer) => lawyer.id.toString()}
           renderItem={({ item: lawyer }) => (
             <ResultLawyerCard
-              name={lawyer.firstName}
+              name={lawyer.firstName + " " + lawyer.lastName}
               rate={lawyer.rate}
-              speciality={lawyer.specializationName?.[0]}
+              speciality={lawyer.main_Specialization}
+              gender={lawyer.gender}
               vezita={lawyer.office_consultation_price}
               address={lawyer.city}
               imageURL={lawyer.mainImage}
@@ -157,13 +158,13 @@ export default function SearchResultScreen({ route, navigation }) {
                   "LawyerDetails" as never,
                   {
                     lawyer: lawyer,
+                    type: route.params.type,
                   } as never
                 )
               }
             />
           )}
         />
-
       </View>
     </>
   );

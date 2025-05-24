@@ -1,11 +1,15 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import LawyerList from "../api-mock/LawyerList";
+// import LawyerList from "../api-mock/LawyerList";
 import { font } from "../constants/Font";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import FavouriteLawyerCard from "../components/LawyerCard/FavouriteLawyerCard";
 import FixedButton from "../components/floatbutton/FixedButton";
+import { getFavorites } from "../store/FavoritesStore";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useFocusEffect } from "@react-navigation/native";
 const FavouriteScreen = () => {
   const [editable, setEditable] = useState(false);
+  const [LawyerList, setLawyerList] = useState([]);
   //const navigation = useNavigation();
   //// 1. Separate your header component from the state update logic
   //const HeaderRightButton = useCallback(() => {
@@ -48,6 +52,22 @@ const FavouriteScreen = () => {
   //});
   //};
   //}, [navigation, HeaderRightButton, editable]);
+  // async function getNewFavorites() {
+  //   const LawyerList = await getFavorites();
+  //   console.log(LawyerList);
+  // }
+  // user to refetch the data when the screen is focused(remove a favorite and return to the same screen again )
+  useFocusEffect(
+    useCallback(() => {
+      const fetchFavorites = async () => {
+        const newLawyerList = await getFavorites();
+        setLawyerList(newLawyerList);
+        console.log(newLawyerList);
+      };
+      fetchFavorites();
+    }, [])
+  );
+
   function editHandler() {
     console.log("clicked");
     setEditable((editable) => !editable);
@@ -69,10 +89,10 @@ const FavouriteScreen = () => {
         keyExtractor={(lawyer) => lawyer.id}
         renderItem={(lawyer) => (
           <FavouriteLawyerCard
-            name={lawyer.item.name}
+            name={lawyer.item.firstName + " " + lawyer.item.lastName}
             rate={lawyer.item.rate}
-            speciality={lawyer.item.speciality}
-            address={lawyer.item.address}
+            speciality={lawyer.item.main_Specialization}
+            address={lawyer.item.city}
             editable={editable}
             id={lawyer.item.id}
           />

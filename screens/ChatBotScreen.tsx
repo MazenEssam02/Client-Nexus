@@ -183,63 +183,174 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
+import { useMutation } from "@tanstack/react-query";
+import TypingIndicator from "../components/Icons/AnimatedTyping";
+
+interface Message {
+  id: string;
+  text: string;
+  sender: "user" | "bot" | "typing";
+}
 
 const ChatBotScreen = () => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<Message[]>([
     { id: "1", text: "مرحبا كيف يمكننى مساعدتك؟", sender: "bot" },
   ]);
   const [text, setText] = useState("");
+  // const [isTyping, setIsTyping] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  const handleSend = () => {
-    if (text.trim()) {
-      const newMessage = {
+  const { mutate: sendMessage, isPending: isTyping } = useMutation({
+    mutationFn: async (message: string) => {
+      const response = await fetch(
+        "https://legalrag-app.happyforest-adceda20.uaenorth.azurecontainerapps.io/nlp/answer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: message,
+          }),
+        }
+      );
+
+      const responseClone = response.clone();
+
+      if (!response.ok) {
+        const errorData = await responseClone.json();
+        throw new Error(
+          `API Error: ${response.status} - ${JSON.stringify(errorData)}`
+        );
+      }
+
+      // Then parse the original response for success case
+      return response.json();
+    },
+    onMutate: (message) => {
+      const newMessage: Message = {
         id: Math.random().toString(36).substring(7),
-        text,
+        text: message,
         sender: "user",
       };
       setMessages((prev) => [...prev, newMessage]);
-      setText("");
-      // Bot's reply logic
-      const generateBotReply = (userMessage: string) => {
-        if (userMessage.includes("مرحبا")) return "مرحبا بك 👋";
-        if (userMessage.includes("مساعدة"))
-          return "بالتأكيد, انا هنا لمساعدتك!";
-        return "عفواً، لم أفهم رسالتك.";
+
+      const typingMessage: Message = {
+        id: "typing-" + Math.random().toString(36).substring(7),
+        text: "...",
+        sender: "typing",
       };
-      setTimeout(() => {
-        const botResponse = {
-          id: Math.random().toString(36).substring(7),
-          text: generateBotReply(text),
-          sender: "bot",
-        };
-        setMessages((prev) => [...prev, botResponse]);
-        scrollToBottom();
-      }, 1000);
+      setMessages((prev) => [...prev, typingMessage]);
+    },
+    onSuccess: (data) => {
+      setMessages((prev) => prev.filter((msg) => msg.sender !== "typing"));
+      const botResponse: Message = {
+        id: Math.random().toString(36).substring(7),
+        text: data.answer,
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botResponse]);
+    },
+    onError: (error) => {
+      setMessages((prev) => prev.filter((msg) => msg.sender !== "typing"));
+      const errorResponse: Message = {
+        id: Math.random().toString(36).substring(7),
+        text: "عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    },
+  });
+
+  const handleSend = () => {
+    if (text.trim()) {
+      sendMessage(text);
+      setText("");
     }
+    // // Uncomment the following lines if you want to simulate a delay
+    // if (text.trim()) {
+    //   // Add user message
+    //   const newMessage: Message = {
+    //     id: Math.random().toString(36).substring(7),
+    //     text,
+    //     sender: "user",
+    //   };
+    //   setMessages((prev) => [...prev, newMessage]);
+    //   setText("");
+
+    //   // Show typing indicator
+    //   setIsTyping(true);
+    //   setMessages((prev) => [
+    //     ...prev,
+    //     { id: "typing", text: "...", sender: "typing" },
+    //   ]);
+
+    //   // Fake API delay (2-4 seconds)
+    //   const delay = 4000 + Math.random() * 2000;
+
+    //   setTimeout(() => {
+    //     // Remove typing indicator
+    //     setIsTyping(false);
+    //     setMessages((prev) => prev.filter((msg) => msg.id !== "typing"));
+
+    //     // Add bot response
+    //     const botResponse: Message = {
+    //       id: Math.random().toString(36).substring(7),
+    //       text: "عذراً، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
+    //       sender: "bot",
+    //     };
+    //     setMessages((prev) => [...prev, botResponse]);
+    //     scrollToBottom();
+    //   }, delay);
+    // }
   };
+
   // Render individual chat message
-  const renderMessage = ({ item }) => {
+  const renderMessage = ({ item }: { item: Message }) => {
+    if (item.sender === "typing") {
+      return (
+        <View
+          style={[styles.messageOuterContainer, { alignSelf: "flex-start" }]}
+        >
+          <Bot style={styles.botIcon} />
+          <View style={[styles.messageContainer, styles.botMessage]}>
+            <TypingIndicator color={Colors.SecondaryColor} />
+          </View>
+        </View>
+      );
+    }
+
     return (
       <View
         style={[
-          styles.messageContainer,
-          item.sender === "user" ? styles.userMessage : styles.botMessage,
+          styles.messageOuterContainer,
+          item.sender === "user"
+            ? { alignSelf: "flex-end" }
+            : { alignSelf: "flex-start" },
         ]}
       >
-        {/* {item.sender === "bot" && <Bot />} */}
-        <Text
+        {item.sender === "bot" && <Bot style={styles.botIcon} />}
+        <View
           style={[
-            styles.messageText,
-            item.sender === "user" ? { color: "white" } : {},
+            styles.messageContainer,
+            item.sender === "user" ? styles.userMessage : styles.botMessage,
           ]}
         >
-          {item.text}
-        </Text>
+          <Text
+            style={[
+              styles.messageText,
+              item.sender === "user" ? { color: "white" } : {},
+            ]}
+          >
+            {item.text}
+          </Text>
+        </View>
       </View>
     );
   };
+
   const scrollToBottom = () => {
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
@@ -269,11 +380,8 @@ const ChatBotScreen = () => {
           keyExtractor={(item) => item.id}
           renderItem={renderMessage}
           contentContainerStyle={styles.chatContainer}
-          // inverted
-          maintainVisibleContentPosition={{
-            minIndexForVisible: 0,
-            autoscrollToTopThreshold: 10,
-          }}
+          onContentSizeChange={scrollToBottom}
+          onLayout={scrollToBottom}
         />
         <View style={styles.inputContainer}>
           <TextInput
@@ -282,30 +390,44 @@ const ChatBotScreen = () => {
             onChangeText={setText}
             placeholder="اكتب رسالتك..."
             placeholderTextColor={Colors.SecondaryColorLight}
+            editable={!isTyping}
+            multiline={true}
           />
-          <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
-            <SendIcon />
+          <TouchableOpacity
+            onPress={handleSend}
+            style={styles.sendButton}
+            disabled={isTyping}
+          >
+            {isTyping ? <TypingIndicator /> : <SendIcon />}
           </TouchableOpacity>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
   },
   chatContainer: {
-    padding: 10,
+    padding: 5,
+  },
+  messageOuterContainer: {
+    maxWidth: "90%",
+    padding: 5,
+    // borderRadius: 20,
+    marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
   messageContainer: {
     maxWidth: "90%",
     padding: 10,
     borderRadius: 20,
-    marginVertical: 10,
-    marginHorizontal: 5,
-    flexDirection: "row",
+    // marginVertical: 10,
+    // flexDirection: "row",
     alignItems: "center",
   },
   userMessage: {
@@ -328,7 +450,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderColor: "#ccc",
-    // backgroundColor: "#fff",
   },
   textInput: {
     flex: 1,
@@ -339,10 +460,20 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     textAlign: "right",
     backgroundColor: "white",
+    overflow: "hidden",
+    textAlignVertical: "top",
+    includeFontPadding: false,
+    maxHeight: 100,
   },
   sendButton: {
-    paddingHorizontal: 5,
+    paddingRight: 5,
+    paddingLeft: 2,
     justifyContent: "center",
+  },
+
+  botIcon: {
+    marginRight: 8,
+    alignSelf: "flex-end",
   },
 });
 

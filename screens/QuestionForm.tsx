@@ -10,10 +10,27 @@ import {
 import { font } from "../constants/Font";
 import { Colors } from "../constants/Color";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation } from "@tanstack/react-query";
+import { Client } from "../API/https";
 
 const QuestionForm = () => {
+  const [emptyError, setError] = useState("");
   const [question, setQuestion] = useState("");
-  const [error, setError] = useState("");
+  const {
+    mutate: submitQuestion,
+    isError,
+    error,
+    reset,
+  } = useMutation({
+    mutationFn: Client.submitQA,
+    onSuccess: () => {
+      Alert.alert("تم ارسال السؤال بنجاح");
+    },
+    onError: (err) => {
+      Alert.alert("حدث خطأ ما برجاء المحاولة مره اخري");
+      console.log(err);
+    },
+  });
   const navigation = useNavigation();
   const validateAndSubmit = () => {
     if (question.trim() === "") {
@@ -21,7 +38,7 @@ const QuestionForm = () => {
       return;
     }
     setError("");
-    //Send Question to the Backend to Save it
+    submitQuestion(question);
     navigation.navigate("MyQuestion" as never);
   };
 
@@ -38,7 +55,7 @@ const QuestionForm = () => {
         value={question}
         onChangeText={setQuestion}
       />
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={styles.errorText}>{emptyError}</Text> : null}
       <TouchableOpacity style={styles.button} onPress={validateAndSubmit}>
         <Text style={styles.buttonText}>إرسال السؤال</Text>
       </TouchableOpacity>
@@ -89,7 +106,7 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginTop: 5,
-    alignSelf: "flex-start",
+    alignSelf: "flex-end",
   },
   button: {
     marginTop: 100,

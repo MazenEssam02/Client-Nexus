@@ -5,9 +5,12 @@ import UserCard from "../components/UserCard/UserCard";
 import { font } from "../constants/Font";
 
 export default function LawyerRatingsScreen() {
-  const route = useRoute();
+  const route = useRoute<{
+    key: string;
+    name: string;
+    params: { feedbacks: Array<{ id: string }> };
+  }>();
   const { feedbacks } = route.params;
-  const navigation = useNavigation();
   return (
     <View style={styles.ratingContainer}>
       <View style={styles.list}>

@@ -9,11 +9,12 @@ import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
 
 const LawyerCard = ({
-  name = "المحامي عبدالكريم غفار",
-  rate = "3",
-  speciality = "جنائي",
-  vezita = "150",
-  address = "وسط البلد",
+  name = "",
+  rate = "",
+  speciality = "",
+  gender = 77,
+  vezita = "",
+  address = "",
   onPress = null,
   imageURL = null,
   style = null,
@@ -56,7 +57,7 @@ const LawyerCard = ({
         </View>
         <View style={styles.infoContainer}>
           <Text numberOfLines={1} style={styles.title}>
-            {name} المحامي
+            {gender === 77 ? "المحامى" : "المحامية"} {name}
           </Text>
           <View style={styles.ratingContainer}>
             <RateHandler style={styles.rate} />
@@ -70,7 +71,9 @@ const LawyerCard = ({
             {!isLawyerDetailsCard ? (
               <Text style={styles.vezitaText}>سعر الاستشارة: {vezita}</Text>
             ) : (
-              <Text style={styles.specialitiyText}>محامي {speciality}</Text>
+              <Text style={styles.specialitiyText}>
+                {speciality && `محامي ${speciality}`}
+              </Text>
             )}
             {!!address ? (
               <Text style={styles.vezitaText}>العنوان: {address}</Text>

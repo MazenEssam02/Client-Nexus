@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "../API/https";
 import { SelectedAsset } from "../components/FileUploadButton/FileUploadButton";
+import { AxiosError } from "axios";
 
 export type User = {
   firstName: string;
@@ -36,6 +37,16 @@ type AuthStore = {
     phoneNumber: string;
     gender: boolean;
     mainImage: SelectedAsset | null;
+    description?: string;
+    idImage?: SelectedAsset | null;
+    nationalIdImage?: SelectedAsset | null;
+    yearsOfExperience?: number;
+    specializations?: number[];
+    addresses?: {
+      detailedAddress: string;
+      cityId: number;
+      stateId: number;
+    }[];
   }) => Promise<void>;
   logout: () => void;
 };
@@ -68,16 +79,17 @@ export const useAuthStore = create<AuthStore>()(persist(
         userType,
       } = data;
       apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const {
-        data: { data: userData }
-      } = await apiClient.get<{
-        data: {
-          birthDate: string;
-          firstName: string;
-          lastName: string;
-          phoneNumber: string;
-        }
-      }>("api/client");
+      if (userType === "Client") {
+        const {
+          data: { data: userData }
+        } = await apiClient.get<{
+          data: {
+            birthDate: string;
+            firstName: string;
+            lastName: string;
+            phoneNumber: string;
+          }
+        }>("api/client");
       set({
         user: {
           firstName: userData.firstName,
@@ -90,6 +102,30 @@ export const useAuthStore = create<AuthStore>()(persist(
         },
         isLoading: false,
       });
+    } else {
+        const {
+          data: { data: userData }
+        } = await apiClient.get<{
+          data: {
+            birthDate: string;
+            firstName: string;
+            lastName: string;
+            phoneNumber: string;
+          }
+        }>("api/ServiceProvider");
+      set({
+        user: {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          birthDate: userData.birthDate ?? "",
+          phoneNumber: userData.phoneNumber ?? "",
+          email: userEmail,
+          type: "lawyer",
+          authToken: token,
+        },
+        isLoading: false,
+      });
+    }
     } catch (error) {
       console.log(JSON.stringify(error, null, 2));
       set({ error: "لا يوجد الحساب", isLoading: false });
@@ -104,23 +140,75 @@ export const useAuthStore = create<AuthStore>()(persist(
     birthDate,
     phoneNumber,
     gender,
-    mainImage
+    mainImage,
+    addresses,
+    description,
+    idImage,
+    nationalIdImage,
+    yearsOfExperience,
+    specializations
   }) => {
-    if (role === "lawyer") {
-      throw new Error("Lawyer registration is not supported yet.");
-    }
     set({ isLoading: true, error: null });
     const formData = new FormData();
     formData.append("FirstName", firstName);
     formData.append("LastName", lastName);
     formData.append("Email", email);
-    formData.append("UserType", "67");
     formData.append("BirthDate", birthDate);
     formData.append("PhoneNumber", phoneNumber);
     formData.append("Password", password);
     formData.append("Gender", gender ? "77" : "70");
+    if (role === "lawyer") {
+      formData.append("UserType", "83");
+      formData.append("Description", description || "");
+      formData.append("YearsOfExperience", yearsOfExperience?.toString() || "0");
+      specializations?.forEach((spec) => {
+        formData.append("SpecializationIDS[]", spec.toString());
+      });
+      addresses?.forEach((address, i) => {
+        Object.entries(address).forEach(([key, value]) => {
+          formData.append(`Addresses[${i}][${key}]`, `${value}`);
+        });
+      });
+      if (idImage) {
+        formData.append("ImageIDUrl", idImage as any);
+      }else {
+        throw new Error("idImage is required for lawyer registration");
+      }
+      if (nationalIdImage) {
+        formData.append("ImageNationalIDUrl", nationalIdImage as any);
+      } else {
+        throw new Error("nationalIdImage is required for lawyer registration");
+      }
+      if (mainImage) {
+        formData.append("MainImage", mainImage as any);
+      }
+      formData.append("TypeId", "1");
+      formData.append("main_specializationID", specializations?.[0]?.toString() || "1");
+      formData.append("Office_consultation_price", "2");
+      formData.append("Telephone_consultation_price", "2");
+      try {
+        const res = await apiClient.post("api/Auth/register", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log(res.data);
+        set({ isLoading: false });
+      } catch (error) {
+        console.log(JSON.stringify(error, null, 2));
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 400) {
+            const errorMessage = error.response.data;
+            console.log(errorMessage);
+          }
+        }
+        set({ error: "خطأ في التسجيل", isLoading: false });
+      }
+      return;
+    }
     
     try {
+      formData.append("UserType", "67");
       const { data } = await apiClient
       .post<{
         data: {

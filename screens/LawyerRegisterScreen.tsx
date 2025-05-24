@@ -20,20 +20,18 @@ import {
   FileUploadButton,
   SelectedAsset,
 } from "../components/FileUploadButton/FileUploadButton";
-import { AddressListModal } from "../components/AddressListModal/AddressListModal";
+import {
+  Address,
+  AddressListModal,
+} from "../components/AddressListModal/AddressListModal";
 import { LoginIllustration } from "../components/Icons/LoginIllustration";
 import { LoginInput } from "../components/LoginInput/LoginInput";
 import { NewAddressData } from "../components/AddressListModal/AddAddressFormView";
 import { apiClient } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
 import Dropdown from "react-native-input-select";
-
-interface AddressListItemData {
-  // This should align with NewAddressData's relevant parts
-  id: string;
-  text: string;
-  // fullAddressDetails?: any; // if you store it
-}
+import { useAuthStore } from "../store/auth";
+import { AxiosError } from "axios";
 
 interface LawyerRegisterFormData {
   name: string;
@@ -49,7 +47,18 @@ const LawyerRegisterScreen = ({ route }) => {
       name: string;
     }[]
   >([]);
-  const commonFormData = route.params.data;
+  const { register, isLoading, error } = useAuthStore();
+  const commonFormData = route.params.data as {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: "lawyer";
+    birthDate: string;
+    phoneNumber: string;
+    password: string;
+    gender: boolean;
+    mainImage: SelectedAsset | null;
+  };
 
   const [idCardPic, setIdCardPic] = useState<SelectedAsset | null>(null);
   const [nationalIdPic, setNationalIdPic] = useState<SelectedAsset | null>(
@@ -72,9 +81,19 @@ const LawyerRegisterScreen = ({ route }) => {
 
   const [isAddressModalVisible, setIsAddressModalVisible] =
     useState<boolean>(false);
-  const [addresses, setAddresses] = useState<AddressListItemData[]>([
-    { id: "addr1", text: "التجمع الخامس, القاهرة الجديدة, القاهرة" },
-    { id: "addr2", text: "شارع التسعين, التجمع الأول, القاهرة الجديدة" },
+  const [addresses, setAddresses] = useState<Address[]>([
+    {
+      id: "1",
+      cityId: 1,
+      detailedAddress: "عنوان 1",
+      stateId: 1,
+    },
+    {
+      id: "2",
+      cityId: 1,
+      detailedAddress: "عنوان 2",
+      stateId: 1,
+    },
   ]);
   const {
     control,
@@ -96,26 +115,33 @@ const LawyerRegisterScreen = ({ route }) => {
   const handleFormSubmit: SubmitHandler<LawyerRegisterFormData> = async (
     data
   ) => {
-    console.log("Form Data:", {
-      ...data,
-      idCardPic,
-      nationalIdPic,
+    console.log("Registering user", data);
+    register({
+      ...commonFormData,
+      addresses: addresses,
+      idImage: idCardPic,
+      nationalIdImage: nationalIdPic,
+      yearsOfExperience: parseInt(data.yearsOfExperience),
+      specializations: selectedSpecializations.map((spec) => spec.id),
+      description: data.details,
     });
   };
 
   const handleRemoveAddress = (addressId: string) => {
-    setAddresses((prevAddrs) =>
-      prevAddrs.filter((addr) => addr.id !== addressId)
+    setAddresses((prevAddresses) =>
+      prevAddresses.filter((address) => address.id !== addressId)
     );
   };
 
   const handleAddNewAddressFromModal = (newAddress: NewAddressData) => {
-    const newListItem: AddressListItemData = {
-      id: newAddress.id,
-      text: newAddress.text,
-      // fullAddressDetails: newAddress.fullAddressDetails // if needed
+    const newAddressData: Address = {
+      id: Math.random().toString(),
+      cityId: 1,
+      detailedAddress: "sss",
+      stateId: 1,
     };
-    setAddresses((prevAddresses) => [...prevAddresses, newListItem]);
+    setAddresses((prevAddresses) => [...prevAddresses, newAddressData]);
+    setIsAddressModalVisible(false);
   };
 
   return (
@@ -296,9 +322,21 @@ const LawyerRegisterScreen = ({ route }) => {
               !idCardPic ||
               !nationalIdPic ||
               !selectedSpecializations.length ||
-              !addresses.length
+              !addresses.length ||
+              isLoading
             }
           />
+          {error && (
+            <Text
+              style={{
+                color: Colors.invalidColor600,
+                alignSelf: "center",
+                ...font.subtitle,
+              }}
+            >
+              {error}
+            </Text>
+          )}
         </View>
       </ScrollView>
 

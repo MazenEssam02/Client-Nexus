@@ -15,16 +15,18 @@ import { ModalHeader } from "./ModalHeader"; // Assuming ModalHeader is correctl
 import { AddressListItem } from "./AddressListItem";
 import { AddAddressFormView, NewAddressData } from "./AddAddressFormView"; // Import the new view
 
-interface Address {
+export interface Address {
   id: string;
-  text: string;
+  detailedAddress: string;
+  cityId: number;
+  stateId: number;
 }
 
 interface AddressListModalProps {
   isVisible: boolean;
   onClose: () => void;
   addresses: Address[];
-  onRemoveAddress: (id: string) => void;
+  onRemoveAddress: (addressId: string) => void;
   onAddressAdded: (newAddress: NewAddressData) => void; // Changed from onAddNewAddress
 }
 
@@ -56,7 +58,7 @@ export const AddressListModal: React.FC<AddressListModalProps> = ({
           data={addresses}
           renderItem={({ item }) => (
             <AddressListItem
-              addressText={item.text}
+              addressText={item.detailedAddress}
               onRemove={() => onRemoveAddress(item.id)}
             />
           )}

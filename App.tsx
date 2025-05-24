@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text } from "react-native";
 import { Colors } from "./constants/Color";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -47,6 +47,7 @@ import LawyerRegisterScreen from "./screens/LawyerRegisterScreen";
 import BookingScreen from "./screens/BookingScreen";
 import * as Notifications from "expo-notifications";
 import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
+import LawyerDashboard from "./screens/LawyerScreens/LawyerDashboard";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -318,7 +319,7 @@ function UserTabs() {
     </Tab.Navigator>
   );
 }
-function AuthenticatedStack() {
+function AuthenticatedStackClient() {
   return (
     <Stack.Navigator
       id={undefined}
@@ -361,6 +362,28 @@ function AuthenticatedStack() {
           headerShown: false,
           gestureEnabled: false,
         }}
+      />
+    </Stack.Navigator>
+  );
+}
+function AuthenticatedStackLawyer() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+        contentStyle: { backgroundColor: "#282c34" },
+      }}
+    >
+      <Stack.Screen
+        name="LawyerTabs"
+        component={LawyerDashboard}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -436,7 +459,15 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <StatusBar style="light" />
         <NavigationContainer>
-          {user ? <AuthenticatedStack /> : <UnAuthenticatedStack />}
+          {user ? (
+            user.type === "client" ? (
+              <AuthenticatedStackClient />
+            ) : (
+              <AuthenticatedStackLawyer />
+            )
+          ) : (
+            <UnAuthenticatedStack />
+          )}
         </NavigationContainer>
       </QueryClientProvider>
     </SafeAreaProvider>

@@ -191,13 +191,27 @@ export const useAuthStore = create<AuthStore>()(persist(
       formData.append("Office_consultation_price", officeConsultationPrice?.toString() || "0");
       formData.append("Telephone_consultation_price", telephoneConsultationPrice?.toString() || "0");
       try {
-        const res = await apiClient.post("api/Auth/register", formData, {
+        const {data} = await apiClient.post("api/Auth/register", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log(res.data);
-        set({ isLoading: false });
+        const {
+          data: { email: userEmail, token, userType },
+        } = data;
+        apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        set({
+          user: {
+            firstName,
+            lastName,
+            birthDate,
+            phoneNumber,
+            email: userEmail,
+            type: "lawyer",
+            authToken: token,
+          },
+          isLoading: false,
+        });
       } catch (error) {
         console.log(JSON.stringify(error, null, 2));
         if (error instanceof AxiosError) {
@@ -287,7 +301,11 @@ export const useAuthStore = create<AuthStore>()(persist(
             // make a reqeust to make sure the token is still valid
             apiClient.defaults.headers.common["Authorization"] = `Bearer ${state.user.authToken}`;
             try {
-              await apiClient.get("api/client");
+              if (state.user.type === "client") {
+                await apiClient.get("api/client");
+              } else {
+                await apiClient.get("api/ServiceProvider");
+              }
             } catch (error) {
               console.log(JSON.stringify(error, null, 2));
               state.logout();

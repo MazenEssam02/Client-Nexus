@@ -34,6 +34,8 @@ import { useAuthStore } from "../store/auth";
 interface LawyerRegisterFormData {
   name: string;
   yearsOfExperience: string;
+  officeConsultationPrice: string;
+  phoneConsultationPrice: string;
   details: string;
   workType: "private" | "company";
 }
@@ -92,6 +94,8 @@ const LawyerRegisterScreen = ({ route }) => {
       yearsOfExperience: "",
       details: "",
       workType: "private",
+      officeConsultationPrice: "",
+      phoneConsultationPrice: "",
     },
     mode: "onChange",
   });
@@ -109,6 +113,8 @@ const LawyerRegisterScreen = ({ route }) => {
       yearsOfExperience: parseInt(data.yearsOfExperience),
       specializations: selectedSpecializations.map((spec) => spec.id),
       description: data.details,
+      officeConsultationPrice: parseInt(data.officeConsultationPrice),
+      telephoneConsultationPrice: parseInt(data.phoneConsultationPrice),
     });
   };
 
@@ -141,6 +147,8 @@ const LawyerRegisterScreen = ({ route }) => {
               setValue("yearsOfExperience", "5");
               setValue("details", "محامي متخصص في القضايا المدنية");
               setValue("workType", "private");
+              setValue("officeConsultationPrice", "100");
+              setValue("phoneConsultationPrice", "50");
               setSelectedSpecializations(specializationsData.slice(0, 2));
               setAddresses([
                 {
@@ -248,6 +256,50 @@ const LawyerRegisterScreen = ({ route }) => {
               value={value}
               keyboardType="numeric"
               error={errors.yearsOfExperience?.message}
+              placeholderTextColor={Colors.gray700}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="officeConsultationPrice"
+          rules={{
+            required: "سعر الاستشارة في المكتب مطلوب",
+            pattern: {
+              value: /^[1-9]\d*$/,
+              message: "سعر الاستشارة يجب أن يكون رقم صحيح أكبر من 0",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <LoginInput
+              placeholder="سعر الاستشارة في المكتب"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+              error={errors.officeConsultationPrice?.message}
+              placeholderTextColor={Colors.gray700}
+            />
+          )}
+        />
+        <Controller
+          control={control}
+          name="phoneConsultationPrice"
+          rules={{
+            required: "سعر الاستشارة عبر الهاتف مطلوب",
+            pattern: {
+              value: /^[1-9]\d*$/,
+              message: "سعر الاستشارة يجب أن يكون رقم صحيح أكبر من 0",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <LoginInput
+              placeholder="سعر الاستشارة عبر الهاتف"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+              error={errors.phoneConsultationPrice?.message}
               placeholderTextColor={Colors.gray700}
             />
           )}

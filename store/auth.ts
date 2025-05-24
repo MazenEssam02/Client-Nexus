@@ -41,6 +41,8 @@ type AuthStore = {
     idImage?: SelectedAsset | null;
     nationalIdImage?: SelectedAsset | null;
     yearsOfExperience?: number;
+    officeConsultationPrice?: number;
+    telephoneConsultationPrice?: number;
     specializations?: number[];
     addresses?: {
       detailedAddress: string;
@@ -146,7 +148,9 @@ export const useAuthStore = create<AuthStore>()(persist(
     idImage,
     nationalIdImage,
     yearsOfExperience,
-    specializations
+    specializations,
+    officeConsultationPrice,
+    telephoneConsultationPrice,
   }) => {
     set({ isLoading: true, error: null });
     const formData = new FormData();
@@ -184,8 +188,8 @@ export const useAuthStore = create<AuthStore>()(persist(
       }
       formData.append("TypeId", "1");
       formData.append("main_specializationID", specializations?.[0]?.toString() || "1");
-      formData.append("Office_consultation_price", "2");
-      formData.append("Telephone_consultation_price", "2");
+      formData.append("Office_consultation_price", officeConsultationPrice?.toString() || "0");
+      formData.append("Telephone_consultation_price", telephoneConsultationPrice?.toString() || "0");
       try {
         const res = await apiClient.post("api/Auth/register", formData, {
           headers: {

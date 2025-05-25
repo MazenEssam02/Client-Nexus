@@ -273,7 +273,7 @@ const ChatBotScreen = ({ navigation }) => {
         suggestion: data.suggestion,
         sender: "bot",
       };
-      console.log(data.suggestion.lawyers);
+      // console.log(data.suggestion);
 
       setMessages((prev) => [...prev, botResponse]);
     },
@@ -469,9 +469,9 @@ const ChatBotScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior="padding"
       style={styles.container}
-      keyboardVerticalOffset={Platform.select({ ios: 90, android: 0 })}
+      keyboardVerticalOffset={Platform.OS === "android" ? 80 : 90}
     >
       <SafeAreaView style={styles.container}>
         <FlatList
@@ -509,6 +509,7 @@ const ChatBotScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: Colors.background,
   },
   chatContainer: {

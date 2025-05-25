@@ -7,6 +7,7 @@ import FixedButton from "../components/floatbutton/FixedButton";
 import { getFavorites } from "../store/FavoritesStore";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useFocusEffect } from "@react-navigation/native";
+import { Colors } from "../constants/Color";
 const FavouriteScreen = () => {
   const [editable, setEditable] = useState(false);
   const [LawyerList, setLawyerList] = useState([]);
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: font.headline.fontFamily,
     fontSize: font.headline.fontSize,
+    color: Colors.SecondaryColor,
   },
   icon: {
     marginRight: 10,

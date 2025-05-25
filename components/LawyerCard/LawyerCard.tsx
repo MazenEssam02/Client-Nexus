@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     width: "100%",
-    maxHeight: 90,
+    maxHeight: 100,
     backgroundColor: "white",
     flexDirection: "row-reverse",
     alignItems: "center",
@@ -106,11 +106,12 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    borderRadius: 30,
   },
   imageStyle: {
     flex: 1,
-    borderRadius: "50%",
+    borderRadius: 15,
+    alignSelf: "center",
+    minWidth: 60,
   },
   infoContainer: {
     flex: 4,
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   vezitaText: {
     fontSize: font.subtitle.fontSize,

@@ -12,17 +12,20 @@ import { useMutation } from "@tanstack/react-query";
 import { Appointments } from "../../API/https";
 import IsError from "../IsError/IsError";
 
-export default function BookingBlock({ type, onChange, lawyer }) {
+export default function BookingBlock({ type, onChange, lawyer, navigation }) {
   //type: 73->offline 80-> online
   const typeNo = type ? 73 : 80;
-  const navigation = useNavigation();
   const [slot, setSlot] = useState(null);
   const { mutate: bookAppointment, reset: resetBookMutation } = useMutation({
     mutationFn: Appointments.bookAppointment,
     onSuccess: () => {
       resetBookMutation();
-      // if (!type) navigation.navigate("WebView" as never);
-      // else
+      // if (!type)
+      //   navigation.navigate("WebView", {
+      //     lawyer: lawyer,
+      //     amount: lawyer.telephone_consultation_price,
+      //   });
+      // else {
       Alert.alert(
         "نجحت العملية",
         "تم حجز الموعد بنجاح!",
@@ -37,6 +40,7 @@ export default function BookingBlock({ type, onChange, lawyer }) {
         ],
         { cancelable: false }
       );
+      // }
     },
     onError: (err) => {
       Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
@@ -45,7 +49,12 @@ export default function BookingBlock({ type, onChange, lawyer }) {
   });
   const onSubmitHandler = () => {
     if (slot) {
-      bookAppointment(slot);
+      if (!type) {
+        navigation.navigate("WebView", {
+          lawyer: lawyer,
+          amount: lawyer.telephone_consultation_price,
+        });
+      } else bookAppointment(slot);
     } else Alert.alert("خطأ", "يجب اختيار موعد!");
   };
   // console.log(slot);

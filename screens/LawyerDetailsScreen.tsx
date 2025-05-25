@@ -104,7 +104,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
         <View style={styles.summaryContainer}>
           <LawyerSummarylist {...lawyer} />
         </View>
-        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
+        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} navigation={navigation} />
         <AboutLawyer Description={lawyer.description} />
         <LawyerQA lawyerQA={providerQA.data.data} />
         <LawyerSpecialities specializationName={lawyer.specializationName} />

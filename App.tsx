@@ -163,7 +163,7 @@ function HomeStack() {
         name="WebView"
         component={WebViewScreen}
         options={({ navigation }) => ({
-          title: "ادخل بياناتك",
+          title: "اكمل عملية الدفع",
           presentation: "modal",
           headerLeft: () => (
             <Ionicons
@@ -457,7 +457,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <NavigationContainer>
           {user ? (
             user.type === "client" ? (

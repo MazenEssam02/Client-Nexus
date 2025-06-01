@@ -104,11 +104,20 @@ export default function LawyerDetailsScreen({ route, navigation }) {
         <View style={styles.summaryContainer}>
           <LawyerSummarylist {...lawyer} />
         </View>
-        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} navigation={navigation} />
+        <BookingBlock
+          type={type}
+          onChange={onChange}
+          lawyer={lawyer}
+          navigation={navigation}
+        />
         <AboutLawyer Description={lawyer.description} />
         <LawyerQA lawyerQA={providerQA.data.data} />
         <LawyerSpecialities specializationName={lawyer.specializationName} />
-        <LawyerRatings feedbacks={providerFeedbacks.data.data} />
+        <LawyerRatings
+          feedbacks={providerFeedbacks.data.data}
+          serviceProviderId={lawyer.id}
+          navigation={navigation}
+        />
       </ScrollView>
     </View>
   );

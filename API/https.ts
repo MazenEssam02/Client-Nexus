@@ -22,6 +22,12 @@ export const ServiceProvider = {
         specializationName: filterData.speciality,
       },
     }),
+  setFeedback: ({ serviceProviderId, rate, feedback }) =>
+    apiClient.post("/api/Feedback", {
+      serviceProviderId: serviceProviderId,
+      rate: rate,
+      feedback: feedback,
+    }),
 };
 
 export const Documents = {
@@ -43,7 +49,7 @@ export const Specialization = {
 };
 
 export const Client = {
-  get: () => apiClient.get("api/Client"),
+  get: (id) => apiClient.get("api/Client", { params: { id: id } }),
   async update(formData) {
     try {
       const response = await apiClient.put("api/Client", formData, {

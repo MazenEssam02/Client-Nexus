@@ -22,7 +22,9 @@ export const LoginInput: React.FC<LoginInputProps> = ({
   return (
     <View style={styles.container}>
       <TextInput
+        autoCapitalize="none"
         style={[styles.input, error ? styles.inputError : null, style]}
+        placeholderTextColor={Colors.gray700}
         {...rest}
       />
       {error ? <Text style={styles.errorText}>{error}</Text> : null}

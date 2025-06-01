@@ -42,7 +42,9 @@ export default function EmergencyCard({ lawyer, emergencyCaseId, navigation }) {
           <Text style={styles.priceText}>{lawyer.Price}ج</Text>
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{lawyer.FirstName + lawyer.LastName}</Text>
+          <Text style={styles.title}>
+            {lawyer.FirstName + " " + lawyer.LastName}
+          </Text>
         </View>
       </View>
       <View style={styles.SummaryContainer}>

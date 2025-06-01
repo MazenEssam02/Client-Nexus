@@ -1,8 +1,15 @@
-import { StyleSheet, View, Image, ScrollView, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import BookingBlock from "../components/BookingBlock/BookingBlock";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
 import LawyerQA from "../components/LawyerQA/LawyerQA";
@@ -11,9 +18,41 @@ import LawyerRatings from "../components/LawyerRatings/LawyerRating";
 import { useQueries } from "@tanstack/react-query";
 import { ServiceProvider } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
-export default function LawyerDetailsScreen({ route }) {
+import Favourite from "../components/Icons/Favourite";
+import {
+  addToFavorites,
+  isFavorite,
+  removeFromFavorites,
+} from "../store/FavoritesStore";
+export default function LawyerDetailsScreen({ route, navigation }) {
   const lawyer = route.params.lawyer;
   const [type, setType] = useState(route.params.type); //true is in person , false is phone
+  const [favorite, setFavorite] = useState(false);
+  useLayoutEffect(() => {
+    const checkFavorite = async () => {
+      const fav = await isFavorite(lawyer.id);
+      setFavorite(fav);
+    };
+    checkFavorite();
+  }, []);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={async () => {
+            if (favorite) {
+              await removeFromFavorites(lawyer.id);
+            } else {
+              await addToFavorites(lawyer);
+            }
+            setFavorite((prev) => !prev);
+          }}
+        >
+          <Favourite stroke="white" fill={favorite ? "white" : "none"} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, favorite]);
   const onChange = (value) => {
     setType(value);
   };
@@ -65,7 +104,7 @@ export default function LawyerDetailsScreen({ route }) {
         <View style={styles.summaryContainer}>
           <LawyerSummarylist {...lawyer} />
         </View>
-        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} />
+        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} navigation={navigation} />
         <AboutLawyer Description={lawyer.description} />
         <LawyerQA lawyerQA={providerQA.data.data} />
         <LawyerSpecialities specializationName={lawyer.specializationName} />

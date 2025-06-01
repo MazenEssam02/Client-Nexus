@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { View, Text, StyleSheet, FlatList, Image } from "react-native";
-import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import { useQuery } from "@tanstack/react-query";

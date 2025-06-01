@@ -36,41 +36,40 @@ export default function EmergencyForm({ navigation }) {
       isValid: true,
     },
   });
-  const { mutate: requestEmergency, reset: resetRequestMutation } = useMutation(
-    {
-      mutationFn: EmeregencyCases.requestEmergency,
-      onSuccess: (data) => {
-        const emergencyCaseId = data.data.id;
-        const emergencyCaseLimit = data.data.timeoutInMinutes;
-        console.log("Created emergency case ID:", emergencyCaseId);
-        useEmergencyStore.getState().setLawyer({
-          id: 0,
-          phone: "",
-          price: 0,
-          title: inputText.title.value,
-          description: inputText.description.value,
-        });
-        navigation.navigate("Requests", {
-          emergencyCaseId: emergencyCaseId,
-          emergencyCaseLimit: emergencyCaseLimit,
-        });
+  const {
+    mutate: requestEmergency,
+    reset: resetRequestMutation,
+    isPending,
+  } = useMutation({
+    mutationFn: EmeregencyCases.requestEmergency,
+    onSuccess: (data) => {
+      const emergencyCaseId = data.data.id;
+      const emergencyCaseLimit = data.data.timeoutInMinutes;
+      console.log("Created emergency case ID:", emergencyCaseId);
+      useEmergencyStore.getState().setLawyer({
+        id: 0,
+        phone: "",
+        price: 0,
+        title: inputText.title.value,
+        description: inputText.description.value,
+      });
+      navigation.navigate("Requests", {
+        emergencyCaseId: emergencyCaseId,
+        emergencyCaseLimit: emergencyCaseLimit,
+      });
 
-        resetRequestMutation();
-      },
-      onError: (err) => {
-        Alert.alert(
-          "خطأ",
-          "لديك طلب مفتوح بالفعل او لا يوجد هاتف مع الحساب"
-        );
-        console.error("request error:", err);
-        if ("response" in err && (err as any).response?.data) {
-          console.error("Full error:", (err as any).response?.data); // Server's validation messages
-        } else {
-          console.error("Error:", err);
-        }
-      },
-    }
-  );
+      resetRequestMutation();
+    },
+    onError: (err) => {
+      Alert.alert("خطأ", "لديك طلب مفتوح بالفعل او لا يوجد هاتف مع الحساب");
+      console.error("request error:", err);
+      if ("response" in err && (err as any).response?.data) {
+        console.error("Full error:", (err as any).response?.data); // Server's validation messages
+      } else {
+        console.error("Error:", err);
+      }
+    },
+  });
   useEffect(() => {
     (async () => {
       const { status: existingStatus } =
@@ -85,6 +84,7 @@ export default function EmergencyForm({ navigation }) {
       if (finalStatus !== "granted") {
         setErrorMsg("Permission to access location was denied");
         setLoading(false);
+        Alert.alert("خطأ", "يرجى السماح بالوصول إلى الموقع");
         return;
       }
       const loc = await Location.getCurrentPositionAsync({});
@@ -184,6 +184,7 @@ export default function EmergencyForm({ navigation }) {
           <View style={styles.buttonContainer}>
             <MainButton
               title="طلب محامى عاجل"
+              disabled={isPending}
               onPress={() => {
                 onSubmitHandler();
               }}

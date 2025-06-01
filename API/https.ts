@@ -28,6 +28,10 @@ export const Documents = {
   getAll: () => apiClient.get("/api/Document"),
   getById: (id) => apiClient.get(`/api/Document/${id}`),
 };
+export const Notifications = {
+  getAll: () => apiClient.get("/api/notifications"),
+  getById: (id) => apiClient.get(`/api/notifications/${id}`),
+};
 export const Specialization = {
   getAll: () => apiClient.get("/api/Specialization/GetAllSpecializations"),
   delete: (id) => apiClient.delete(`/api/Specialization/delete/${id}`),
@@ -79,6 +83,7 @@ export const Appointments = {
     apiClient.post(`/api/appointments`, { slotId: slotId }),
   getById: (id) => apiClient.get(`/api/appointments/${id}`),
 };
+
 export const EmeregencyCases = {
   requestEmergency: ({
     name,
@@ -94,8 +99,7 @@ export const EmeregencyCases = {
       meetingLongitude: meetingLongitude,
       meetingTextAddress: meetingTextAddress,
     }),
-  getEmergencies: () =>
-    apiClient.get(`/api/emergency-cases?clientId=4&offset=0&limit=10`),
+  getEmergencies: () => apiClient.get(`/api/emergency-cases?offset=0&limit=10`),
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
   acceptEmergency: (id, serviceProviderId) =>
     apiClient.patch(`/api/emergency-cases/${id}/accept`, {
@@ -103,9 +107,32 @@ export const EmeregencyCases = {
     }),
   endEmergency: (id) => apiClient.patch(`/api/emergency-cases/${id}/status`),
 };
+
 export const Filter = {
   getCity: () => apiClient.get("api/City"),
   getState: () => apiClient.get("api/State"),
   getSpeciality: () =>
     apiClient.get("api/Specialization/GetAllSpecializations"),
+};
+export const Payment = {
+  sevricePayment: ({
+    clientId,
+    serviceProviderId,
+    serviceName,
+    amount,
+    email,
+    firstName,
+    lastName,
+    phone,
+  }) =>
+    apiClient.post(`/api/payment/service`, {
+      ClientId: clientId,
+      ServiceProviderId: serviceProviderId,
+      ServiceName: serviceName,
+      Amount: amount,
+      Email: email,
+      FirstName: firstName,
+      LastName: lastName,
+      Phone: phone,
+    }),
 };

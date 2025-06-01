@@ -63,7 +63,7 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      alert("تأكد من السماح بوصول التنبيهات!");
       return;
     }
 

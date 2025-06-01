@@ -78,6 +78,7 @@ export default function ProfileScreen() {
         password: { header: "كلمة السر الجديدة", value: "" },
       };
       resetProfileData(initialData);
+      setCurrentImageUri(ClientData.data.data.mainImage);
       setOriginalInfo(initialData);
     } else if (ClientData) {
       console.log(ClientData);
@@ -108,68 +109,73 @@ export default function ProfileScreen() {
     console.log("Starting Saving Changes");
     const newPasswordValue = formData.password || undefined;
 
+    // Create a new FormData object
+    const clientFormData = new FormData();
+
+    // Append all regular text fields to formData
+    clientFormData.append("email", formData.email);
+    clientFormData.append("firstName", formData.name.split(" ")[0] || "");
+    clientFormData.append("lastName", formData.name.split(" ")[1] || "");
+    clientFormData.append("birthDate", formData.birthday);
+    clientFormData.append("phoneNumber", formData.mobile);
+
+    // Conditionally add newPassword
     if (newPasswordValue) {
-      const clientDataToSend = {
-        email: formData.email,
-        firstName: formData.name.split(" ")[0] || "",
-        lastName: formData.name.split(" ")[1] || "",
-        birthDate: formData.birthday,
-        phoneNumber: formData.mobile,
-        newPassword: newPasswordValue,
-      };
+      clientFormData.append("newPassword", newPasswordValue);
+    } else {
+      clientFormData.append("newPassword", "123456789");
+    }
 
-      updateClient(
-        { ...clientDataToSend },
-        {
-          onSuccess: () => {
-            Alert.alert("نجحت العملية", "تم تحديث كلمة السر بنجاح!.");
-            setEditable(false);
-            setOriginalInfo(null);
-            setOriginalImageUri(null);
-            resetUpdateMutation();
-            clearPassword();
+    if (currentImageUri) {
+      if (currentImageUri.startsWith("file://")) {
+        const fileName = currentImageUri.split("/").pop();
+        const fileExtension = fileName.split(".").pop().toLowerCase();
 
-            // Re-login with the new password
+        // Map common extensions to MIME types
+        const mimeTypeMap = {
+          jpg: "image/jpeg",
+          jpeg: "image/jpeg",
+          png: "image/png",
+          gif: "image/gif",
+          webp: "image/webp",
+        };
+        const mimeType = mimeTypeMap[fileExtension] || "image/jpeg";
+        clientFormData.append("mainImage", {
+          uri: currentImageUri,
+          name: fileName,
+          type: mimeType,
+        } as any);
+      } else {
+        clientFormData.append("mainImage", currentImageUri);
+      }
+    }
+    updateClient(
+      // Pass the FormData object directly
+      clientFormData,
+      {
+        onSuccess: () => {
+          Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
+          setEditable(false);
+          setOriginalInfo(null);
+          setOriginalImageUri(null);
+          refetchClientData().then(() => {});
+          resetUpdateMutation();
+          clearPassword(); // Clear password even on successful data update without password change
+
+          if (newPasswordValue) {
+            // Only re-login if password was changed
             login({
               email: formData.email,
               password: newPasswordValue,
             });
-          },
-          onError: (err) => {
-            Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث كلمة السر.");
-            clearPassword();
-            console.error("Update password error:", err);
-          },
-        }
-      );
-    } else {
-      const clientDataToSend = {
-        email: formData.email,
-        firstName: formData.name.split(" ")[0] || "",
-        lastName: formData.name.split(" ")[1] || "",
-        birthDate: formData.birthday,
-        phoneNumber: formData.mobile,
-        newPassword: "123456789",
-      };
-      updateClient(
-        { ...clientDataToSend },
-        {
-          onSuccess: () => {
-            Alert.alert("نجحت العملية", "تم تحديث البيانات بنجاح!");
-            setEditable(false);
-            setOriginalInfo(null);
-            setOriginalImageUri(null);
-            refetchClientData().then(() => {});
-            resetUpdateMutation();
-          },
-          onError: (err) => {
-            Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث البيانات.");
-            console.error("Update data error:", err);
-          },
-        }
-      );
-    }
-    console.log("Finished Saving");
+          }
+        },
+        onError: (err) => {
+          Alert.alert("خطأ", "برجاء المحاولة مره اخري عند تحديث البيانات.");
+          console.error("Update data error:", err);
+        },
+      }
+    );
   }
   if (isGetLoading) {
     return <LoadingSpinner />;

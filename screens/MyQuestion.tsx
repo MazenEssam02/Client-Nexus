@@ -40,7 +40,7 @@ const MyQuestion = () => {
         <Text style={styles.noQuestions}>لا يوجد أي أسئلة قانونية</Text>
       ) : (
         <FlatList
-          data={questions}
+          data={questions.reverse()}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <UserQuestionCard item={item} />}
         />

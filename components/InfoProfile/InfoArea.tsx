@@ -9,7 +9,10 @@ const InfoArea = ({ editable }) => {
       {Object.entries(profileData).map(([key, val]) => {
         if (key === "password") return;
         return (
-          <View style={[styles.container, editable && { marginVertical: 2 }]}>
+          <View
+            key={key}
+            style={[styles.container, editable && { marginVertical: 2 }]}
+          >
             <Text style={styles.title}>{val.header}</Text>
             <Text style={styles.info}>{val.value}</Text>
           </View>

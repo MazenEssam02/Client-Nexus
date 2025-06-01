@@ -7,6 +7,7 @@ interface ProfileState {
     mobile: { value: string; header?: string };
     birthday: { value: string; header?: string };
     password: { value: string; header?: string };
+    // imageURL: { value: string; header?: string };
   };
   updateProfileField: (
     field: keyof ProfileState["profileData"],
@@ -26,6 +27,7 @@ const useProfileStore = create<ProfileState>()((set) => ({
     mobile: { value: "" },
     birthday: { value: "" },
     password: { value: "" },
+    // imageURL: { value: "" },
   },
   updateProfileField: (field, value) =>
     set((state) => ({

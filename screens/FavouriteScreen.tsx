@@ -1,63 +1,15 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
-// import LawyerList from "../api-mock/LawyerList";
 import { font } from "../constants/Font";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FavouriteLawyerCard from "../components/LawyerCard/FavouriteLawyerCard";
 import FixedButton from "../components/floatbutton/FixedButton";
 import { getFavorites } from "../store/FavoritesStore";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Colors } from "../constants/Color";
 const FavouriteScreen = () => {
+  const navigation = useNavigation<any>();
   const [editable, setEditable] = useState(false);
   const [LawyerList, setLawyerList] = useState([]);
-  //const navigation = useNavigation();
-  //// 1. Separate your header component from the state update logic
-  //const HeaderRightButton = useCallback(() => {
-  //return (
-  //<Pressable
-  //onPress={() => {
-  //// Directly update the state here instead of using a separate handler
-  //console.log("clicked");
-  //setEditable((editable) => !editable);
-  //}}
-  //style={({ pressed }) => [styles.icon, pressed && styles.pressed]}
-  //>
-  //<Edit color={editable ? "black" : 'white'} size={22} />
-  //<Text
-  //style={[
-  //{
-  //fontFamily: font.subtitle.fontFamily,
-  //fontSize: font.subtitle.fontSize,
-  //color: 'white',
-  //},
-  //editable && { color: "black" },
-  //]}
-  //>
-  //تعديل
-  //</Text>
-  //</Pressable>
-  //);
-  //}, [editable]); // Only depend on editable state
-
-  //// 2. Use useEffect with a cleanup function to ensure proper header updates
-  //useLayoutEffect(() => {
-  //navigation.setOptions({
-  //headerRight: () => <HeaderRightButton />,
-  //});
-
-  //// Optional cleanup function
-  //return () => {
-  //navigation.setOptions({
-  //headerRight: undefined,
-  //});
-  //};
-  //}, [navigation, HeaderRightButton, editable]);
-  // async function getNewFavorites() {
-  //   const LawyerList = await getFavorites();
-  //   console.log(LawyerList);
-  // }
-  // user to refetch the data when the screen is focused(remove a favorite and return to the same screen again )
   useFocusEffect(
     useCallback(() => {
       const fetchFavorites = async () => {
@@ -68,7 +20,15 @@ const FavouriteScreen = () => {
       fetchFavorites();
     }, [])
   );
-
+  function pressHandler(id) {
+    console.log(LawyerList.filter((lawyer) => lawyer.id === id)[0]);
+    navigation.navigate("HomeStack", {
+      screen: "LawyerDetails",
+      params: {
+        lawyer: LawyerList.filter((lawyer) => lawyer.id === id)[0],
+      },
+    } as any);
+  }
   function editHandler() {
     console.log("clicked");
     setEditable((editable) => !editable);
@@ -84,7 +44,7 @@ const FavouriteScreen = () => {
     );
   }
   return (
-    <View>
+    <View style={styles.rootContainer}>
       <FlatList
         data={LawyerList}
         keyExtractor={(lawyer) => lawyer.id}
@@ -96,14 +56,19 @@ const FavouriteScreen = () => {
             address={lawyer.item.city}
             editable={editable}
             id={lawyer.item.id}
+            mainImage={lawyer.item.mainImage}
+            onPress={pressHandler}
           />
         )}
       />
-      <FixedButton editable={editable} pressedHandle={editHandler} />
+      {/* <FixedButton editable={editable} pressedHandle={editHandler} /> */}
     </View>
   );
 };
 const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

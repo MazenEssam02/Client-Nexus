@@ -15,6 +15,7 @@ const ProfilePicturePicker = ({ editable, onImageChange, currentImage }) => {
   // Request permissions when the component loads
   useEffect(() => {
     setImageUri(currentImage || null);
+    console.log(currentImage);
   }, [currentImage]);
   async function requestMediaHandler() {
     if (
@@ -115,7 +116,7 @@ const ProfilePicturePicker = ({ editable, onImageChange, currentImage }) => {
           <Image source={{ uri: imageUri }} style={styles.image} />
         ) : (
           <Image
-            source={require("../../assets/ProfilePic/profile.png")}
+            source={require("../../assets/user.jpg")}
             style={styles.image}
           />
         )}

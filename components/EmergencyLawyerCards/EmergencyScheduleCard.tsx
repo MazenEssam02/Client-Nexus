@@ -64,10 +64,12 @@ export default function EmergencyScheduleCard({ EmergencyData, navigation }) {
           <Text style={styles.statusText}>الحالة: {EmergencuStatus}</Text>
         </View>
       </View>
+
       <View style={styles.buttonContainer}>
         <MainButton
           title={EmergencyData.status !== "P" ? "عرض التفاصيل" : "الغاء الطلب"}
           onPress={onPressHandler}
+          disabled={EmergencyData.status === "C"}
         />
       </View>
     </View>
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
   cardHeader: {
     flex: 1,
     width: "100%",
-    // height: 50,
+    // height: 150,
     // flexDirection: "row-reverse",
     // alignItems: "flex-end",
     // padding: 20,

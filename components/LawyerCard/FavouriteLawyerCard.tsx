@@ -15,8 +15,8 @@ const FavouriteLawyerCard = ({
   address,
   onPress = null,
   id = null,
-  editable = null,
   mainImage = null,
+  isDisabled = false,
 }) => {
   function RateHandler({ style }) {
     switch (rate) {
@@ -32,15 +32,18 @@ const FavouriteLawyerCard = ({
         return <Rate5 style={style} />;
     }
   }
-  function deleteHandler(id) {
-    removeFromFavorites(id);
-    console.log("Deleted the id with", id);
-  }
+  // function deleteHandler(id) {
+  //   removeFromFavorites(id);
+  //   console.log("Deleted the id with", id);
+  // }
   return (
     <>
       <Pressable
-        style={({ pressed }) => [styles.container, pressed && styles.pressed]}
-        onPress={() => onPress(id)}
+        style={({ pressed }) => [
+          styles.container,
+          !isDisabled && pressed && styles.pressed,
+        ]}
+        onPress={() => !isDisabled && onPress(id)}
       >
         <View style={styles.card}>
           <View style={styles.imageContainer}>

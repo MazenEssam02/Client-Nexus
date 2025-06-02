@@ -6,16 +6,17 @@ import FixedButton from "../components/floatbutton/FixedButton";
 import { getFavorites } from "../store/FavoritesStore";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Colors } from "../constants/Color";
+import useProfileStore from "../store/Profile";
 const FavouriteScreen = () => {
+  const profileData = useProfileStore((state) => state.profileData);
   const navigation = useNavigation<any>();
   const [editable, setEditable] = useState(false);
   const [LawyerList, setLawyerList] = useState([]);
   useFocusEffect(
     useCallback(() => {
       const fetchFavorites = async () => {
-        const newLawyerList = await getFavorites();
+        const newLawyerList = await getFavorites(profileData);
         setLawyerList(newLawyerList);
-        console.log(newLawyerList);
       };
       fetchFavorites();
     }, [])
@@ -54,7 +55,7 @@ const FavouriteScreen = () => {
             rate={lawyer.item.rate}
             speciality={lawyer.item.main_Specialization}
             address={lawyer.item.city}
-            editable={editable}
+            // editable={editable}
             id={lawyer.item.id}
             mainImage={lawyer.item.mainImage}
             onPress={pressHandler}

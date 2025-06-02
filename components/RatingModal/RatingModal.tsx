@@ -29,7 +29,7 @@ const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
       feedback: feedback,
     };
     onRating(rate);
-    modalHandler();
+    
   }, [modalHandler, onRating, rating, feedback]);
   const handleModalClose = useCallback(() => {
     modalHandler();

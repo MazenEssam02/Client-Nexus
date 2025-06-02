@@ -133,7 +133,11 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
         {/* <LawyerSpecialities
           specializationName={lawerDetails.specializationName}
         /> */}
-        <LawyerRatings feedbacks={providerFeedbacks.data} isDisabled={true} />
+        <LawyerRatings
+          feedbacks={providerFeedbacks.data}
+          isDisabled={true}
+          navigation={navigation}
+        />
         {/* <View style={styles.bookingContainer}>
           <View style={styles.buttonContainer}>
             <MainButton title="انهاءالطلب" onPress={handleBack} />

@@ -1,7 +1,9 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
+import getAge from "../../helpers/getAgeFromDate";
 const QuestionCard = ({ ...questionItem }) => {
+  const age = getAge(questionItem.clientBirthDate);
   return (
     <View style={styles.card}>
       <Pressable
@@ -10,7 +12,9 @@ const QuestionCard = ({ ...questionItem }) => {
         <View style={styles.infoSection}>
           <View style={styles.row}>
             <Text style={styles.askedBy}>
-              {questionItem.askedBy ? questionItem.askedBy : "سأل ذكر 22 سنه"}
+              {questionItem.clientGender === 77
+                ? `سأل ذكر ${age} سنة`
+                : `سألت انثى ${age} سنة`}
             </Text>
             <Text style={styles.question}>
               {questionItem.questionBody ? questionItem.questionBody : "none"}
@@ -18,10 +22,16 @@ const QuestionCard = ({ ...questionItem }) => {
           </View>
           <View style={styles.answerContainer}>
             <Text style={styles.name}>
-              {questionItem.name ? questionItem.name : "عبدالكريم غفار"}
+              {questionItem.serviceProviderFirstName
+                ? questionItem.serviceProviderFirstName +
+                  " " +
+                  questionItem.serviceProviderLastName
+                : "لا يوجد اجابة"}
             </Text>
             <Text style={styles.answer}>
-              {questionItem.answerBody ? questionItem.answerBody : "none"}
+              {questionItem.answerBody
+                ? questionItem.answerBody
+                : "لا يوجد اجابة"}
             </Text>
           </View>
         </View>

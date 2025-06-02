@@ -1,5 +1,4 @@
 import axios from "axios";
-import SSE from "react-native-sse";
 export const apiClient = axios.create({
   baseURL: "http://clientnexus.runasp.net",
   timeout: 10000,
@@ -8,10 +7,11 @@ export const apiClient = axios.create({
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),
-  getFeedbacks: (id) => apiClient.get(`/api/Feedback/provider/${id}`),
+  getFeedbacks: (id) =>
+    apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
     apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
-  getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
+  getQA: (id) => apiClient.get(`/api/qa/provider/${id}?offset=0&limit=20`),
   filter: (filterData) =>
     apiClient.get("/api/ServiceProivder/filter", {
       params: {

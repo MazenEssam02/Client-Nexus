@@ -15,8 +15,9 @@ import RatingModal from "../RatingModal/RatingModal";
 import { ServiceProvider } from "../../API/https";
 import { useMutation } from "@tanstack/react-query";
 export default function LawyerRatings({
-  serviceProviderId,
+  serviceProviderId = null,
   feedbacks,
+  feedbacksQuery = null,
   isDisabled = false,
   navigation,
 }) {
@@ -35,12 +36,15 @@ export default function LawyerRatings({
     mutationFn: ServiceProvider.setFeedback,
     onSuccess: () => {
       resetBookMutation();
+      Alert.alert("تأكيد", "تم اضافة تقييمك بنجاح");
+      feedbacksQuery.refetch();
     },
     onError: (err) => {
       Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
-      console.error("book error:", err);
+      console.error("rating error:", err);
     },
   });
+
   const handleRatingConfirmation = useCallback(
     (rating) => {
       const data = {
@@ -48,8 +52,8 @@ export default function LawyerRatings({
         feedback: rating.feedback,
       };
       setRating(data);
-      modalHandler();
       if (rating.rating && rating.feedback) {
+        modalHandler();
         setFeedback({
           serviceProviderId: serviceProviderId,
           rate: rating.rating,
@@ -76,8 +80,8 @@ export default function LawyerRatings({
           {isDisabled ? (
             ""
           ) : (
-            <Pressable onPress={moreHandler} style={styles.arrowContainer}>
-              <Text style={styles.readMoreText}>المزيد</Text>
+            <Pressable onPress={modalHandler} style={styles.arrowContainer}>
+              <Text style={styles.readMoreText}> اضافة تقييم</Text>
             </Pressable>
           )}
         </View>
@@ -94,14 +98,18 @@ export default function LawyerRatings({
             scrollEnabled={false}
           />
         </View>
-        <View style={styles.buttonContainer}>
-          <MainButton
-            title="تقييم المحامى"
-            onPress={() => {
-              modalHandler();
-            }}
-          />
-        </View>
+        {isDisabled ? (
+          ""
+        ) : (
+          <View style={styles.buttonContainer}>
+            <MainButton
+              title="عرض المزيد"
+              onPress={() => {
+                moreHandler();
+              }}
+            />
+          </View>
+        )}
       </View>
     </>
   );

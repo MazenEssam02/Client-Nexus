@@ -34,7 +34,7 @@ export default function LawyerQA({ lawyerQA }) {
           <FlatList
             data={lawyerQA.slice(0, 3)} // Only show first 3 items
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <QuestionCard questionItem={item} />}
+            renderItem={({ item }) => <QuestionCard {...item} />}
             scrollEnabled={false}
           />
           <View style={styles.buttonContainer}>

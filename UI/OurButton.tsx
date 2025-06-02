@@ -1,11 +1,15 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 const OurButton = ({ onPress = null, children, style = null }) => {
   return (
-    <Pressable style={[styles.closeButton, style]} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.closeButton, style]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <Text style={styles.closeButtonText}>{children}</Text>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 const styles = StyleSheet.create({

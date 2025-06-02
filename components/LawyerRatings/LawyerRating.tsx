@@ -80,8 +80,8 @@ export default function LawyerRatings({
           {isDisabled ? (
             ""
           ) : (
-            <Pressable onPress={moreHandler} style={styles.arrowContainer}>
-              <Text style={styles.readMoreText}>المزيد</Text>
+            <Pressable onPress={modalHandler} style={styles.arrowContainer}>
+              <Text style={styles.readMoreText}> اضافة تقييم</Text>
             </Pressable>
           )}
         </View>
@@ -103,9 +103,9 @@ export default function LawyerRatings({
         ) : (
           <View style={styles.buttonContainer}>
             <MainButton
-              title="تقييم المحامى"
+              title="عرض المزيد"
               onPress={() => {
-                modalHandler();
+                moreHandler();
               }}
             />
           </View>

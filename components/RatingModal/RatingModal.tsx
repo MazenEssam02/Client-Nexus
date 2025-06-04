@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import DropdownList from "../DropdownList/DropdownList";
-import OurButton from "../../UI/OurButton";
+import StarRating from "../StarRating/StarRating";
+import { MainButton } from "../Buttons/MainButton";
 
 const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
   const [rating, setrating] = useState(null);
@@ -29,7 +29,6 @@ const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
       feedback: feedback,
     };
     onRating(rate);
-    
   }, [modalHandler, onRating, rating, feedback]);
   const handleModalClose = useCallback(() => {
     modalHandler();
@@ -46,10 +45,17 @@ const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
           <View style={styles.modalContent}>
             <View style={styles.handle} />
             <Text style={styles.title}>تقييم</Text>
-            <DropdownList
+            <View style={styles.starContainer}>
+              <StarRating
+                setRating={handleRatingChange}
+                rating={rating}
+                starSize={45}
+              />
+            </View>
+            {/* <DropdownList
               placeholder="التقييم"
               onValueChange={handleRatingChange}
-            />
+            /> */}
 
             <TextInput
               style={[styles.inputItem, styles.inputMultiLine]}
@@ -58,9 +64,11 @@ const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
               placeholder="تعليق"
               textAlign="right"
               onChangeText={handleFeedbackChange}
+              multiline={true}
             />
-
-            <OurButton onPress={handleConfirmFilter}>التأكيد</OurButton>
+            <View style={styles.buttonContainer}>
+              <MainButton onPress={handleConfirmFilter} title="التأكيد" />
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -76,7 +84,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   modalContent: {
-    minHeight: 500,
+    minHeight: 470,
     backgroundColor: Colors.background,
     padding: 20,
     borderRadius: 20,
@@ -100,6 +108,11 @@ const styles = StyleSheet.create({
     padding: 5,
     borderBottomWidth: 2,
   },
+  starContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   inputItem: {
     color: Colors.SecondaryColor,
     backgroundColor: "white",
@@ -111,8 +124,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   inputMultiLine: {
-    textAlignVertical: "bottom",
-    minHeight: 150,
+    minHeight: 180,
+  },
+  buttonContainer: {
+    marginTop: 30,
+    alignSelf: "center",
+    height: 40,
+    width: "70%",
   },
 });
 

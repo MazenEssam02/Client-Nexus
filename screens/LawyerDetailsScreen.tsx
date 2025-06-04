@@ -105,7 +105,10 @@ export default function LawyerDetailsScreen({ route, navigation }) {
           isLawyerDetailsCard={true}
         />
         <View style={styles.summaryContainer}>
-          <LawyerSummarylist {...lawyer} />
+          <LawyerSummarylist
+            {...lawyer}
+            lawyerVisitors={providerFeedbacks.data.data.length}
+          />
         </View>
         <BookingBlock
           type={type}

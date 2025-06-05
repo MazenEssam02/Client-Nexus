@@ -29,6 +29,7 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
     ({ title, description, price, phone, id } = emergencyDetails);
   }
   const lawerDetails = {
+    // to be edited i want to get lawyer's details using their id and check the rate if it's string or float so we can remove the pasre
     id: 25,
     firstName: "مازن",
     lastName: "عصام الدين",
@@ -102,6 +103,7 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -122,14 +124,15 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
           isLawyerDetailsCard={true}
         />
         {/* <EmergencyCard lawyer={lawyer} emergencyCaseId={emergencyCaseId} /> */}
-        {/* <View style={styles.summaryContainer}>
+        <View style={styles.summaryContainer}>
           <LawyerSummarylist
-            rate={lawerDetails.rate}
+            rate={parseFloat(lawerDetails.rate)}
             yearsOfExperience={lawerDetails.yearsOfExperience}
+            lawyerVisitors={providerFeedbacks.data.length}
           />
-        </View> */}
+        </View>
 
-        <AboutLawyer Description={lawerDetails.description} />
+        {/* <AboutLawyer Description={lawerDetails.description} /> */}
         {/* <LawyerSpecialities
           specializationName={lawerDetails.specializationName}
         /> */}

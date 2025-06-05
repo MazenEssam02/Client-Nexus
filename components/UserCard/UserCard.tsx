@@ -8,7 +8,6 @@ import { Client } from "../../API/https";
 import IsLoading from "../IsLoading/IsLoading";
 
 const UserCard = ({ feedbackItem }) => {
-  //to be edited to get image and user name using their id
   const {
     data: clientData,
     isLoading,

@@ -59,7 +59,7 @@ export default function ScheduleScreen() {
           mainImage: Appointment.serviceProviderMainImage,
         }))
       );
-      console.log(transactions[0].type);
+      // console.log(transactions[0].type);
     }
   }, [Appointments]);
   if (isLoading) {

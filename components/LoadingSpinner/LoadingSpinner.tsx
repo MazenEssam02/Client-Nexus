@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, View, StyleSheet } from "react-native";
 import MainLogo from "../Icons/MainLogo";
+import { Colors } from "../../constants/Color";
 
 const LoadingSpinner = () => {
   const rotateY = useRef(new Animated.Value(0)).current;
@@ -23,13 +24,15 @@ const LoadingSpinner = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={{
-          transform: [{ perspective: 1000 }, { rotateY: rotation }],
-        }}
-      >
-        <MainLogo />
-      </Animated.View>
+      <View style={styles.innerConteiner}>
+        <Animated.View
+          style={{
+            transform: [{ perspective: 1000 }, { rotateY: rotation }],
+          }}
+        >
+          <MainLogo />
+        </Animated.View>
+      </View>
     </View>
   );
 };
@@ -38,6 +41,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: Colors.background,
+  },
+  innerConteiner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 20,
   },
 });
 export default LoadingSpinner;

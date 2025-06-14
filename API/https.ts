@@ -1,12 +1,12 @@
 import axios from "axios";
 export const apiClient = axios.create({
-  baseURL: "http://clientnexus.runasp.net",
+  baseURL: "https://clientnexus.runasp.net",
   timeout: 10000,
 });
 
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
-  getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),
+  getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
   getFeedbacks: (id) =>
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>

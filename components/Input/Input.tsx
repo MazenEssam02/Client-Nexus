@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.SecondaryColorLight,
   },
   inputMultiLine: {
-    textAlignVertical: "bottom",
     minHeight: 230,
   },
 

@@ -10,7 +10,6 @@ import Input from "../../components/Input/Input";
 import { useEffect, useState } from "react";
 import { Colors } from "../../constants/Color";
 import { MainButton } from "../../components/Buttons/MainButton";
-import { useIsFocused, useRoute } from "@react-navigation/native";
 import { font } from "../../constants/Font";
 import * as Location from "expo-location";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";

@@ -1,4 +1,11 @@
-import { StyleSheet, View, ScrollView, Text, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  Alert,
+  Pressable,
+} from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
@@ -6,13 +13,11 @@ import { useLayoutEffect } from "react";
 import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
 import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
 import LawyerRatings from "../components/LawyerRatings/LawyerRating";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { EmeregencyCases, ServiceProvider } from "../API/https";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { ServiceProvider } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import EmergencyCallBlock from "../components/EmergencyCallBlock/EmergencyCallBlock";
 import { Ionicons } from "@expo/vector-icons";
-import EmergencyCard from "../components/EmergencyLawyerCards/EmergencyCard";
-import { MainButton } from "../components/Buttons/MainButton";
 import useEmergencyStore from "../store/EmergencyStore";
 import EmergencyDetailsBlock from "../components/EmergencyDetailsBlock/EmergencyDetailsBlock";
 
@@ -28,27 +33,6 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
     const { emergencyDetails } = useEmergencyStore.getState();
     ({ title, description, price, phone, id } = emergencyDetails);
   }
-  const lawerDetails = {
-    id: 25,
-    firstName: "مازن",
-    lastName: "عصام الدين",
-    rate: "5",
-    description: "حاصل على بكالريوس القانون من جامعة القاهرة ",
-    mainImage:
-      "https://clientnexus.s3.amazonaws.com/images/a5152bd9-9cc3-4854-aecf-09cbc724cbe1.jpeg",
-    imageIDUrl:
-      "https://clientnexus.s3.amazonaws.com/images/898c2fb9-4530-4476-b6b1-38b85482bf18.png",
-    imageNationalIDUrl:
-      "https://clientnexus.s3.amazonaws.com/images/3cb4d64d-fe81-4918-97b7-f6bb3c2ceb62.jpg",
-    yearsOfExperience: 10,
-    state: null,
-    city: null,
-    specializationName: ["جنائى", "مدنى"],
-    office_consultation_price: 200,
-    telephone_consultation_price: 150,
-    main_Specialization: "جنائى",
-    gender: 77,
-  };
   // const handleBack = () => {
   //   Alert.alert(
   //     "الرجوع",
@@ -72,25 +56,30 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
     navigation.setOptions({
       gestureEnabled: false,
       headerLeft: () => (
-        <Ionicons
-          name="close-outline"
-          size={30}
-          color="white"
-          onPress={() => navigation.popToTop()}
-        />
+        <Pressable onPress={() => navigation.popToTop()}>
+          <Ionicons name="close-outline" size={30} color="white" />
+        </Pressable>
       ),
     });
   }, [navigation]);
-  const {
-    data: providerFeedbacks,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["providerFeedbacks", id],
-    queryFn: () => ServiceProvider.getFeedbacks(id),
+
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["providerFeedbacks", id],
+        queryFn: () => ServiceProvider.getFeedbacks(id),
+      },
+      {
+        queryKey: ["providerDetails", id],
+        queryFn: () => ServiceProvider.getById(id),
+      },
+    ],
   });
 
+  const isLoading = results.some((result) => result.isLoading);
+  const isError = results.some((result) => result.isError);
+  const [providerFeedbacks, providerDetails] = results;
+  const providerDetailsData = providerDetails.data?.data.data;
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -102,6 +91,7 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
       </View>
     );
   }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -112,29 +102,28 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
         <EmergencyDetailsBlock title={title} description={description} />
         {<EmergencyCallBlock price={price} lawyerPhone={phone} />}
         <LawyerCard
-          name={lawerDetails.firstName + " " + lawerDetails.lastName}
-          rate={lawerDetails.rate}
-          speciality={lawerDetails.main_Specialization}
-          gender={lawerDetails.gender}
+          name={
+            providerDetailsData.firstName + " " + providerDetailsData.lastName
+          }
+          rate={providerDetailsData.rate}
+          speciality={providerDetailsData.main_Specialization}
+          gender={providerDetailsData.gender}
           // address={lawyer.city}
-          imageURL={lawerDetails.mainImage}
+          imageURL={providerDetailsData.mainImage}
           style={styles.card}
           isLawyerDetailsCard={true}
         />
-        {/* <EmergencyCard lawyer={lawyer} emergencyCaseId={emergencyCaseId} /> */}
-        {/* <View style={styles.summaryContainer}>
-          <LawyerSummarylist
-            rate={lawerDetails.rate}
-            yearsOfExperience={lawerDetails.yearsOfExperience}
-          />
-        </View> */}
 
-        <AboutLawyer Description={lawerDetails.description} />
-        {/* <LawyerSpecialities
-          specializationName={lawerDetails.specializationName}
-        /> */}
+        <View style={styles.summaryContainer}>
+          <LawyerSummarylist
+            rate={providerDetailsData.rate}
+            yearsOfExperience={providerDetailsData.yearsOfExperience}
+            lawyerVisitors={providerFeedbacks.data?.data.length}
+          />
+        </View>
+
         <LawyerRatings
-          feedbacks={providerFeedbacks.data}
+          feedbacks={providerFeedbacks.data?.data}
           isDisabled={true}
           navigation={navigation}
         />

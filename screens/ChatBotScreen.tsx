@@ -22,6 +22,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import TypingIndicator from "../components/Icons/AnimatedTyping";
 import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
+import formatBotText from "../helpers/formatBotText";
 
 interface Message {
   id: string;
@@ -105,7 +106,7 @@ const ChatBotScreen = ({ navigation }) => {
         suggestion: data.suggestion,
         sender: "bot",
       };
-      console.log(data);
+      console.log(data.refined_answer?.answer);
 
       setMessages((prev) => [...prev, botResponse]);
     },
@@ -134,7 +135,7 @@ const ChatBotScreen = ({ navigation }) => {
 
     return unsubscribe;
   }, [navigation]);
-  
+
   // Render individual chat message
   const renderMessage = ({ item }: { item: Message }) => {
     const copyToClipboard = () => {
@@ -165,35 +166,37 @@ const ChatBotScreen = ({ navigation }) => {
       >
         {item.sender === "bot" && <Bot style={styles.botIcon} />}
         <View style={styles.messageInnerContainer}>
-          <Pressable
-            style={[
-              styles.messageContainer,
-              item.sender === "user" ? styles.userMessage : styles.botMessage,
-            ]}
-            onLongPress={copyToClipboard}
-          >
-            <Text
+          {item.text && (
+            <Pressable
               style={[
-                styles.messageText,
-                item.sender === "user" ? { color: "white" } : {},
+                styles.messageContainer,
+                item.sender === "user" ? styles.userMessage : styles.botMessage,
               ]}
+              onLongPress={copyToClipboard}
             >
-              {item.text}
-            </Text>
-            {item.sources &&
-              item.sources.map((source, idx) => (
-                <Text
-                  key={idx}
-                  style={[
-                    styles.messageText,
-                    { textDecorationLine: "underline" },
-                  ]}
-                  onPress={() => Linking.openURL(source)}
-                >
-                  {source}
-                </Text>
-              ))}
-          </Pressable>
+              <Text
+                style={[
+                  styles.messageText,
+                  item.sender === "user" ? { color: "white" } : {},
+                ]}
+              >
+                {formatBotText(item.text)}
+              </Text>
+              {item.sources &&
+                item.sources.map((source, idx) => (
+                  <Text
+                    key={idx}
+                    style={[
+                      styles.messageText,
+                      { textDecorationLine: "underline" },
+                    ]}
+                    onPress={() => Linking.openURL(source)}
+                  >
+                    {source}
+                  </Text>
+                ))}
+            </Pressable>
+          )}
           {item.sender === "bot" &&
             Array.isArray(item.suggestion?.lawyers) &&
             item.suggestion.lawyers.length > 0 && (

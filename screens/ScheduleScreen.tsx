@@ -19,7 +19,7 @@ const weekday = [
 export default function ScheduleScreen() {
   const [transactions, setTransactions] = useState([
     {
-      id: undefined,
+      id: 0,
       date: "",
       rate: "",
       day: "",
@@ -59,7 +59,7 @@ export default function ScheduleScreen() {
           mainImage: Appointment.serviceProviderMainImage,
         }))
       );
-      // console.log(transactions[0].type);
+      // console.log(transactions);
     }
   }, [Appointments]);
   if (isLoading) {

@@ -6,7 +6,7 @@ import OnTime from "../Icons/OnTime";
 import Call from "../Icons/Call";
 import ConsultLarge from "../Icons/ConsultLarge";
 
-export default function QuickButton({ title, iconName, onPress }) {
+export default function QuickButton({ title, iconName, onPress, style }) {
   function LogoPicker() {
     switch (iconName) {
       case "Consult":
@@ -19,7 +19,11 @@ export default function QuickButton({ title, iconName, onPress }) {
   }
   return (
     <Pressable
-      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.container,
+        pressed && styles.pressed,
+        style,
+      ]}
       onPress={onPress}
     >
       <View style={styles.iconContainer}>

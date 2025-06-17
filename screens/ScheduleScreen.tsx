@@ -15,7 +15,6 @@ import { Client } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../components/IsError/IsError";
 import timeZoneConverter from "../utils/timeZoneConverter";
-import { useFocusEffect } from "@react-navigation/native";
 const weekday = [
   "الاحد",
   "الاثنين",

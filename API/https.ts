@@ -11,9 +11,14 @@ export const ServiceProvider = {
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
     apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
-  getQA: (id) => apiClient.get(`/api/qa/provider/${id}?offset=0&limit=20`),
-  filter: (filterData) =>
-    apiClient.get("/api/ServiceProivder/filter", {
+  getUnansweredQA: () => apiClient.get<{
+    id: string
+  "clientId": string
+}[]>(`/api/qa/all?offset=0&limit=10&onlyUnanswered=true`),
+  getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
+  filter: (filterData) => {
+    console.log("Filtered data from inside the request", filterData);
+    return apiClient.get("/api/ServiceProvider/filter", {
       params: {
         searchQuery: filterData.searchQuery,
         minRate: filterData.minRate,
@@ -21,7 +26,8 @@ export const ServiceProvider = {
         city: filterData.city,
         specializationName: filterData.speciality,
       },
-    }),
+    });
+  },
   setFeedback: ({ serviceProviderId, rate, feedback }) =>
     apiClient.post("/api/Feedback", {
       serviceProviderId: serviceProviderId,

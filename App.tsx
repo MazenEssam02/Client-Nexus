@@ -48,6 +48,11 @@ import BookingScreen from "./screens/BookingScreen";
 import * as Notifications from "expo-notifications";
 import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
 import LawyerDashboard from "./screens/LawyerScreens/LawyerDashboard";
+import QuestionsList from "./screens/LawyerScreens/QuestionsList";
+import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScreen";
+import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
+import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
+import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -366,6 +371,60 @@ function AuthenticatedStackClient() {
     </Stack.Navigator>
   );
 }
+function LawyerTabs() {
+  return (
+    <Tab.Navigator
+      id={undefined}
+      initialRouteName="LawyerDashboard"
+      screenOptions={() => ({
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+        tabBarStyle: { backgroundColor: "white" },
+        tabBarActiveTintColor: Colors.mainColor,
+        tabBarInactiveTintColor: Colors.SecondaryColor,
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <Tab.Screen
+        name="LawyerProfileScreen"
+        component={LawyerProfileScreen}
+        options={{
+          headerShown: false,
+          title: "حسابى",
+          tabBarLabel: "حسابى",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Schedule"
+        component={ScheduleStack}
+        options={{
+          title: "مواعيدى",
+          tabBarLabel: "مواعيدى",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="LawyerDashboard"
+        component={LawyerDashboard}
+        options={{
+          headerShown: false,
+          title: "الرئيسية",
+          tabBarLabel: "الرئيسية",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
 function AuthenticatedStackLawyer() {
   return (
     <Stack.Navigator
@@ -382,8 +441,48 @@ function AuthenticatedStackLawyer() {
     >
       <Stack.Screen
         name="LawyerTabs"
-        component={LawyerDashboard}
+        component={LawyerTabs}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LawyerQA"
+        component={QuestionsList}
+        options={{ title: "الاسئلة القانونية" }}
+      />
+      <Stack.Screen
+        name="LawyerQAPrev"
+        component={QuestionsListPrev}
+        options={{ title: "الاسئلة القانونية" }}
+      />
+      <Stack.Screen
+        name="LawyerQAResponse"
+        component={QuestionResponseScreen}
+      />
+      <Stack.Screen
+        name="EmergencyRequests"
+        component={EmergencyRequests}
+        options={{ title: "الطلبات العاجلة" }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={NotificationScreen}
+        options={{ title: "التنبيهات" }}
+      />
+      <Stack.Screen
+        name="LawyerRatingScreen"
+        component={LawyerRatingsScreen}
+        options={({ navigation }) => ({
+          title: "تقييمات الزائريين",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
       />
     </Stack.Navigator>
   );

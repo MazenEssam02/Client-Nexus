@@ -13,6 +13,8 @@ export type User = {
   email: string;
   type: "admin" | "client" | "lawyer";
   authToken: string;
+  id: number;
+  mainImage?: string | null;
 };
 
 export type SocialAuth = "google" | "facebook" | "apple";
@@ -66,6 +68,7 @@ export const useAuthStore = create<AuthStore>()(persist(
   }) =>  {
     set({ isLoading: true, error: null });
     try {
+        console.log("data");
       const { data } = await apiClient
           .post<{
             email: string;
@@ -90,6 +93,7 @@ export const useAuthStore = create<AuthStore>()(persist(
             firstName: string;
             lastName: string;
             phoneNumber: string;
+            id: number;
           }
         }>("api/client");
       set({
@@ -98,6 +102,7 @@ export const useAuthStore = create<AuthStore>()(persist(
           lastName: userData.lastName,
           birthDate: userData.birthDate,
           phoneNumber: userData.phoneNumber,
+          id: userData.id,
           email: userEmail,
           type: userType === "Client" ? "client" : "admin",
           authToken: token,
@@ -113,8 +118,11 @@ export const useAuthStore = create<AuthStore>()(persist(
             firstName: string;
             lastName: string;
             phoneNumber: string;
+            id: number;
+            mainImage: string | null;
           }
         }>("api/ServiceProvider");
+        console.log(userData);
       set({
         user: {
           firstName: userData.firstName,
@@ -124,6 +132,8 @@ export const useAuthStore = create<AuthStore>()(persist(
           email: userEmail,
           type: "lawyer",
           authToken: token,
+          id: userData.id,
+          mainImage: userData.mainImage,
         },
         isLoading: false,
       });
@@ -200,6 +210,18 @@ export const useAuthStore = create<AuthStore>()(persist(
           data: { email: userEmail, token, userType },
         } = data;
         apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const {
+          data: { data: userData }
+        } = await apiClient.get<{
+          data: {
+            birthDate: string;
+            firstName: string;
+            lastName: string;
+            phoneNumber: string;
+            id: number;
+            mainImage: string | null;
+          }
+        }>("api/ServiceProvider");
         set({
           user: {
             firstName,
@@ -209,6 +231,8 @@ export const useAuthStore = create<AuthStore>()(persist(
             email: userEmail,
             type: "lawyer",
             authToken: token,
+            id: userData.id,
+            mainImage: userData.mainImage
           },
           isLoading: false,
         });
@@ -258,6 +282,18 @@ export const useAuthStore = create<AuthStore>()(persist(
           },
         });
       }
+      const {
+          data: { data: userData }
+        } = await apiClient.get<{
+          data: {
+            birthDate: string;
+            firstName: string;
+            lastName: string;
+            phoneNumber: string;
+            id: number;
+            mainImage: string | null;
+          }
+        }>("api/Client");
       set({
         user: {
           firstName,
@@ -267,6 +303,8 @@ export const useAuthStore = create<AuthStore>()(persist(
           email: userEmail,
           type: userType === "Client" ? "client" : "admin",
           authToken: token,
+          id: userData.id,
+          mainImage: userData.mainImage,
         },
         isLoading: false,
       });
@@ -284,6 +322,8 @@ export const useAuthStore = create<AuthStore>()(persist(
       delete apiClient.defaults.headers.common["Authorization"];
     } catch (error) {
       console.log(JSON.stringify(error, null, 2));
+      set({ user: null, isLoading: false, error: null });
+      delete apiClient.defaults.headers.common["Authorization"];
     }
   },
 }), {

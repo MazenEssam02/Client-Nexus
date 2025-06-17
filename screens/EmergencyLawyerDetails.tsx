@@ -3,17 +3,14 @@ import {
   View,
   ScrollView,
   Text,
-  Alert,
   Pressable,
 } from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
 import { useLayoutEffect } from "react";
-import AboutLawyer from "../components/AboutLawyer/AboutLawyer";
-import LawyerSpecialities from "../components/LawyerSpecialities/LawyerSpecialities";
 import LawyerRatings from "../components/LawyerRatings/LawyerRating";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { ServiceProvider } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import EmergencyCallBlock from "../components/EmergencyCallBlock/EmergencyCallBlock";

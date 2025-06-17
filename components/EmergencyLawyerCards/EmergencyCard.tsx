@@ -34,17 +34,26 @@ export default function EmergencyCard({ lawyer, emergencyCaseId, navigation }) {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.cardHeader}>
-        {/* <View style={styles.imageContainer}>
-          <Image source={require("../../assets/LawyerPic/image.png")} />
-          </View> */}
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceText}>{lawyer.Price}ج</Text>
+      <View style={styles.card}>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.imageStyle}
+            source={
+              lawyer.ImageUrl
+                ? { uri: lawyer.ImageUrl }
+                : require("../../assets/user.jpg")
+            }
+          />
         </View>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>
-            {lawyer.FirstName + " " + lawyer.LastName}
-          </Text>
+        <View style={styles.cardHeader}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.priceText}>{lawyer.Price}ج</Text>
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.title}>
+              {lawyer.FirstName + " " + lawyer.LastName}
+            </Text>
+          </View>
         </View>
       </View>
       <View style={styles.SummaryContainer}>
@@ -69,9 +78,18 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 20,
   },
-  cardHeader: {
+  card: {
     flex: 1,
     width: "100%",
+    maxHeight: 100,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    overflow: "hidden",
+    padding: 8,
+  },
+  cardHeader: {
+    flex: 4,
+    // width: "100%",
     // height: 50,
     // flexDirection: "row-reverse",
     alignItems: "center",
@@ -83,6 +101,12 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flex: 1,
+  },
+  imageStyle: {
+    flex: 1,
+    borderRadius: 15,
+    alignSelf: "center",
+    width: 80,
   },
   infoContainer: {
     flex: 1,

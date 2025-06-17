@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 
-export default function ArticleItem({ articleItem ,onPress }) {
+export default function ArticleItem({ articleItem, onPress }) {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     height: 210,
     width: 210,
     backgroundColor: "white",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     marginHorizontal: 7,
   },
   imagecontainer: {
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   titleText: {
     color: Colors.SecondaryColor,
     textAlign: "right",
+    // textAlignVertical: "bottom",
     padding: 5,
   },
 });

@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { Slots } from "../../API/https";
@@ -12,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import IsLoading from "../IsLoading/IsLoading";
 import IsError from "../IsError/IsError";
 import { Arrow } from "../Icons/Arrow";
+import timeZoneConverter from "../../helpers/timeZoneConverter";
 
 const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
   const [selectedDay, setSelectedDay] = useState(null);
@@ -110,10 +106,7 @@ const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
     return slots
       .filter((slot) => slot.date.startsWith(selectedDay.date))
       .map((slot) => {
-        const time = new Date(slot.date).toLocaleTimeString("ar-SA", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        const time = timeZoneConverter(slot.date);
         return {
           ...slot,
           formattedTime: time,

@@ -34,7 +34,6 @@ export default function SearchResultScreen({ route, navigation }) {
     queryKey: ["Lawyers", searchText],
     queryFn: () => ServiceProvider.getBySearch(searchText),
     enabled: !!searchText,
-    refetchInterval: 5000,
   });
   const searchResults = searchResultsData?.data?.data || [];
   const noResponse =
@@ -56,10 +55,10 @@ export default function SearchResultScreen({ route, navigation }) {
     (filters) => {
       const data = {
         searchQuery: searchText,
-        minRate: filters.rate || "",
-        state: filters.region || "",
-        city: filters.city || "",
-        specializationName: filters.speciality || "",
+        minRate: filters.rate || "3",
+        state: filters.region || "القاهرة",
+        city: filters.city || "مدينة نصر",
+        specializationName: filters.speciality || "جنائي",
       };
       setFilterData(data);
       setFilterUsed(true);
@@ -77,7 +76,7 @@ export default function SearchResultScreen({ route, navigation }) {
     queryKey: ["filteredResults", filterData],
     queryFn: () => {
       console.log("filter queryFn called", filterData); // <--- Add this line
-      return ServiceProvider.filter({ filterData })
+      return ServiceProvider.filter(filterData)
         .then((response) => {
           console.log("filter queryFn success", response);
           return response; // Important: Return the response!
@@ -93,16 +92,15 @@ export default function SearchResultScreen({ route, navigation }) {
       !!filterData.minRate ||
       !!filterData.specializationName ||
       !!filterData.state,
-    refetchInterval: 5000,
   });
-  const lawyersToDisplay = filterUsed
-    ? filteredSearchResult?.data?.data || []
-    : searchResults;
+  const lawyersToDisplay =
+    filterUsed && filteredSearchResult?.data?.data && !filterIsError
+      ? filteredSearchResult?.data?.data
+      : searchResults;
   const noResponseToShow = filterUsed
-    ? !filteredIsLoading &&
-      !filterIsError &&
-      (filteredSearchResult?.data?.data?.length || 0) === 0
+    ? !filteredIsLoading && !filterIsError
     : noResponse;
+
   if (searchIsLoading && searchText) {
     return <LoadingSpinner />;
   }
@@ -112,9 +110,9 @@ export default function SearchResultScreen({ route, navigation }) {
   if (filteredIsLoading && searchText) {
     return <IsLoading />;
   }
-  if (filterIsError && searchText) {
-    return <IsError error={filterError} />;
-  }
+  // if (filterIsError && searchText) {
+  //   return <IsError error={filterError} />;
+  // }
   return (
     <>
       {modalVisible && (

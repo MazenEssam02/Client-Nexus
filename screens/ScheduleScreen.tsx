@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Client } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../components/IsError/IsError";
+import timeZoneConverter from "../helpers/timeZoneConverter";
 const weekday = [
   "الاحد",
   "الاثنين",
@@ -49,7 +50,7 @@ export default function ScheduleScreen() {
           day: weekday[new Date(Appointment.slotDate).getDay()],
           name: `${Appointment.serviceProviderFirstName}${Appointment.serviceProviderLastName}`,
           speciality: Appointment.serviceProviderMainSpecialization,
-          time: new Date(Appointment.slotDate).getTime(),
+          time: timeZoneConverter(Appointment.slotDate),
           type:
             Appointment.slotType === 73
               ? "مقابلة مكتبية"

@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import FavouriteLawyerCard from "../LawyerCard/FavouriteLawyerCard";
+import { font } from "../../constants/Font";
+import { Colors } from "../../constants/Color";
 
 const ScheduleLawyerCard = ({ item }) => {
   return (
@@ -10,6 +12,9 @@ const ScheduleLawyerCard = ({ item }) => {
         <Text style={styles.date}>{item.date}</Text>
       </View>
       <FavouriteLawyerCard {...item} isDisabled={true} />
+      <View style={styles.timeContainer}>
+        <Text style={styles.time}>{item.time}</Text>
+      </View>
     </View>
   );
 };
@@ -53,9 +58,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#555",
   },
+  timeContainer: {
+    //   alignItems: "center",
+  },
   time: {
-    fontSize: 14,
-    color: "#888",
+    textAlign: "center",
+    fontSize: 16,
+    fontFamily: font.subtitle.fontFamily,
+    color: Colors.mainColor,
     marginTop: 5,
   },
   dateContainer: {

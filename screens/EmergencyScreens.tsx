@@ -5,6 +5,7 @@ import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import EmergencyLawyerDetails from "./EmergencyLawyerDetails";
+import { Pressable } from "react-native";
 const Stack = createNativeStackNavigator();
 export default function EmergencyScreens({ navigation }) {
   return (
@@ -26,15 +27,18 @@ export default function EmergencyScreens({ navigation }) {
           title: "محامى عاجل",
           gestureEnabled: false,
           headerLeft: () => (
-            <Ionicons
-              name="chevron-back-outline"
-              style={{ marginLeft: -10 }}
-              size={30}
-              color="white"
+            <Pressable
               onPress={() => {
                 navigation.goBack();
               }}
-            />
+            >
+              <Ionicons
+                name="chevron-back-outline"
+                style={{ marginLeft: -10 }}
+                size={30}
+                color="white"
+              />
+            </Pressable>
           ),
         }}
       />

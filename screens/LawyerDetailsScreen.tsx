@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   View,
-  Image,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -24,13 +23,16 @@ import {
   isFavorite,
   removeFromFavorites,
 } from "../store/FavoritesStore";
+import useProfileStore from "../store/Profile";
 export default function LawyerDetailsScreen({ route, navigation }) {
+  const profileData = useProfileStore((state) => state.profileData);
   const lawyer = route.params.lawyer;
   const [type, setType] = useState(route.params.type); //true is in person , false is phone
   const [favorite, setFavorite] = useState(false);
+
   useLayoutEffect(() => {
     const checkFavorite = async () => {
-      const fav = await isFavorite(lawyer.id);
+      const fav = await isFavorite(lawyer.id, profileData);
       setFavorite(fav);
     };
     checkFavorite();
@@ -41,9 +43,9 @@ export default function LawyerDetailsScreen({ route, navigation }) {
         <TouchableOpacity
           onPress={async () => {
             if (favorite) {
-              await removeFromFavorites(lawyer.id);
+              await removeFromFavorites(lawyer.id, profileData);
             } else {
-              await addToFavorites(lawyer);
+              await addToFavorites(lawyer, profileData);
             }
             setFavorite((prev) => !prev);
           }}
@@ -71,6 +73,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
 
   const isLoading = results.some((result) => result.isLoading);
   const isError = results.some((result) => result.isError);
+  const [providerFeedbacks, providerQA] = results;
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -83,7 +86,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
       </View>
     );
   }
-  const [providerFeedbacks, providerQA] = results;
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -102,13 +105,26 @@ export default function LawyerDetailsScreen({ route, navigation }) {
           isLawyerDetailsCard={true}
         />
         <View style={styles.summaryContainer}>
-          <LawyerSummarylist {...lawyer} />
+          <LawyerSummarylist
+            {...lawyer}
+            lawyerVisitors={providerFeedbacks.data.data.length}
+          />
         </View>
-        <BookingBlock type={type} onChange={onChange} lawyer={lawyer} navigation={navigation} />
+        <BookingBlock
+          type={type}
+          onChange={onChange}
+          lawyer={lawyer}
+          navigation={navigation}
+        />
         <AboutLawyer Description={lawyer.description} />
         <LawyerQA lawyerQA={providerQA.data.data} />
         <LawyerSpecialities specializationName={lawyer.specializationName} />
-        <LawyerRatings feedbacks={providerFeedbacks.data.data} />
+        <LawyerRatings
+          feedbacks={providerFeedbacks.data.data}
+          feedbacksQuery={providerFeedbacks}
+          serviceProviderId={lawyer.id}
+          navigation={navigation}
+        />
       </ScrollView>
     </View>
   );

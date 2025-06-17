@@ -22,7 +22,7 @@ export default function LawyerSummaryList({
         <View style={styles.IconContainer}>
           <Star />
         </View>
-        <Text style={styles.summaryNumber}>{rate}</Text>
+        <Text style={styles.summaryNumber}>{rate.toFixed(2)}</Text>
         <Text style={styles.summaryTitle}>تقييم</Text>
       </View>
       <View style={styles.summarryItemContainer}>

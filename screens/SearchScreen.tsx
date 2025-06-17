@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Specialization } from "../API/https";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import IsError from "../components/IsError/IsError";
 
 export default function SearchScreen({ navigation, route }) {
   const type = route.params === undefined ? true : route.params.type;
@@ -25,11 +26,7 @@ export default function SearchScreen({ navigation, route }) {
   }
 
   if (isError) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Error: {error.message}</Text>
-      </View>
-    );
+    return <IsError error={error} />;
   }
 
   function submitHandler() {

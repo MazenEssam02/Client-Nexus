@@ -1,14 +1,14 @@
 import axios from "axios";
-import SSE from "react-native-sse";
 export const apiClient = axios.create({
-  baseURL: "http://clientnexus.runasp.net",
+  baseURL: "https://clientnexus.runasp.net",
   timeout: 10000,
 });
 
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
-  getById: (id) => apiClient.get(`/api/ServiceProvider/${id}`),
-  getFeedbacks: (id) => apiClient.get(`/api/Feedback/provider/${id}`),
+  getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
+  getFeedbacks: (id) =>
+    apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
     apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
   getUnansweredQA: () => apiClient.get<{
@@ -25,6 +25,12 @@ export const ServiceProvider = {
         city: filterData.city,
         specializationName: filterData.speciality,
       },
+    }),
+  setFeedback: ({ serviceProviderId, rate, feedback }) =>
+    apiClient.post("/api/Feedback", {
+      serviceProviderId: serviceProviderId,
+      rate: rate,
+      feedback: feedback,
     }),
 };
 
@@ -47,8 +53,7 @@ export const Specialization = {
 };
 
 export const Client = {
-  get: () => apiClient.get("api/Client"),
-  getById: (id) => apiClient.get(`api/Client?id=${id}`),
+  get: (id) => apiClient.get("api/Client", { params: { id: id } }),
   async update(formData) {
     try {
       const response = await apiClient.put("api/Client", formData, {

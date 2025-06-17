@@ -50,11 +50,16 @@ export default function ScheduleScreen() {
           name: `${Appointment.serviceProviderFirstName}${Appointment.serviceProviderLastName}`,
           speciality: Appointment.serviceProviderMainSpecialization,
           time: new Date(Appointment.slotDate).getTime(),
-          type: "مكتبي",
-          image: Appointment.serviceProviderMainImage,
+          type:
+            Appointment.slotType === 73
+              ? "مقابلة مكتبية"
+              : Appointment.slotType === 79
+              ? "مقابلة اونلاين"
+              : "مقابلة هاتفية",
+          mainImage: Appointment.serviceProviderMainImage,
         }))
       );
-      console.log(transactions[0].type);
+      // console.log(transactions[0].type);
     }
   }, [Appointments]);
   if (isLoading) {

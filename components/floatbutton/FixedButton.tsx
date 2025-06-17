@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
   },
   fixedButton: {
     position: "absolute",
-    bottom: 30, // Adjust for desired position
-    left: 20, // Adjust for desired position
+    bottom: 30,
+    left: 20,
     backgroundColor: Colors.mainColor,
     paddingVertical: 12,
     paddingHorizontal: 12,

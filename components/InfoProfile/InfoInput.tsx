@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -8,26 +8,32 @@ import {
   Pressable,
 } from "react-native";
 import PassowrdShow from "../Icons/PasswordShow";
-const InfoInput = ({ field, onChange, inputProps, info, isPassword }) => {
-  const [name, setName] = useState(`${info}`);
+import useProfileStore from "../../store/Profile";
+const InfoInput = ({ field, isPassword, form }) => {
   const [focued, setFocused] = useState(false);
   const [secure, setSecure] = useState(isPassword);
+  const setPasswordField = useProfileStore((state) => state.setPasswordField);
   function secureHandler() {
     setSecure((prev) => !prev);
     setTimeout(() => setSecure(true), 1000);
   }
+  function handleTextChange(text) {
+    form.onChange(text);
+  }
+  const handleBlur = () => {
+    setFocused(false);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.inputContainer}>
         <TextInput
-          {...inputProps}
-          placeholder={focued ? "" : `${info}`}
+          placeholder={focued ? "" : form.value}
           onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onChangeText={(text) => setName(text)}
-          value={name}
+          onBlur={handleBlur}
+          onChangeText={handleTextChange}
+          value={form.value}
           style={styles.input}
-          onEndEditing={() => onChange(field, name)}
           secureTextEntry={secure}
         ></TextInput>
         {isPassword && (

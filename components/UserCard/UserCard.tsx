@@ -3,14 +3,48 @@ import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
 import StarRating from "../StarRating/StarRating";
+import { useQuery } from "@tanstack/react-query";
+import { Client } from "../../API/https";
+import IsLoading from "../IsLoading/IsLoading";
 
 const UserCard = ({ feedbackItem }) => {
-  //to be edited to get image and user name using their id
-  const name = feedbackItem.clientId;
+  const {
+    data: clientData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["Client", feedbackItem.clientId],
+    queryFn: () => Client.get(feedbackItem.clientId),
+  });
+
+  if (isLoading) {
+    return <IsLoading />;
+  }
+
+  if (isError) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>حدث خطأ</Text>
+      </View>
+    );
+  }
+  const name =
+    clientData.data.data.firstName + " " + clientData.data.data.lastName;
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={require("../../assets/LawyerPic/image.png")} />
+        {clientData.data.data.mainImage ? (
+          <Image
+            source={{ uri: clientData.data.data.mainImage }}
+            style={styles.imageStyle}
+          />
+        ) : (
+          <Image
+            source={require("../../assets/user.jpg")}
+            style={styles.imageStyle}
+          />
+        )}
       </View>
       <View style={styles.infoContainer}>
         <Text numberOfLines={1} style={styles.title}>
@@ -42,6 +76,13 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
+  },
+  imageStyle: {
+    flex: 1,
+    borderRadius: 15,
+    alignSelf: "center",
+    width: 60,
+    height: 60,
   },
   infoContainer: {
     flex: 4,

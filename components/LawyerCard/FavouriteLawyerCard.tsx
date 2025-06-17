@@ -6,7 +6,8 @@ import { Rate2 } from "../Icons/Rate2";
 import { Rate3 } from "../Icons/Rate3";
 import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
-import LawyerList from "../../api-mock/LawyerList";
+import { removeFromFavorites } from "../../store/FavoritesStore";
+import { useState } from "react";
 const FavouriteLawyerCard = ({
   name,
   rate,
@@ -14,7 +15,8 @@ const FavouriteLawyerCard = ({
   address,
   onPress = null,
   id = null,
-  editable = null,
+  mainImage = null,
+  isDisabled = false,
 }) => {
   function RateHandler({ style }) {
     switch (rate) {
@@ -30,36 +32,47 @@ const FavouriteLawyerCard = ({
         return <Rate5 style={style} />;
     }
   }
-  function deleteHandler(id) {
-    console.log("Deleted");
-  }
+  // function deleteHandler(id) {
+  //   removeFromFavorites(id);
+  //   console.log("Deleted the id with", id);
+  // }
   return (
     <>
       <Pressable
-        style={({ pressed }) => [styles.container, pressed && styles.pressed]}
-        onPress={null}
+        style={({ pressed }) => [
+          styles.container,
+          !isDisabled && pressed && styles.pressed,
+        ]}
+        onPress={() => !isDisabled && onPress(id)}
       >
         <View style={styles.card}>
           <View style={styles.imageContainer}>
-            <Image source={require("../../assets/LawyerPic/image.png")} />
+            <Image source={{ uri: mainImage }} style={styles.image} />
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.title}>{name}</Text>
             <View style={styles.ratingContainer}>
-              <Text style={styles.specialitiyText}>محامي {speciality}</Text>
-              <Text style={styles.vezitaText}>العنوان: {address}</Text>
+              <Text style={styles.specialitiyText}>
+                محامي {!!speciality ? speciality : "غير معلوم"}
+              </Text>
+              <Text style={styles.vezitaText}>
+                العنوان: {!!address ? address : "غير معلوم"}
+              </Text>
             </View>
             <View style={styles.vezitaContainer}>
               <RateHandler style={styles.rate} />
             </View>
           </View>
-          {editable && (
+          {/* {editable && (
             <View style={styles.overlay}>
-              <Pressable onPress={deleteHandler} style={styles.closeButton}>
+              <Pressable
+                onPress={() => deleteHandler(id)}
+                style={styles.closeButton}
+              >
                 <Text style={styles.button}>ازالة</Text>
               </Pressable>
             </View>
-          )}
+          )} */}
         </View>
       </Pressable>
     </>
@@ -75,16 +88,22 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     width: "100%",
-    maxHeight: 90,
+    maxHeight: 100,
     backgroundColor: "white",
     flexDirection: "row-reverse",
     alignItems: "center",
+    overflow: "hidden",
     padding: 8,
     marginVertical: 10,
-    position: "relative",
   },
   imageContainer: {
     flex: 1,
+  },
+  image: {
+    flex: 1,
+    minWidth: 50,
+    borderRadius: 15,
+    alignSelf: "center",
   },
   infoContainer: {
     flex: 4,

@@ -51,7 +51,7 @@ const LawyerCard = ({
             source={
               imageURL
                 ? { uri: imageURL }
-                : require("../../assets/LawyerPic/image.png")
+                : require("../../assets/user.jpg")
             }
           />
         </View>

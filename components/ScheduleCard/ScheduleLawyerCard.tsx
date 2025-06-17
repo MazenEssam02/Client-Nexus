@@ -9,7 +9,7 @@ const ScheduleLawyerCard = ({ item }) => {
         <Text style={styles.day}>{item.type}</Text>
         <Text style={styles.date}>{item.date}</Text>
       </View>
-      <FavouriteLawyerCard {...item} />
+      <FavouriteLawyerCard {...item} isDisabled={true} />
     </View>
   );
 };

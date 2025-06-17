@@ -50,6 +50,7 @@ import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
 import LawyerDashboard from "./screens/LawyerScreens/LawyerDashboard";
 import QuestionsList from "./screens/LawyerScreens/QuestionsList";
 import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScreen";
+import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -388,6 +389,7 @@ function AuthenticatedStackLawyer() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="LawyerQA" component={QuestionsList} />
+      <Stack.Screen name="LawyerQAPrev" component={QuestionsListPrev} />
       <Stack.Screen
         name="LawyerQAResponse"
         component={QuestionResponseScreen}

@@ -1,103 +1,112 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
 import { useNavigation } from "@react-navigation/native";
-const QuestionCardLawyer = (questionItem) => {
+import getAge from "../../helpers/getAgeFromDate";
+import { MainButton } from "../Buttons/MainButton";
+
+export const QuestionCardLawyer = (questionItem) => {
   const navigation = useNavigation();
-  const birthDate = new Date(questionItem.clientBirthDate);
-  const ageInYears = Math.floor(
-    (new Date().getTime() - birthDate.getTime()) / (365 * 24 * 60 * 60 * 1000)
-  );
+
+  // Use client data if available, otherwise fallback to questionItem properties
+  const clientGender = questionItem.client?.gender || questionItem.clientGender;
+  const clientBirthDate =
+    questionItem.client?.birthDate || questionItem.clientBirthDate;
+  const clientName = questionItem.client
+    ? `${questionItem.client.firstName} ${questionItem.client.lastName}`
+    : null;
+
+  const age = getAge(clientBirthDate);
+
   return (
-    <View style={styles.card}>
-      <Pressable
-        style={({ pressed }) => [{ flex: 9 }, pressed && styles.pressed]}
-        onPress={() => {
-          navigation.navigate("LawyerQAResponse", questionItem);
-        }}
-      >
-        <View style={styles.infoSection}>
-          <View style={styles.row}>
-            <Text style={styles.askedBy}>
-              سأل {questionItem.clientGender === 77 ? "رجل" : "سيدة"}{" "}
-              {ageInYears} سنه
-            </Text>
-          </View>
-          <View style={styles.answerContainer}>
-            <Text style={styles.name}>
-              {questionItem.questionBody ? questionItem.questionBody : "none"}
-            </Text>
-            {questionItem.answerBody && (
-              <Text style={styles.answer}>{questionItem.answerBody}</Text>
-            )}
-          </View>
+    <View style={styles.cardContainer}>
+      <View style={styles.headerContainer}>
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.nameText}>
+            {questionItem.client.firstName} {questionItem.client.lastName}
+          </Text>
+          <Text style={styles.titleText}>
+            {questionItem.clientGender === 77 ? "رجل" : "سيدة"} {age} سنة
+          </Text>
         </View>
-      </Pressable>
+        <Image
+          source={
+            questionItem.client.mainImage
+              ? { uri: questionItem.client.mainImage }
+              : require("../../assets/user.jpg")
+          }
+          style={styles.profileImage}
+        />
+      </View>
+
+      <Text style={styles.descriptionText}>
+        {questionItem.questionBody || "لا يوجد نص للسؤال"}
+      </Text>
+
+      <View style={styles.button}>
+        <MainButton
+          title="قراءة المزيد"
+          onPress={() =>
+            (navigation as any).navigate("LawyerQAResponse", questionItem)
+          }
+        />
+      </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row-reverse",
+  cardContainer: {
+    borderRadius: 15,
+    padding: 20,
+    margin: 10,
+    backgroundColor: "white",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
-    paddingInline: 5,
-    borderRadius: 8,
-    marginVertical: 8,
+    marginBottom: 15,
   },
-  pressed: {
-    opacity: 0.6,
-  },
-  infoSection: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.background,
-    paddingBottom: 15,
-  },
-  row: {
-    alignItems: "flex-end",
-    marginBottom: 7,
-  },
-  answerContainer: {
-    backgroundColor: Colors.background,
-    justifyContent: "center",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "flex-end",
-  },
-  askedBy: {
-    fontFamily: font.subtitle.fontFamily,
-    fontSize: 9,
-  },
-  name: {
-    fontFamily: font.title.fontFamily,
-    fontSize: font.title.fontSize,
-    color: Colors.SecondaryColor,
-  },
-  question: {
-    fontFamily: font.Caption.fontFamily,
-    fontSize: font.Caption.fontSize,
-    marginTop: -3,
-    color: Colors.mainColor,
-  },
-  answer: {
-    textAlign: "right",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 10,
-    fontFamily: font.body.fontFamily,
-    color: Colors.SecondaryColor,
-  },
-  ratingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
+  userInfoContainer: {
     flex: 1,
+    marginRight: 15,
+    alignItems: "flex-end",
   },
-  rating: {
-    fontSize: 16,
-    color: "black",
+  profileImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+  },
+  nameText: {
+    fontSize: 22,
     fontWeight: "bold",
-    marginRight: 3,
-    marginBlock: 5,
+    color: "#654321",
+    textAlign: "right",
+  },
+  titleText: {
+    fontSize: 16,
+    color: "#704214",
+    textAlign: "right",
+    marginTop: 2,
+  },
+  descriptionText: {
+    fontSize: 15,
+    color: "#5D4037",
+    lineHeight: 22,
+    textAlign: "right",
+    marginBottom: 20,
+  },
+  button: {
+    height: 40,
+    width: 120,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
-export default QuestionCardLawyer;

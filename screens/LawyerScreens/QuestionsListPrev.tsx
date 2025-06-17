@@ -1,21 +1,33 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ScreensWrapper from "../ScreensWrapper/ScreensWrapper";
 import { useQuery } from "@tanstack/react-query";
 import { Client, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import NoResponse from "../../components/NoResponse/NoResponse";
-import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
+import { useAuthStore } from "../../store/auth";
+import { MainButton } from "../../components/Buttons/MainButton";
 import { QuestionCardLawyer } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
 
-export default function QuestionsList({ navigation }) {
+export default function QuestionsListPrev({ navigation }) {
+  const {
+    user: { id },
+  } = useAuthStore();
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["UnansweredQuestions"],
+    queryKey: ["AnsweredQuestions"],
     queryFn: async () => {
-      const response = await ServiceProvider.getUnansweredQA();
+      const response = await ServiceProvider.getQA(id);
       const fullItems = await Promise.all(
         response.data.map(async (item) => {
           const client = await Client.get(item.clientId);
@@ -26,6 +38,7 @@ export default function QuestionsList({ navigation }) {
     },
     refetchInterval: 5000,
   });
+  const QuestionsList = data;
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -37,17 +50,18 @@ export default function QuestionsList({ navigation }) {
   if (QuestionsList.length === 0) {
     return <NoResponse text="مفيش اسألة خلصني" />;
   }
+  console.log("QuestionsList", QuestionsList[0]);
 
   return (
     <SafeAreaView style={styles.container}>
       <TopNav
         leftText="الأسئلة السابقة"
         rightText="الأسئلة الحالية"
-        activeTab="right"
-        onLeftTabPress={() => navigation.navigate("LawyerQAPrev" as never)}
+        activeTab="left"
+        onRightTabPress={() => navigation.navigate("LawyerQA" as never)}
       />
       <FlatList
-        data={data}
+        data={QuestionsList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <QuestionCardLawyer {...item} />}
         contentContainerStyle={styles.list}
@@ -55,6 +69,7 @@ export default function QuestionsList({ navigation }) {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

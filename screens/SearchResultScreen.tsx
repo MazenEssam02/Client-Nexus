@@ -55,10 +55,10 @@ export default function SearchResultScreen({ route, navigation }) {
     (filters) => {
       const data = {
         searchQuery: searchText,
-        minRate: filters.rate || "3",
-        state: filters.region || "القاهرة",
-        city: filters.city || "مدينة نصر",
-        specializationName: filters.speciality || "جنائي",
+        minRate: filters.rate || "",
+        state: filters.region || "",
+        city: filters.city || "",
+        specializationName: filters.speciality || "",
       };
       setFilterData(data);
       setFilterUsed(true);

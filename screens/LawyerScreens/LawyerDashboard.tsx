@@ -153,7 +153,7 @@ export default function LawyerDashboard({ navigation }) {
           >
             الاسئلة المجابة
           </Text>
-          {providerQA.data.map((item, index) => (
+          {providerQA?.data.map((item, index) => (
             <View key={item.id}>
               <PreviewCard {...item} />
               <View

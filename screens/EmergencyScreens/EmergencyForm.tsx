@@ -157,7 +157,7 @@ export default function EmergencyForm({ navigation }) {
       >
         <View style={styles.innerContainer}>
           <Input
-            label="العنوان"
+            label="المكان ( برجاء كتابة العنوان بالتفصيل )"
             isValid={inputText.address.isValid}
             inputConfig={{
               // keyboardType: "decimal-pad",
@@ -165,7 +165,7 @@ export default function EmergencyForm({ navigation }) {
             }}
           />
           <Input
-            label="عنوان المشكلة"
+            label="برجاء كتابة عنوان المشكلة"
             isValid={inputText.title.isValid}
             inputConfig={{
               onChangeText: inputTextHandler.bind(this, "title"),

@@ -1,17 +1,45 @@
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable, Alert } from "react-native";
 import React from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
+import EventSource from "react-native-sse";
+import { useMutation } from "@tanstack/react-query";
+import { EmeregencyCases } from "../../API/https";
 
 export default function EmergencyScheduleCard({ EmergencyData, navigation }) {
+  const { mutate: deleteEmergency } = useMutation({
+    mutationFn: () => EmeregencyCases.deleteEmergency(EmergencyData.id),
+    onError: (error) => {
+      console.log(error);
+      Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+    },
+  });
   const onPressHandler = () => {
     if (EmergencyData.status === "I") {
       navigation.navigate("EmergencyLawyer", {
         screen: "EmergencyDetails",
       });
+    } else if (EmergencyData.status === "P") {
+      Alert.alert(
+        "الرجوع",
+        "هل انت متأكد انك تريد الرجوع و الغاء الطلب",
+        [
+          {
+            text: "الغاء",
+            onPress: () => deleteEmergency(),
+            style: "destructive",
+          },
+          {
+            text: "البقاء",
+
+            style: "cancel",
+          },
+        ],
+        { cancelable: true, userInterfaceStyle: "light" }
+      );
     } else {
       navigation.navigate("EmergencyLawyer", {
         screen: "EmergencyDetails",

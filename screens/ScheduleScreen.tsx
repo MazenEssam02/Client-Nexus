@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  RefreshControl,
+} from "react-native";
 import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
@@ -31,15 +38,27 @@ export default function ScheduleScreen() {
       image: "",
     },
   ]);
+  const [refreshing, setRefreshing] = useState(false);
   const {
     data: Appointments,
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["Appointments"],
     queryFn: Client.getAppointments,
   });
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     refetch();
+  //   }, [refetch])
+  // );
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, []);
   useEffect(() => {
     if (Appointments?.data) {
       setTransactions(
@@ -84,6 +103,14 @@ export default function ScheduleScreen() {
           renderItem={ScheduleLawyerCard}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.mainColor]} // Android
+              tintColor={Colors.mainColor}
+            />
+          }
         />
       )}
     </View>

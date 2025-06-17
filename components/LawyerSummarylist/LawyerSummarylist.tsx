@@ -4,20 +4,23 @@ import Medal from "../Icons/MedalIcon";
 import Messages from "../Icons/MessageIcon";
 import Star from "../Icons/StarIcon";
 import { font } from "../../constants/Font";
+import People from "../Icons/People";
 export default function LawyerSummaryList({
   rate,
   yearsOfExperience,
-  lawyerVisitors = 0,
+  lawyerVisitors = null,
 }) {
   return (
     <View style={styles.iconsListContainer}>
-      <View style={styles.summarryItemContainer}>
-        <View style={styles.IconContainer}>
-          <Messages />
+      {lawyerVisitors !== null && (
+        <View style={styles.summarryItemContainer}>
+          <View style={styles.IconContainer}>
+            <People />
+          </View>
+          <Text style={styles.summaryNumber}>{lawyerVisitors}</Text>
+          <Text style={styles.summaryTitle}>زائر</Text>
         </View>
-        <Text style={styles.summaryNumber}>{lawyerVisitors}</Text>
-        <Text style={styles.summaryTitle}>زائر</Text>
-      </View>
+      )}
       <View style={styles.summarryItemContainer}>
         <View style={styles.IconContainer}>
           <Star />

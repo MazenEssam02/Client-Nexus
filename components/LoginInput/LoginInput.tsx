@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import { isArabicChar } from "../../helpers/language";
+import { isArabicChar } from "../../utils/language";
 
 interface LoginInputProps extends TextInputProps {
   error?: string;

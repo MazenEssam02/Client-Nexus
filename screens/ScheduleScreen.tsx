@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Client } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../components/IsError/IsError";
-import timeZoneConverter from "../helpers/timeZoneConverter";
+import timeZoneConverter from "../utils/timeZoneConverter";
 const weekday = [
   "الاحد",
   "الاثنين",

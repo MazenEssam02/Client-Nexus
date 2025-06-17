@@ -16,8 +16,9 @@ export const ServiceProvider = {
   "clientId": string
 }[]>(`/api/qa/all?offset=0&limit=10&onlyUnanswered=true`),
   getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
-  filter: (filterData) =>
-    apiClient.get("/api/ServiceProivder/filter", {
+  filter: (filterData) => {
+    console.log("Filtered data from inside the request", filterData);
+    return apiClient.get("/api/ServiceProvider/filter", {
       params: {
         searchQuery: filterData.searchQuery,
         minRate: filterData.minRate,
@@ -25,7 +26,8 @@ export const ServiceProvider = {
         city: filterData.city,
         specializationName: filterData.speciality,
       },
-    }),
+    });
+  },
   setFeedback: ({ serviceProviderId, rate, feedback }) =>
     apiClient.post("/api/Feedback", {
       serviceProviderId: serviceProviderId,
@@ -56,6 +58,7 @@ export const Client = {
   get: (id) => apiClient.get("api/Client", { params: { id: id } }),
   async update(formData) {
     try {
+      console.log("Form Data from the request", formData);
       const response = await apiClient.put("api/Client", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

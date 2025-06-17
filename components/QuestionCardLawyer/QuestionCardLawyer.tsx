@@ -76,25 +76,24 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 70,
     height: 70,
-    borderRadius: 35,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
   },
   nameText: {
-    fontSize: 22,
+    ...font.headline,
     fontWeight: "bold",
-    color: "#654321",
+    color: Colors.SecondaryColor,
     textAlign: "right",
   },
   titleText: {
+    ...font.subtitle,
     fontSize: 16,
-    color: "#704214",
+    color: Colors.SecondaryColor,
     textAlign: "right",
     marginTop: 2,
   },
   descriptionText: {
+    ...font.body,
     fontSize: 15,
-    color: "#5D4037",
+    color: Colors.SecondaryColor,
     lineHeight: 22,
     textAlign: "right",
     marginBottom: 20,
@@ -102,11 +101,5 @@ const styles = StyleSheet.create({
   button: {
     height: 40,
     width: 120,
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });

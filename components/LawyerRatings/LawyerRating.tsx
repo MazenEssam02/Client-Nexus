@@ -20,6 +20,7 @@ export default function LawyerRatings({
   feedbacksQuery = null,
   isDisabled = false,
   navigation,
+  lawyerView = false,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState({
@@ -74,10 +75,10 @@ export default function LawyerRatings({
         />
       )}
 
-      <View style={styles.ratingContainer}>
+      <View style={[styles.ratingContainer, lawyerView && { marginBottom: 0 }]}>
         <View style={styles.ratingUpperContainer}>
           <Text style={styles.title}>تقييمات الزائرين</Text>
-          {isDisabled ? (
+          {isDisabled || lawyerView ? (
             ""
           ) : (
             <Pressable onPress={modalHandler} style={styles.arrowContainer}>

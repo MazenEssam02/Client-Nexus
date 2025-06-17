@@ -122,6 +122,7 @@ export const useAuthStore = create<AuthStore>()(persist(
             mainImage: string | null;
           }
         }>("api/ServiceProvider");
+        console.log(userData);
       set({
         user: {
           firstName: userData.firstName,

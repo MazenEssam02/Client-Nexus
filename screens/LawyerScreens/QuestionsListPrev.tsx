@@ -50,7 +50,6 @@ export default function QuestionsListPrev({ navigation }) {
   if (QuestionsList.length === 0) {
     return <NoResponse text="مفيش اسألة خلصني" />;
   }
-  console.log("QuestionsList", QuestionsList[0]);
 
   return (
     <SafeAreaView style={styles.container}>

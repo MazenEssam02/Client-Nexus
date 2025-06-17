@@ -22,7 +22,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import TypingIndicator from "../components/Icons/AnimatedTyping";
 import ResultLawyerCard from "../components/LawyerCard/LawyerCard";
-import formatBotText from "../helpers/formatBotText";
+import formatBotText from "../utils/formatBotText";
 
 interface Message {
   id: string;

@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import IsLoading from "../IsLoading/IsLoading";
 import IsError from "../IsError/IsError";
 import { Arrow } from "../Icons/Arrow";
-import timeZoneConverter from "../../helpers/timeZoneConverter";
+import timeZoneConverter from "../../utils/timeZoneConverter";
 
 const BookingSlotsPicker = ({ setSlot, typeNo, spId }) => {
   const [selectedDay, setSelectedDay] = useState(null);

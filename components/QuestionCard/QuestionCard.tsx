@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
-import getAge from "../../helpers/getAgeFromDate";
+import getAge from "../../utils/getAgeFromDate";
 const QuestionCard = ({ ...questionItem }) => {
   const age = getAge(questionItem.clientBirthDate);
   return (

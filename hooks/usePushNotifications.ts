@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { registerForPushNotificationsAsync } from "../helpers/notifications";
+import { registerForPushNotificationsAsync } from "../utils/notifications";
 import * as Notifications from "expo-notifications";
 import { sendTokenToBackend } from "../API/sendTokenToBackend ";
 import { useAuthStore } from "../store/auth";

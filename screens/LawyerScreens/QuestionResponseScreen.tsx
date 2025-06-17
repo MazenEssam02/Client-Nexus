@@ -95,9 +95,11 @@ export default function QuestionResponseScreen({ route }) {
         )}
 
         {question.isAnswerHelpful && (
-          <View style={styles.label}>
-            وجد {question.client.firstName} {question.client.lastName} الاجابة
-            مفيدة
+          <View>
+            <Text style={styles.label}>
+              وجد {question.client.firstName} {question.client.lastName} الاجابة
+              مفيدة
+            </Text>
           </View>
         )}
       </ScrollView>

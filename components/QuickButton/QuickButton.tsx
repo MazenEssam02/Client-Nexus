@@ -6,7 +6,12 @@ import OnTime from "../Icons/OnTime";
 import Call from "../Icons/Call";
 import ConsultLarge from "../Icons/ConsultLarge";
 
-export default function QuickButton({ title, iconName, onPress, style }) {
+export default function QuickButton({
+  title,
+  iconName,
+  onPress,
+  style = null,
+}) {
   function LogoPicker() {
     switch (iconName) {
       case "Consult":

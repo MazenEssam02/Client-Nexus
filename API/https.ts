@@ -52,6 +52,7 @@ export const Client = {
   get: (id) => apiClient.get("api/Client", { params: { id: id } }),
   async update(formData) {
     try {
+      console.log("Form Data from the request", formData);
       const response = await apiClient.put("api/Client", formData, {
         headers: {
           "Content-Type": "multipart/form-data",

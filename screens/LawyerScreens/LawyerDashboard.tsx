@@ -154,7 +154,7 @@ export default function LawyerDashboard({ navigation }) {
             الاسئلة المجابة
           </Text>
           {providerQA.data.map((item, index) => (
-            <View key={item.id} style={styles.QuestionCardContainer}>
+            <View key={item.id}>
               <PreviewCard {...item} />
               <View
                 style={{

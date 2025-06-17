@@ -48,6 +48,8 @@ import BookingScreen from "./screens/BookingScreen";
 import * as Notifications from "expo-notifications";
 import EmergencyScheduleScreen from "./screens/EmergencyScheduleScreen";
 import LawyerDashboard from "./screens/LawyerScreens/LawyerDashboard";
+import QuestionsList from "./screens/LawyerScreens/QuestionsList";
+import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -384,6 +386,11 @@ function AuthenticatedStackLawyer() {
         name="LawyerTabs"
         component={LawyerDashboard}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen name="LawyerQA" component={QuestionsList} />
+      <Stack.Screen
+        name="LawyerQAResponse"
+        component={QuestionResponseScreen}
       />
     </Stack.Navigator>
   );

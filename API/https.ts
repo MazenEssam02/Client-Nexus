@@ -11,6 +11,10 @@ export const ServiceProvider = {
   getFeedbacks: (id) => apiClient.get(`/api/Feedback/provider/${id}`),
   getBySearch: (searchQuery) =>
     apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
+  getUnansweredQA: () => apiClient.get<{
+    id: string
+  "clientId": string
+}[]>(`/api/qa/all?offset=0&limit=10&onlyUnanswered=true`),
   getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
   filter: (filterData) =>
     apiClient.get("/api/ServiceProivder/filter", {
@@ -44,6 +48,7 @@ export const Specialization = {
 
 export const Client = {
   get: () => apiClient.get("api/Client"),
+  getById: (id) => apiClient.get(`api/Client?id=${id}`),
   async update(formData) {
     try {
       const response = await apiClient.put("api/Client", formData, {

@@ -9,7 +9,7 @@ import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
-import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
+import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
 
 export default function QuestionsList({ navigation }) {
   const { data, isLoading, isError, error } = useQuery({

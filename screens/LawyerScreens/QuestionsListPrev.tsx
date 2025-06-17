@@ -18,7 +18,7 @@ import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
 import { useAuthStore } from "../../store/auth";
 import { MainButton } from "../../components/Buttons/MainButton";
-import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
+import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
 
 export default function QuestionsListPrev({ navigation }) {
   const {

@@ -22,7 +22,7 @@ import LawyerCard from "../../components/LawyerCard/LawyerCard";
 import LawyerSummaryList from "../../components/LawyerSummarylist/LawyerSummarylist";
 import LawyerRatings from "../../components/LawyerRatings/LawyerRating";
 import LawyerQA from "../../components/LawyerQA/LawyerQA";
-import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
+import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
 import { MainButton } from "../../components/Buttons/MainButton";
 
 export default function LawyerDashboard({ navigation }) {
@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   QAMoreButtonContainer: {
-    marginTop: 30,
     alignSelf: "center",
     height: 36,
     width: "50%",

@@ -27,7 +27,9 @@ import useProfileStore from "../store/Profile";
 export default function LawyerDetailsScreen({ route, navigation }) {
   const profileData = useProfileStore((state) => state.profileData);
   const lawyer = route.params.lawyer;
-  const [type, setType] = useState(route.params.type); //true is in person , false is phone
+  const [type, setType] = useState(
+    route.params.type == undefined ? true : route.params.type
+  ); //true is in person , false is phone
   const [favorite, setFavorite] = useState(false);
 
   useLayoutEffect(() => {
@@ -37,6 +39,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
     };
     checkFavorite();
   }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -54,7 +57,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
         </TouchableOpacity>
       ),
     });
-  }, [navigation, favorite]);
+  }, [navigation, favorite, lawyer]);
   const onChange = (value) => {
     setType(value);
   };

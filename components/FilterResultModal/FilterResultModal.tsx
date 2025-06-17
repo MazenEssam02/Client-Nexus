@@ -71,6 +71,7 @@ const FilterResultModal = ({ modalVisible, modalHandler, onFilter }) => {
               onValueChange={handleRateChange}
             />
             <OurButton onPress={handleConfirmFilter}>التأكيد</OurButton>
+            
           </View>
         </View>
       </TouchableWithoutFeedback>

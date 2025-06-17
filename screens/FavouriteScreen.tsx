@@ -21,8 +21,8 @@ const FavouriteScreen = () => {
       fetchFavorites();
     }, [])
   );
+
   function pressHandler(id) {
-    console.log(LawyerList.filter((lawyer) => lawyer.id === id)[0]);
     navigation.navigate("HomeStack", {
       screen: "LawyerDetails",
       params: {

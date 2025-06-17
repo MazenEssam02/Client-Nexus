@@ -40,13 +40,7 @@ const InfoUpdate = ({ onCancel, save }) => {
                     ? `${profileData[key].header} يجب ادخال`
                     : undefined,
               }}
-              render={({ field }) => (
-                <InfoInput
-                  field={key}
-                  isPassword={key === "password"}
-                  form={field}
-                />
-              )}
+              render={({ field }) => <InfoInput field={key} form={field} />}
             />
             {errors[key] && (
               <Text style={styles.error}>{errors[key].message}</Text>

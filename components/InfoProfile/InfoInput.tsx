@@ -9,14 +9,8 @@ import {
 } from "react-native";
 import PassowrdShow from "../Icons/PasswordShow";
 import useProfileStore from "../../store/Profile";
-const InfoInput = ({ field, isPassword, form }) => {
+const InfoInput = ({ field, form }) => {
   const [focued, setFocused] = useState(false);
-  const [secure, setSecure] = useState(isPassword);
-  const setPasswordField = useProfileStore((state) => state.setPasswordField);
-  function secureHandler() {
-    setSecure((prev) => !prev);
-    setTimeout(() => setSecure(true), 1000);
-  }
   function handleTextChange(text) {
     form.onChange(text);
   }
@@ -34,13 +28,7 @@ const InfoInput = ({ field, isPassword, form }) => {
           onChangeText={handleTextChange}
           value={form.value}
           style={styles.input}
-          secureTextEntry={secure}
         ></TextInput>
-        {isPassword && (
-          <Pressable style={styles.Icon} onPress={secureHandler}>
-            <PassowrdShow />
-          </Pressable>
-        )}
       </View>
     </TouchableWithoutFeedback>
   );

@@ -52,6 +52,7 @@ import QuestionsList from "./screens/LawyerScreens/QuestionsList";
 import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScreen";
 import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
+import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -443,15 +444,24 @@ function AuthenticatedStackLawyer() {
         component={LawyerTabs}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="LawyerQA" component={QuestionsList} />
-      <Stack.Screen name="LawyerQAPrev" component={QuestionsListPrev} />
+      <Stack.Screen
+        name="LawyerQA"
+        component={QuestionsList}
+        options={{ title: "الاسئلة القانونية" }}
+      />
+      <Stack.Screen
+        name="LawyerQAPrev"
+        component={QuestionsListPrev}
+        options={{ title: "الاسئلة القانونية" }}
+      />
       <Stack.Screen
         name="LawyerQAResponse"
         component={QuestionResponseScreen}
       />
       <Stack.Screen
         name="EmergencyRequests"
-        component={QuestionResponseScreen}
+        component={EmergencyRequests}
+        options={{ title: "الطلبات العاجلة" }}
       />
       <Stack.Screen
         name="Notification"

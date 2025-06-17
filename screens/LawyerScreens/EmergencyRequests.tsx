@@ -1,44 +1,22 @@
-import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import ScreensWrapper from "../ScreensWrapper/ScreensWrapper";
 import { useQuery } from "@tanstack/react-query";
-import { Client, ServiceProvider } from "../../API/https";
+import { Client, EmeregencyCases, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import NoResponse from "../../components/NoResponse/NoResponse";
+import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
-import { useAuthStore } from "../../store/auth";
-import { MainButton } from "../../components/Buttons/MainButton";
 import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
 
-export default function QuestionsListPrev({ navigation }) {
-  const {
-    user: { id },
-  } = useAuthStore();
+export default function EmergencyRequests({ navigation }) {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["AnsweredQuestions"],
-    queryFn: async () => {
-      const response = await ServiceProvider.getQA(id);
-      const fullItems = await Promise.all(
-        response.data.map(async (item) => {
-          const client = await Client.get(item.clientId);
-          return { ...item, client: client.data.data };
-        })
-      );
-      return fullItems;
-    },
-    refetchInterval: 5000,
+    queryKey: ["EmergencyRequests"],
+    queryFn: EmeregencyCases.getEmergencies,
   });
-  const QuestionsList = data;
+  const emergencyRequests = data?.data || [];
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -47,28 +25,22 @@ export default function QuestionsListPrev({ navigation }) {
     return <IsError error={error} />;
   }
 
-  if (QuestionsList.length === 0) {
+  if (emergencyRequests.length === 0) {
     return <NoResponse text="مفيش اسألة خلصني" />;
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNav
-        leftText="الأسئلة السابقة"
-        rightText="الأسئلة الحالية"
-        activeTab="left"
-        onRightTabPress={() => navigation.navigate("LawyerQA" as never)}
-      />
       <FlatList
-        data={QuestionsList}
+        data={emergencyRequests}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PreviewCard {...item} />}
         contentContainerStyle={styles.list}
       />
+      <Text>{JSON.stringify(emergencyRequests, null, 2)}</Text>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

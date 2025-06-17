@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import getAge from "../../helpers/getAgeFromDate";
 import { MainButton } from "../Buttons/MainButton";
 
-export const QuestionCardLawyer = (questionItem) => {
+export const PreviewCard = (questionItem) => {
   const navigation = useNavigation();
 
   // Use client data if available, otherwise fallback to questionItem properties

@@ -22,7 +22,7 @@ import LawyerCard from "../../components/LawyerCard/LawyerCard";
 import LawyerSummaryList from "../../components/LawyerSummarylist/LawyerSummarylist";
 import LawyerRatings from "../../components/LawyerRatings/LawyerRating";
 import LawyerQA from "../../components/LawyerQA/LawyerQA";
-import { QuestionCardLawyer } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
+import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
 import { MainButton } from "../../components/Buttons/MainButton";
 
 export default function LawyerDashboard({ navigation }) {
@@ -155,7 +155,7 @@ export default function LawyerDashboard({ navigation }) {
           </Text>
           {providerQA.data.map((item, index) => (
             <View key={item.id} style={styles.QuestionCardContainer}>
-              <QuestionCardLawyer {...item} />
+              <PreviewCard {...item} />
               <View
                 style={{
                   height: 1,

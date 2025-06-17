@@ -9,7 +9,7 @@ import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
-import { QuestionCardLawyer } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
+import { PreviewCard } from "../../components/QuestionCardLawyer/QuestionCardLawyer";
 
 export default function QuestionsList({ navigation }) {
   const { data, isLoading, isError, error } = useQuery({
@@ -49,7 +49,7 @@ export default function QuestionsList({ navigation }) {
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <QuestionCardLawyer {...item} />}
+        renderItem={({ item }) => <PreviewCard {...item} />}
         contentContainerStyle={styles.list}
       />
     </SafeAreaView>

@@ -18,7 +18,8 @@ import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
 import { useAuthStore } from "../../store/auth";
 import { MainButton } from "../../components/Buttons/MainButton";
-import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
+import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
+import { QuestionCardLawyer } from "../../components/PreviewCard/QuestionCardLawyer";
 
 export default function QuestionsListPrev({ navigation }) {
   const {
@@ -62,7 +63,7 @@ export default function QuestionsListPrev({ navigation }) {
       <FlatList
         data={QuestionsList}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PreviewCard {...item} />}
+        renderItem={({ item }) => <QuestionCardLawyer {...item} />}
         contentContainerStyle={styles.list}
       />
     </SafeAreaView>

@@ -113,6 +113,7 @@ export const EmeregencyCases = {
       meetingTextAddress: meetingTextAddress,
     }),
   getEmergencies: () => apiClient.get(`/api/emergency-cases?offset=0&limit=10`),
+  getAvailableEmergencies: (long, lat) => apiClient.get((long && lat) ? `/api/emergency-cases/available-emergencies?longitude=${long}&latitude=${lat}&radiusInMeters=10000` : '/api/emergency-cases/available-emergencies'), 
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
   acceptEmergency: (id, serviceProviderId) =>
     apiClient.patch(`/api/emergency-cases/${id}/accept`, {

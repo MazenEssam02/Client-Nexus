@@ -5,51 +5,37 @@ import { useNavigation } from "@react-navigation/native";
 import getAge from "../../helpers/getAgeFromDate";
 import { MainButton } from "../Buttons/MainButton";
 
-export const PreviewCard = (questionItem) => {
-  const navigation = useNavigation();
-
-  // Use client data if available, otherwise fallback to questionItem properties
-  const clientGender = questionItem.client?.gender || questionItem.clientGender;
-  const clientBirthDate =
-    questionItem.client?.birthDate || questionItem.clientBirthDate;
-  const clientName = questionItem.client
-    ? `${questionItem.client.firstName} ${questionItem.client.lastName}`
-    : null;
-
-  const age = getAge(clientBirthDate);
-
+export const PreviewCard = ({
+  title,
+  name,
+  img = "",
+  showImage = true,
+  desc,
+  onPress,
+}) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.userInfoContainer}>
           <Text style={styles.nameText}>
-            {questionItem.client.firstName} {questionItem.client.lastName}
+            {name || "اسم المستخدم غير متوفر"}
           </Text>
-          <Text style={styles.titleText}>
-            {questionItem.clientGender === 77 ? "رجل" : "سيدة"} {age} سنة
-          </Text>
+          <Text style={styles.titleText}>{title || "عنوان غير متوفر"}</Text>
         </View>
-        <Image
-          source={
-            questionItem.client.mainImage
-              ? { uri: questionItem.client.mainImage }
-              : require("../../assets/user.jpg")
-          }
-          style={styles.profileImage}
-        />
+        {showImage && (
+          <Image
+            source={img ? { uri: img } : require("../../assets/user.jpg")}
+            style={styles.profileImage}
+          />
+        )}
       </View>
 
       <Text style={styles.descriptionText}>
-        {questionItem.questionBody || "لا يوجد نص للسؤال"}
+        {desc || "لا يوجد وصف متاح لهذا العنصر"}
       </Text>
 
       <View style={styles.button}>
-        <MainButton
-          title="قراءة المزيد"
-          onPress={() =>
-            (navigation as any).navigate("LawyerQAResponse", questionItem)
-          }
-        />
+        <MainButton title="قراءة المزيد" onPress={onPress || (() => {})} />
       </View>
     </View>
   );
@@ -66,11 +52,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 20,
   },
   userInfoContainer: {
     flex: 1,
-    marginRight: 15,
+    // marginRight: 15,
     alignItems: "flex-end",
   },
   profileImage: {

@@ -136,24 +136,38 @@ export default function LawyerDashboard({ navigation }) {
             }}
           />
         </View>
-        <LawyerRatings
-          feedbacks={providerFeedbacks.data.data}
-          feedbacksQuery={providerFeedbacks}
-          serviceProviderId={lawyer.id}
-          navigation={navigation}
-          lawyerView
-        />
+        <View style={styles.FeedbackCardContainer}>
+          <LawyerRatings
+            feedbacks={providerFeedbacks.data.data}
+            feedbacksQuery={providerFeedbacks}
+            serviceProviderId={lawyer.id}
+            navigation={navigation}
+            lawyerView
+          />
+        </View>
         <View style={styles.QuestionCardContainer}>
-          <Text
-            style={{
-              ...font.title,
-              color: Colors.SecondaryColor,
-              textAlign: "right",
-              marginVertical: 10,
-            }}
-          >
-            الاسئلة المجابة
-          </Text>
+          <View style={styles.QAUpperContainer}>
+            <Text
+              style={{
+                ...font.title,
+                color: Colors.SecondaryColor,
+                textAlign: "right",
+                marginVertical: 10,
+              }}
+            >
+              الاسئلة المجابة
+            </Text>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("LawyerQA" as never, {
+                  screen: "LawyerQAPrev",
+                });
+              }}
+              style={styles.arrowContainer}
+            >
+              <Text style={styles.readMoreText}> عرض المزيد</Text>
+            </Pressable>
+          </View>
           {providerQA?.data.map((item, index) => (
             <View key={item.id}>
               <QuestionCardLawyer {...item} />
@@ -167,14 +181,6 @@ export default function LawyerDashboard({ navigation }) {
               />
             </View>
           ))}
-          <View style={styles.QAMoreButtonContainer}>
-            <MainButton
-              title="عرض المزيد"
-              onPress={() => {
-                navigation.navigate("LawyerQAPrev" as never);
-              }}
-            />
-          </View>
         </View>
       </ScrollView>
     </ScreensWrapper>
@@ -223,20 +229,43 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     height: 110,
     justifyContent: "center",
+    borderRadius: 15,
   },
   QuickButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
   },
+  FeedbackCardContainer: {
+    backgroundColor: "white",
+    marginVertical: 20,
+    overflow: "hidden",
+    // padding: 10,
+    borderRadius: 15,
+  },
+  QAUpperContainer: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    width: "100%",
+  },
   QuestionCardContainer: {
     backgroundColor: "white",
-    marginBottom: 20,
+    marginVertical: 20,
     padding: 10,
+    borderRadius: 15,
   },
   QAMoreButtonContainer: {
     alignSelf: "center",
     height: 36,
     width: "50%",
+  },
+  arrowContainer: {
+    padding: 5,
+    marginHorizontal: 10,
+  },
+  readMoreText: {
+    ...font.title,
+    color: Colors.SecondaryColor,
+    textDecorationLine: "underline",
   },
 });

@@ -1,6 +1,13 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import ScreensWrapper from "../ScreensWrapper/ScreensWrapper";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { Client, EmeregencyCases, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
@@ -8,25 +15,64 @@ import NoResponse from "../../components/NoResponse/NoResponse";
 import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import TopNav from "../../components/TopNav/TopNav";
-import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
+import * as Location from "expo-location";
+import { useEffect, useState } from "react";
+import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
+import EmergencyModal from "../../components/EmergencyModal/EmergencyModal";
+import { useLocation } from "../../hooks/useLocation";
 
 export default function EmergencyRequests({ navigation }) {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["EmergencyRequests"],
-    queryFn: EmeregencyCases.getEmergencies,
+  const { loading, error: errorMsg, location: currentLocation } = useLocation();
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["EmergencyRequests"],
+        queryFn: () =>
+          EmeregencyCases.getAvailableEmergencies(
+            currentLocation?.longitude,
+            currentLocation?.latitude
+          ),
+        enabled: !loading,
+        refetchInterval: 3000,
+      },
+      {
+        queryKey: ["EmergencyAppointments"],
+        queryFn: EmeregencyCases.getEmergencies,
+      },
+    ],
   });
-  const emergencyRequests = data?.data || [];
+  const isLoading = results.some((result) => result.isLoading);
+  const isError = results.some((result) => result.isError);
+  const [emergencyRequestsResponse, curEmegencies] = results;
+  const emergencyRequests = emergencyRequestsResponse?.data?.data || [];
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <LoadingSpinner />;
   }
-  if (isError) {
-    return <IsError error={error} />;
+  if (isError || errorMsg) {
+    return (
+      <IsError
+        error={results.find((result) => result.isError)?.error || errorMsg}
+      />
+    );
+  }
+
+  const hasOngoingEmergency = (curEmegencies?.data.data).some(
+    (item) => item.status === "I"
+  );
+  if (hasOngoingEmergency) {
+    (navigation as any).navigate("LawyerTabs", {
+      screen: "Schedule",
+      params: {
+        screen: "EmergencySchedule",
+      },
+    });
+    return null;
   }
 
   if (emergencyRequests.length === 0) {
-    return <NoResponse text="مفيش اسألة خلصني" />;
+    return <NoResponse text="لا توجد طلبات طوارئ حالياً" />;
   }
 
   return (
@@ -34,10 +80,31 @@ export default function EmergencyRequests({ navigation }) {
       <FlatList
         data={emergencyRequests}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PreviewCard {...item} />}
+        renderItem={({ item }) => (
+          <PreviewCard
+            key={item.serviceId}
+            onPress={() => setSelectedRequest(item)}
+            showImage={false}
+            name={`${item.clientFirstName} ${item.clientLastName}`}
+            desc={item.description}
+            title={item.name}
+          />
+        )}
         contentContainerStyle={styles.list}
       />
-      <Text>{JSON.stringify(emergencyRequests, null, 2)}</Text>
+      <EmergencyModal
+        visible={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+        name={
+          selectedRequest?.clientFirstName +
+          " " +
+          selectedRequest?.clientLastName
+        }
+        description={selectedRequest?.description}
+        location={selectedRequest?.meetingTextAddress}
+        title={selectedRequest?.name}
+        id={selectedRequest?.serviceId}
+      />
     </SafeAreaView>
   );
 }

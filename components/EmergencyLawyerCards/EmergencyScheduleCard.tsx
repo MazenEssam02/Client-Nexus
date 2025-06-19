@@ -21,6 +21,11 @@ export default function EmergencyScheduleCard({ EmergencyData, navigation }) {
     if (EmergencyData.status === "I") {
       navigation.navigate("EmergencyLawyer", {
         screen: "EmergencyDetails",
+        params: {
+          ...EmergencyData,
+          id: EmergencyData.serviceProviderId,
+          serviceId: EmergencyData.id,
+        },
       });
     } else if (EmergencyData.status === "P") {
       Alert.alert(

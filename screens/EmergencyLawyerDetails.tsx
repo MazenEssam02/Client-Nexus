@@ -28,6 +28,7 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
     ({ price, id, title, description } = route.params);
   } else {
     const { emergencyDetails } = useEmergencyStore.getState();
+    console.log("emergencyDetails", emergencyDetails);
     ({ title, description, price, phone, id } = emergencyDetails);
   }
   // const handleBack = () => {
@@ -88,7 +89,6 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <ScrollView

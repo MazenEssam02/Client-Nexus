@@ -1,4 +1,7 @@
 export default function getAge(dateString) {
+  if (!dateString || typeof dateString !== "string") {
+    return null; // Handle null, undefined, or non-string inputs
+  }
   const birthDate = new Date(dateString); // Convert the birth date string to a Date object
 
   // Check for invalid date (e.g., "invalid date", "null", or malformed strings)

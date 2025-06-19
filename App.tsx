@@ -53,7 +53,12 @@ import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScre
 import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
 import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
+
 import SuccessScreen from "./screens/SuccessScreen";
+
+import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
+import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
+
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -388,6 +393,56 @@ function AuthenticatedStackClient() {
     </Stack.Navigator>
   );
 }
+function LawyerScheduleStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="MainSchedule"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="EmergencySchedule"
+        component={EmergencyScheduleScreen}
+        options={{ title: "الطلبات العاجلة" }}
+      />
+      <TopTab.Screen
+        name="MainSchedule"
+        component={LawyerScheduleScreen}
+        options={{ title: "مواعيدى" }}
+      />
+    </TopTab.Navigator>
+  );
+}
+function LawyerQAStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="LawyerQA"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="LawyerQAPrev"
+        component={QuestionsListPrev}
+        options={{ title: "الأسئلة السابقة" }}
+      />
+      <TopTab.Screen
+        name="LawyerQA"
+        component={QuestionsList}
+        options={{ title: "الأسئلة الحالية" }}
+      />
+    </TopTab.Navigator>
+  );
+}
 function LawyerTabs() {
   return (
     <Tab.Navigator
@@ -418,7 +473,7 @@ function LawyerTabs() {
       />
       <Tab.Screen
         name="Schedule"
-        component={ScheduleStack}
+        component={LawyerScheduleStack}
         options={{
           title: "مواعيدى",
           tabBarLabel: "مواعيدى",
@@ -442,6 +497,30 @@ function LawyerTabs() {
     </Tab.Navigator>
   );
 }
+function EmergencyScreensLawyer({ navigation }) {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        // headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="EmergencyDetails"
+        component={EmeregencyClientDetails}
+        options={{
+          title: "تفاصيل الطلب",
+          gestureEnabled: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 function AuthenticatedStackLawyer() {
   return (
     <Stack.Navigator
@@ -463,12 +542,7 @@ function AuthenticatedStackLawyer() {
       />
       <Stack.Screen
         name="LawyerQA"
-        component={QuestionsList}
-        options={{ title: "الاسئلة القانونية" }}
-      />
-      <Stack.Screen
-        name="LawyerQAPrev"
-        component={QuestionsListPrev}
+        component={LawyerQAStack}
         options={{ title: "الاسئلة القانونية" }}
       />
       <Stack.Screen
@@ -500,6 +574,15 @@ function AuthenticatedStackLawyer() {
             />
           ),
         })}
+      />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreensLawyer}
+        options={{
+          title: "محامى عاجل",
+          headerShown: false,
+          gestureEnabled: false,
+        }}
       />
     </Stack.Navigator>
   );

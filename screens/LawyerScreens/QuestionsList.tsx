@@ -5,11 +5,10 @@ import { Client, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import NoResponse from "../../components/NoResponse/NoResponse";
-import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import TopNav from "../../components/TopNav/TopNav";
-import { PreviewCard } from "../../components/QuestionCardLawyer/PreviewCard";
+import { QuestionCardLawyer } from "../../components/PreviewCard/QuestionCardLawyer";
 
 export default function QuestionsList({ navigation }) {
   const { data, isLoading, isError, error } = useQuery({
@@ -40,16 +39,10 @@ export default function QuestionsList({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNav
-        leftText="الأسئلة السابقة"
-        rightText="الأسئلة الحالية"
-        activeTab="right"
-        onLeftTabPress={() => navigation.navigate("LawyerQAPrev" as never)}
-      />
       <FlatList
         data={data}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PreviewCard {...item} />}
+        renderItem={({ item }) => <QuestionCardLawyer {...item} />}
         contentContainerStyle={styles.list}
       />
     </SafeAreaView>

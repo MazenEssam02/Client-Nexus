@@ -1,4 +1,5 @@
 import axios from "axios";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 export const apiClient = axios.create({
   baseURL: "https://clientnexus.runasp.net",
   timeout: 10000,
@@ -86,6 +87,8 @@ export const Client = {
     apiClient.get("api/qa/client?offset=0&limit=10&onlyUnanswered=false"),
   submitQAFeedback: (id, feedback) =>
     apiClient.patch(`api/qa/${id}/mark?isHelpful=${feedback}`),
+  getFeedbacks: (id) =>
+    apiClient.get(`/api/Feedback/Client/${id}`),
 };
 export const Slots = {
   getWeek: ({ serviceProviderId, startDate, endDate, type }) =>
@@ -116,12 +119,24 @@ export const EmeregencyCases = {
       meetingTextAddress: meetingTextAddress,
     }),
   getEmergencies: () => apiClient.get(`/api/emergency-cases?offset=0&limit=10`),
+  getAvailableEmergencies: (long, lat) => apiClient.get((long && lat) ? `/api/emergency-cases/available-emergencies?longitude=${long}&latitude=${lat}&radiusInMeters=10000` : '/api/emergency-cases/available-emergencies'), 
   deleteEmergency: (id) => apiClient.delete(`/api/emergency-cases/${id}`),
   acceptEmergency: (id, serviceProviderId) =>
     apiClient.patch(`/api/emergency-cases/${id}/accept`, {
       serviceProviderId: serviceProviderId,
     }),
   endEmergency: (id) => apiClient.patch(`/api/emergency-cases/${id}/status`),
+  enableEmergency: (status = true) => apiClient.put(`/api/emergency-cases/available-lawyers`, {
+    status
+  }),
+  sendLawyerLocation: (latitude, longitude) => apiClient.put(`/api/emergency-cases/providers-locations`, {
+    latitude: latitude,
+    longitude: longitude,
+  }),
+  createOffer: (caseId, price, transportationType) => apiClient.post(`/api/emergency-cases/${caseId}/offers`, {
+    price: price,
+    transportationType: transportationType,
+  }),
 };
 
 export const Filter = {

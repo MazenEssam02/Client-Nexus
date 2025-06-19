@@ -26,6 +26,7 @@ import {
   weekday,
 } from "./AllLawyerAppointments";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
+import IsLoading from "../../components/IsLoading/IsLoading";
 
 LocaleConfig.locales["ar"] = {
   monthNames: [
@@ -196,7 +197,7 @@ export default function LawyerScheduleScreen({ navigation }) {
           المواعيد المتاحة
         </Text>
         {isLoading ? (
-          <LoadingSpinner backgroundColor="white" />
+          <IsLoading />
         ) : todaySlots.length > 0 ? (
           <View
             style={{
@@ -239,7 +240,7 @@ export default function LawyerScheduleScreen({ navigation }) {
                     : "عبر الإنترنت"}
                 </Text>
                 <Text style={{ color: "white" }}>
-                  {!("client" in slot) ? "متاح" : "غير متاح"}
+                  {!("client" in slot) ? "متاح" : "محجوز"}
                 </Text>
               </Pressable>
             ))}

@@ -17,9 +17,9 @@ import { apiClient } from "../../API/https";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigation } from "@react-navigation/native";
 
-if (!I18nManager.isRTL) {
-  I18nManager.forceRTL(true);
-}
+// if (!I18nManager.isRTL) {
+//   I18nManager.forceRTL(true);
+// }
 
 export default function QuestionResponseScreen({ route }) {
   const queryClient = useQueryClient();

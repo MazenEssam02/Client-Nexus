@@ -4,17 +4,35 @@ import { View, StyleSheet, Button, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 import { Colors } from "../constants/Color";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Client, Payment } from "../API/https";
+import { Appointments, Client, Payment } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 
 export default function WebViewScreen({ navigation, route }) {
-  const { lawyer, amount } = route.params;
-  // const [showWebView, setShowWebView] = useState(false);
+  const { lawyer, amount, slot } = route.params;
+  const [referenceKey, setReferenceKey] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentResponse, setPaymentResponse] = useState({
     clientSecret: "",
     publicKey: "",
   });
+  // const { data: statusData, refetch } = useQuery({
+  //   queryKey: ["status", referenceKey],
+  //   queryFn: () =>
+  //     Payment.getStatus({
+  //       referenceKey,
+  //     }),
+  //   enabled: false, // Don't run automatically
+  // });
+  const handleNavigationStateChange = (navState) => {
+    const { url } = navState;
+    if (url.includes("google.com")) {
+      bookAppointment(slot);
+    }
+    if (url.includes("payment_failed")) {
+      // Handle failure
+      navigation.goBack();
+    }
+  };
 
   const {
     data: ClientData,
@@ -25,16 +43,46 @@ export default function WebViewScreen({ navigation, route }) {
     queryKey: ["Client"],
     queryFn: Client.get,
   });
-
+  const { mutate: bookAppointment, reset: resetBookMutation } = useMutation({
+    mutationFn: Appointments.bookAppointment,
+    onSuccess: () => {
+      resetBookMutation();
+      // refetch();
+      console.log(referenceKey);
+      console.log("Hello");
+      // if (statusData.data?.status === "APPROVED") {
+      navigation.goBack();
+      Alert.alert(
+        "نجحت العملية",
+        "تم حجز الموعد بنجاح!",
+        [
+          {
+            text: "العودة إلى الصفحة الرئيسية",
+            onPress: () => {
+              resetBookMutation();
+              navigation.popToTop();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      // }
+    },
+    onError: (err) => {
+      Alert.alert("خطأ", "برجاء المحاولة مره اخري.");
+      console.error("book error 2:", err);
+    },
+  });
   const { mutate: payService } = useMutation({
     mutationFn: Payment.sevricePayment,
     onMutate: () => setIsSubmitting(true),
     onSuccess: (data) => {
-      // console.log(data.data);
+      console.log(data.data);
       setPaymentResponse({
         clientSecret: data.data.clientSecret,
         publicKey: data.data.publicKey,
       });
+      setReferenceKey(data.data.referenceNumber);
       setIsSubmitting(false);
     },
     onError: (err) => {
@@ -80,6 +128,7 @@ export default function WebViewScreen({ navigation, route }) {
           }
           return true;
         }}
+        onNavigationStateChange={handleNavigationStateChange}
       />
     </View>
   );

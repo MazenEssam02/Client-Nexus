@@ -5,7 +5,6 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 import Pin from "../Icons/Pin";
 import Wallet from "../Icons/Wallet";
-import { useNavigation } from "@react-navigation/native";
 import BookingSlotsPicker from "../BookingSlotsPicker/BookingSlotsPicker";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -53,6 +52,7 @@ export default function BookingBlock({ type, onChange, lawyer, navigation }) {
         navigation.navigate("WebView", {
           lawyer: lawyer,
           amount: lawyer.telephone_consultation_price,
+          slot: slot,
         });
       } else bookAppointment(slot);
     } else Alert.alert("خطأ", "يجب اختيار موعد!");

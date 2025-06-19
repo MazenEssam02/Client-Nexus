@@ -58,8 +58,10 @@ import SuccessScreen from "./screens/SuccessScreen";
 
 import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
 import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
+
 import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 import SubscriptionWebView from "./screens/SubscriptionWebView";
+
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -242,6 +244,7 @@ function UserQuickAccess() {
   return (
     <Stack.Navigator
       id={undefined}
+      initialRouteName="Profile"
       screenOptions={{
         headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
@@ -423,7 +426,7 @@ function LawyerQAStack() {
   return (
     <TopTab.Navigator
       id={undefined}
-      initialRouteName="LawyerQA"
+      initialRouteName="LawyerQANow"
       screenOptions={() => ({
         tabBarStyle: { backgroundColor: Colors.mainColor },
         tabBarActiveTintColor: "white",
@@ -437,7 +440,7 @@ function LawyerQAStack() {
         options={{ title: "الأسئلة السابقة" }}
       />
       <TopTab.Screen
-        name="LawyerQA"
+        name="LawyerQANow"
         component={QuestionsList}
         options={{ title: "الأسئلة الحالية" }}
       />
@@ -517,6 +520,7 @@ function EmergencyScreensLawyer({ navigation }) {
         options={{
           title: "تفاصيل الطلب",
           gestureEnabled: false,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
@@ -602,9 +606,9 @@ function AuthenticatedStackLawyer() {
         name="EmergencyLawyer"
         component={EmergencyScreensLawyer}
         options={{
-          title: "محامى عاجل",
-          headerShown: false,
-          gestureEnabled: false,
+          title: "تفاصيل الطلب",
+          // headerShown: false,
+          // gestureEnabled: false,
         }}
       />
     </Stack.Navigator>

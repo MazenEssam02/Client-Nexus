@@ -157,7 +157,9 @@ export default function LawyerDashboard({ navigation }) {
             </Text>
             <Pressable
               onPress={() => {
-                navigation.navigate("LawyerQA" as never);
+                navigation.navigate("LawyerQA" as never, {
+                  screen: "LawyerQAPrev",
+                });
               }}
             >
               <Text

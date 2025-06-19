@@ -5,8 +5,18 @@ import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 
 import Wallet from "../Icons/Wallet";
+import useEmergencyStore from "../../store/EmergencyStore";
 
-export default function EmergencyCallBlock({ price, lawyerPhone }) {
+export default function EmergencyCallBlock({
+  price,
+  lawyerPhone,
+  status = null,
+}) {
+  if (status === "I" && !lawyerPhone) {
+    const { emergencyDetails } = useEmergencyStore.getState();
+    // console.log("emergencyDetails", emergencyDetails);
+    lawyerPhone = emergencyDetails.phone;
+  }
   const onSubmitHandler = async () => {
     const url = `tel:${lawyerPhone}`;
     // Check if the device supports calling
@@ -31,10 +41,10 @@ export default function EmergencyCallBlock({ price, lawyerPhone }) {
       </View>
       {lawyerPhone ? (
         <View style={styles.buttonContainer}>
-          <MainButton title="اتصل بالمحامى" onPress={onSubmitHandler} />
+          <MainButton title="اتصل " onPress={onSubmitHandler} />
         </View>
       ) : (
-        <Text style={styles.Text}>لا يمكن التواصل مع المحامى</Text>
+        <Text style={styles.Text}>لا يمكن التواصل الان</Text>
       )}
     </View>
   );
@@ -78,6 +88,6 @@ const styles = StyleSheet.create({
     // marginBottom: 10,
     alignSelf: "center",
     height: 36,
-    width: "50%",
+    width: "30%",
   },
 });

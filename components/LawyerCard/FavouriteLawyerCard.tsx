@@ -6,8 +6,7 @@ import { Rate2 } from "../Icons/Rate2";
 import { Rate3 } from "../Icons/Rate3";
 import { Rate4 } from "../Icons/Rate4";
 import { Rate5 } from "../Icons/Rate5";
-import { removeFromFavorites } from "../../store/FavoritesStore";
-import { useState } from "react";
+
 const FavouriteLawyerCard = ({
   name,
   rate,
@@ -55,9 +54,11 @@ const FavouriteLawyerCard = ({
               <Text style={styles.specialitiyText}>
                 محامي {!!speciality ? speciality : "غير معلوم"}
               </Text>
-              <Text style={styles.vezitaText}>
-                العنوان: {!!address ? address : "غير معلوم"}
-              </Text>
+              {address && (
+                <Text style={styles.vezitaText}>
+                  العنوان: {!!address ? address : "غير معلوم"}
+                </Text>
+              )}
             </View>
             <View style={styles.vezitaContainer}>
               <RateHandler style={styles.rate} />

@@ -97,7 +97,6 @@ export default function WebViewScreen({ navigation, route }) {
   useEffect(() => {
     if (!ClientData) return;
     payService({
-      clientId: 4, //to be edited
       serviceProviderId: lawyer.id,
       serviceName: lawyer.firstName + " " + lawyer.lastName,
       amount: amount,

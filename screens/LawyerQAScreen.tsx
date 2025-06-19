@@ -11,14 +11,15 @@ type LawyerQAScreenRouteParams = {
 export default function LawyerQAScreen() {
   const route = useRoute<RouteProp<LawyerQAScreenRouteParams, "params">>();
   const { lawyerQA } = route.params;
-  const navigation = useNavigation();
+  console.log(lawyerQA);
+
   return (
     <View style={styles.QAContainer}>
       <View style={styles.list}>
         <FlatList
           data={lawyerQA}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <QuestionCard questionItem={item} />}
+          renderItem={({ item }) => <QuestionCard {...item} />}
         />
       </View>
     </View>

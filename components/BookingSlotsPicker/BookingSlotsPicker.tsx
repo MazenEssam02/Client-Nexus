@@ -236,6 +236,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginVertical: 10,
     textAlign: "center",
+    color: Colors.SecondaryColor,
   },
   navButtons: {
     flexDirection: "row-reverse",

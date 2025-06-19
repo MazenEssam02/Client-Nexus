@@ -14,8 +14,9 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { Colors } from "../../constants/Color"; // Assuming you have this
 import { font } from "../../constants/Font"; // Assuming you have this
-import { Slots } from "../../API/https";
+import { Slots, slotTypes } from "../../API/https";
 import { useQueryClient } from "@tanstack/react-query";
+import Dropdown from "react-native-input-select";
 
 interface AddSlotModalProps {
   date: Date;
@@ -72,6 +73,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
       setShowTimePicker(false); // User cancelled on Android
     }
   };
+  const [type, setType] = useState<number | null>(80);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -86,7 +88,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
       console.log("Submitting slot with timestamp:", timestamp);
       await Slots.create({
         date: timestamp,
-        slotType: 80,
+        slotType: type || 80,
       });
       await queryClient.invalidateQueries({
         queryKey: ["slots", firstDayOfMonth],
@@ -138,6 +140,26 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
               })}
             </Text>
           </TouchableOpacity>
+
+          <Dropdown
+            placeholder="اختر نوع الخدمة"
+            options={
+              Object.keys(slotTypes).map((key) => ({
+                label:
+                  slotTypes[key] === 80
+                    ? "هاتف"
+                    : slotTypes[key] === 73
+                    ? "في المكتب"
+                    : "عبر الإنترنت",
+                value: slotTypes[key],
+              })) || []
+            }
+            disabled={isLoading}
+            selectedValue={type}
+            onValueChange={(itemValue) => {
+              setType(itemValue as number);
+            }}
+          />
 
           {/* Time Picker */}
           {showTimePicker && (

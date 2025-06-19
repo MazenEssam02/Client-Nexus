@@ -10,13 +10,15 @@ export const PreviewCard = ({
   name,
   img = "",
   showImage = true,
-  desc,
-  onPress,
+  desc = "",
+  onPress = null,
 }) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.headerContainer}>
-        <View style={styles.userInfoContainer}>
+        <View
+          style={[styles.userInfoContainer, showImage && { marginRight: 16 }]}
+        >
           <Text style={styles.nameText}>
             {name || "اسم المستخدم غير متوفر"}
           </Text>
@@ -30,13 +32,17 @@ export const PreviewCard = ({
         )}
       </View>
 
-      <Text style={styles.descriptionText}>
-        {desc || "لا يوجد وصف متاح لهذا العنصر"}
-      </Text>
+      {!!desc && (
+        <Text style={styles.descriptionText}>
+          {desc || "لا يوجد وصف متاح لهذا العنصر"}
+        </Text>
+      )}
 
-      <View style={styles.button}>
-        <MainButton title="قراءة المزيد" onPress={onPress || (() => {})} />
-      </View>
+      {!!onPress && (
+        <View style={styles.button}>
+          <MainButton title="قراءة المزيد" onPress={onPress || (() => {})} />
+        </View>
+      )}
     </View>
   );
 };
@@ -56,7 +62,6 @@ const styles = StyleSheet.create({
   },
   userInfoContainer: {
     flex: 1,
-    // marginRight: 15,
     alignItems: "flex-end",
   },
   profileImage: {

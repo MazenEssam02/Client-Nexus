@@ -54,6 +54,7 @@ import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
 import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
 import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
+import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -451,6 +452,30 @@ function LawyerTabs() {
     </Tab.Navigator>
   );
 }
+function EmergencyScreensLawyer({ navigation }) {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        // headerBackButtonMenuEnabled: false,
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="EmergencyDetails"
+        component={EmeregencyClientDetails}
+        options={{
+          title: "تفاصيل الطلب",
+          gestureEnabled: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 function AuthenticatedStackLawyer() {
   return (
     <Stack.Navigator
@@ -509,6 +534,15 @@ function AuthenticatedStackLawyer() {
             />
           ),
         })}
+      />
+      <Stack.Screen
+        name="EmergencyLawyer"
+        component={EmergencyScreensLawyer}
+        options={{
+          title: "محامى عاجل",
+          headerShown: false,
+          gestureEnabled: false,
+        }}
       />
     </Stack.Navigator>
   );

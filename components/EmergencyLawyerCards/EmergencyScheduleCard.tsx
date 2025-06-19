@@ -8,19 +8,14 @@ import { useState } from "react";
 
 export default function EmergencyScheduleCard({ EmergencyData, navigation }) {
   const onPressHandler = () => {
-    if (EmergencyData.status === "I") {
-      navigation.navigate("EmergencyLawyer", {
-        screen: "EmergencyDetails",
-      });
-    } else {
-      navigation.navigate("EmergencyLawyer", {
-        screen: "EmergencyDetails",
-        params: {
-          ...EmergencyData,
-          id: EmergencyData.serviceProviderId,
-        },
-      });
-    }
+    navigation.navigate("EmergencyLawyer", {
+      screen: "EmergencyDetails",
+      params: {
+        ...EmergencyData,
+        id: EmergencyData.serviceProviderId,
+        serviceId: EmergencyData.id,
+      },
+    });
   };
 
   function handleEmergencyDetails() {

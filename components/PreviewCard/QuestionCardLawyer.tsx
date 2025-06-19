@@ -9,13 +9,8 @@ export const QuestionCardLawyer = (questionItem) => {
   const navigation = useNavigation();
 
   // Use client data if available, otherwise fallback to questionItem properties
-  const clientGender = questionItem.client?.gender || questionItem.clientGender;
   const clientBirthDate =
     questionItem.client?.birthDate || questionItem.clientBirthDate;
-  const clientName = questionItem.client
-    ? `${questionItem.client.firstName} ${questionItem.client.lastName}`
-    : null;
-
   const age = getAge(clientBirthDate);
 
   return (

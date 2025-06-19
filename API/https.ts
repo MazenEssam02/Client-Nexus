@@ -1,4 +1,5 @@
 import axios from "axios";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 export const apiClient = axios.create({
   baseURL: "https://clientnexus.runasp.net",
   timeout: 10000,
@@ -83,6 +84,8 @@ export const Client = {
     apiClient.get("api/qa/client?offset=0&limit=10&onlyUnanswered=false"),
   submitQAFeedback: (id, feedback) =>
     apiClient.patch(`api/qa/${id}/mark?isHelpful=${feedback}`),
+  getFeedbacks: (id) =>
+    apiClient.get(`/api/Feedback/Client/${id}`),
 };
 export const Slots = {
   getWeek: ({ serviceProviderId, startDate, endDate, type }) =>

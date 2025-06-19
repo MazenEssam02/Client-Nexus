@@ -136,17 +136,15 @@ export default function LawyerDashboard({ navigation }) {
             }}
           />
         </View>
-        <View style={styles.FeedbackCardContainer}>
-          <LawyerRatings
-            feedbacks={providerFeedbacks.data.data}
-            feedbacksQuery={providerFeedbacks}
-            serviceProviderId={lawyer.id}
-            navigation={navigation}
-            lawyerView
-          />
-        </View>
+        <LawyerRatings
+          feedbacks={providerFeedbacks.data.data}
+          feedbacksQuery={providerFeedbacks}
+          serviceProviderId={lawyer.id}
+          navigation={navigation}
+          lawyerView
+        />
         <View style={styles.QuestionCardContainer}>
-          <View style={styles.QAUpperContainer}>
+          <View style={styles.QuestionListHeader}>
             <Text
               style={{
                 ...font.title,
@@ -159,13 +157,18 @@ export default function LawyerDashboard({ navigation }) {
             </Text>
             <Pressable
               onPress={() => {
-                navigation.navigate("LawyerQA" as never, {
-                  screen: "LawyerQAPrev",
-                });
+                navigation.navigate("LawyerQA" as never);
               }}
-              style={styles.arrowContainer}
             >
-              <Text style={styles.readMoreText}> عرض المزيد</Text>
+              <Text
+                style={{
+                  ...font.subtitle,
+                  color: Colors.mainColor,
+                  textAlign: "right",
+                }}
+              >
+                عرض الكل
+              </Text>
             </Pressable>
           </View>
           {providerQA?.data.map((item, index) => (
@@ -175,8 +178,8 @@ export default function LawyerDashboard({ navigation }) {
                 style={{
                   height: 1,
                   width: "100%",
-                  backgroundColor: Colors.SecondaryColor,
-                  opacity: index === providerQA.data.length - 1 ? 0 : 1,
+                  backgroundColor: Colors.gray700,
+                  opacity: index === providerQA.data.length - 1 ? 0 : 0.2,
                 }}
               />
             </View>
@@ -229,43 +232,27 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     height: 110,
     justifyContent: "center",
-    borderRadius: 15,
   },
   QuickButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  FeedbackCardContainer: {
-    backgroundColor: "white",
-    marginVertical: 20,
-    overflow: "hidden",
-    // padding: 10,
-    borderRadius: 15,
-  },
-  QAUpperContainer: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-    width: "100%",
-  },
   QuestionCardContainer: {
     backgroundColor: "white",
-    marginVertical: 20,
+    marginBottom: 20,
+    marginTop: 4,
     padding: 10,
-    borderRadius: 15,
   },
   QAMoreButtonContainer: {
     alignSelf: "center",
     height: 36,
     width: "50%",
   },
-  arrowContainer: {
-    padding: 5,
-    marginHorizontal: 10,
-  },
-  readMoreText: {
-    ...font.title,
-    color: Colors.SecondaryColor,
-    textDecorationLine: "underline",
+  QuestionListHeader: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
 });

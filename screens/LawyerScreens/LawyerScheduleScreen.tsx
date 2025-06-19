@@ -65,7 +65,7 @@ LocaleConfig.locales["ar"] = {
 };
 LocaleConfig.defaultLocale = "ar";
 
-export default function LawyerScheduleScreen() {
+export default function LawyerScheduleScreen({ navigation }) {
   const { user } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -287,6 +287,23 @@ export default function LawyerScheduleScreen() {
           onClose={() => setShowAddSlotModal(false)}
           onSubmit={async (newSlot) => {
             console.log("New Slot Submitted:", newSlot);
+          }}
+        />
+      </View>
+      <View
+        style={{
+          height: 50,
+          backgroundColor: "white",
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        }}
+      >
+        <MainButton
+          title="جميع المواعيد"
+          onPress={() => {
+            navigation.navigate("LawyerBookedAppointments", {
+              appointments: appointmentsData.data,
+            });
           }}
         />
       </View>

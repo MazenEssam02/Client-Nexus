@@ -178,8 +178,8 @@ export default function LawyerDashboard({ navigation }) {
                 style={{
                   height: 1,
                   width: "100%",
-                  backgroundColor: Colors.SecondaryColor,
-                  opacity: index === providerQA.data.length - 1 ? 0 : 1,
+                  backgroundColor: Colors.gray700,
+                  opacity: index === providerQA.data.length - 1 ? 0 : 0.2,
                 }}
               />
             </View>

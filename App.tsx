@@ -61,7 +61,7 @@ import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDeta
 
 import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 import SubscriptionWebView from "./screens/SubscriptionWebView";
-
+import AllLawyerAppointments from "./screens/LawyerScreens/AllLawyerAppointments";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -563,6 +563,11 @@ function AuthenticatedStackLawyer() {
         name="Notification"
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
+      />
+      <Stack.Screen
+        name="LawyerBookedAppointments"
+        component={AllLawyerAppointments}
+        options={{ title: "المواعيد المحجوزة" }}
       />
       <Stack.Screen
         name="Edit"

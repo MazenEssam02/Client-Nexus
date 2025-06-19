@@ -3,7 +3,7 @@ import { Animated, Easing, View, StyleSheet } from "react-native";
 import MainLogo from "../Icons/MainLogo";
 import { Colors } from "../../constants/Color";
 
-const LoadingSpinner = () => {
+const LoadingSpinner = ({ backgroundColor = Colors.background }) => {
   const rotateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const LoadingSpinner = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View style={styles.innerConteiner}>
         <Animated.View
           style={{

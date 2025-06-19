@@ -41,19 +41,19 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
   // Reset state when modal becomes visible
   useEffect(() => {
     if (visible) {
-      setSelectedDate(new Date()); // Reset to current date/time when modal opens
+      setSelectedDate(date);
       setIsLoading(false);
       setError(null);
       setShowTimePicker(false);
     }
   }, [visible]);
 
-  const handleTimeChange = (event: DateTimePickerEvent, time?: Date): void => {
+  const handleTimeChange = (event: DateTimePickerEvent, time: Date): void => {
     setShowTimePicker(Platform.OS === "ios");
     if (time) {
-      const currentTime = time || selectedDate;
+      const currentTime = time || date;
       // Combine selected date with selected time
-      const newDateTime = new Date(selectedDate);
+      const newDateTime = new Date(date);
       newDateTime.setHours(currentTime.getHours());
       newDateTime.setMinutes(currentTime.getMinutes());
       newDateTime.setSeconds(currentTime.getSeconds());
@@ -79,15 +79,9 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
     setIsLoading(true);
     setError(null);
     try {
-      // Format the date to ISO string or any format your API expects
-      // .toISOString() produces UTC: "2023-10-27T10:30:00.000Z"
-      const timezoneOffset = new Date().getTimezoneOffset() * 60000; // Offset in milliseconds
-      const timestamp = new Date(
-        selectedDate.getTime() - timezoneOffset
-      ).toISOString(); // Adjust for local timezone
-      console.log("Submitting slot with timestamp:", timestamp);
+      console.log("Submitting slot with timestamp:", selectedDate);
       await Slots.create({
-        date: timestamp,
+        date: selectedDate,
         slotType: type || 80,
       });
       await queryClient.invalidateQueries({
@@ -96,11 +90,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
       Alert.alert("نجاح", "تم إنشاء الفترة الزمنية بنجاح.");
       onClose(); // Close modal on success
     } catch (apiError: any) {
-      setError(apiError.message || "فشل إنشاء الفترة الزمنية. حاول مرة أخرى.");
-      Alert.alert(
-        "خطأ",
-        apiError.message || "فشل إنشاء الفترة الزمنية. حاول مرة أخرى."
-      );
+      setError("فشل إنشاء الفترة الزمنية. حاول مرة أخرى.");
     } finally {
       setIsLoading(false);
     }

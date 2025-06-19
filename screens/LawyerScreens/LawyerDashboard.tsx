@@ -144,16 +144,33 @@ export default function LawyerDashboard({ navigation }) {
           lawyerView
         />
         <View style={styles.QuestionCardContainer}>
-          <Text
-            style={{
-              ...font.title,
-              color: Colors.SecondaryColor,
-              textAlign: "right",
-              marginVertical: 10,
-            }}
-          >
-            الاسئلة المجابة
-          </Text>
+          <View style={styles.QuestionListHeader}>
+            <Text
+              style={{
+                ...font.title,
+                color: Colors.SecondaryColor,
+                textAlign: "right",
+                marginVertical: 10,
+              }}
+            >
+              الاسئلة المجابة
+            </Text>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("LawyerQA" as never);
+              }}
+            >
+              <Text
+                style={{
+                  ...font.subtitle,
+                  color: Colors.mainColor,
+                  textAlign: "right",
+                }}
+              >
+                عرض الكل
+              </Text>
+            </Pressable>
+          </View>
           {providerQA?.data.map((item, index) => (
             <View key={item.id}>
               <QuestionCardLawyer {...item} />
@@ -167,14 +184,6 @@ export default function LawyerDashboard({ navigation }) {
               />
             </View>
           ))}
-          <View style={styles.QAMoreButtonContainer}>
-            <MainButton
-              title="عرض المزيد"
-              onPress={() => {
-                navigation.navigate("LawyerQAPrev" as never);
-              }}
-            />
-          </View>
         </View>
       </ScrollView>
     </ScreensWrapper>
@@ -232,11 +241,18 @@ const styles = StyleSheet.create({
   QuestionCardContainer: {
     backgroundColor: "white",
     marginBottom: 20,
+    marginTop: 4,
     padding: 10,
   },
   QAMoreButtonContainer: {
     alignSelf: "center",
     height: 36,
     width: "50%",
+  },
+  QuestionListHeader: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
 });

@@ -75,7 +75,7 @@ export default function LawyerRatings({
         />
       )}
 
-      <View style={[styles.ratingContainer, lawyerView && { marginBottom: 0 }]}>
+      <View style={[styles.ratingContainer]}>
         <View style={styles.ratingUpperContainer}>
           <Text style={styles.title}>تقييمات الزائرين</Text>
           {isDisabled || lawyerView ? (

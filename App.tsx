@@ -53,8 +53,12 @@ import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScre
 import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
 import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
+
+import SuccessScreen from "./screens/SuccessScreen";
+
 import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
 import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
+
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -178,6 +182,22 @@ function HomeStack() {
               size={30}
               color="white"
               onPress={navigation.goBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="BookingSuccess"
+        component={SuccessScreen}
+        options={({ navigation }) => ({
+          title: "نجحت العملية",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={() => navigation.navigate("Home")}
             />
           ),
         })}

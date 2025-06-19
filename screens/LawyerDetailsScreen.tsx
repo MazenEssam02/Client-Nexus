@@ -120,7 +120,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
           navigation={navigation}
         />
         <AboutLawyer Description={lawyer.description} />
-        <LawyerQA lawyerQA={providerQA.data.data} />
+        <LawyerQA lawyerQA={providerQA.data.data} navigation={navigation} />
         <LawyerSpecialities specializationName={lawyer.specializationName} />
         <LawyerRatings
           feedbacks={providerFeedbacks.data.data}

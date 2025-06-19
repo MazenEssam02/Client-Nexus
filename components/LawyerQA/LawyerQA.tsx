@@ -7,11 +7,11 @@ import QuestionCard from "../QuestionCard/QuestionCard";
 import Data from "../../api-mock/Questions.json";
 import { MainButton } from "../Buttons/MainButton";
 import { useNavigation } from "@react-navigation/native";
-export default function LawyerQA({ lawyerQA }) {
+export default function LawyerQA({ lawyerQA, navigation }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const navigation = useNavigation();
-  // const [showWebView, setShowWebView] = useState(false);
 
+  // const [showWebView, setShowWebView] = useState(false);
+  // console.log(lawyerQA);
   const onSubmitHandler = () => {
     navigation.navigate("LawyerQAScreen" as never, { lawyerQA });
   };
@@ -37,9 +37,15 @@ export default function LawyerQA({ lawyerQA }) {
             renderItem={({ item }) => <QuestionCard {...item} />}
             scrollEnabled={false}
           />
-          <View style={styles.buttonContainer}>
-            <MainButton title="عرض المزيد" onPress={onSubmitHandler} />
-          </View>
+          {lawyerQA.length ? (
+            <View style={styles.buttonContainer}>
+              <MainButton title="عرض المزيد" onPress={onSubmitHandler} />
+            </View>
+          ) : (
+            <Text style={styles.unavaliableText}>
+              لا توجد اسئلة و اجابات للمحامى
+            </Text>
+          )}
         </View>
       ) : (
         ""
@@ -77,5 +83,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     height: 36,
     width: "50%",
+  },
+  unavaliableText: {
+    ...font.title,
+    width: "100%",
+    marginVertical: 10,
+    textAlign: "center",
+    color: Colors.SecondaryColor,
   },
 });

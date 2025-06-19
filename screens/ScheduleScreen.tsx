@@ -79,7 +79,7 @@ export default function ScheduleScreen() {
           mainImage: Appointment.serviceProviderMainImage,
         }))
       );
-      // console.log(transactions);
+      console.log(transactions);
     }
   }, [Appointments]);
   if (isLoading) {
@@ -88,6 +88,7 @@ export default function ScheduleScreen() {
   if (isError) {
     return <IsError error={error} />;
   }
+
   return (
     <View style={styles.container}>
       {transactions.length === 0 ? (

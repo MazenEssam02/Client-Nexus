@@ -99,7 +99,7 @@ export default function LawyerRatings({
             scrollEnabled={false}
           />
         </View>
-        {isDisabled ? (
+        {isDisabled || !feedbacks.length ? (
           ""
         ) : (
           <View style={styles.buttonContainer}>

@@ -44,6 +44,7 @@ const FavouriteScreen = () => {
       </View>
     );
   }
+
   return (
     <View style={styles.rootContainer}>
       <FlatList

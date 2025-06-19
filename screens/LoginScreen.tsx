@@ -86,7 +86,7 @@ const LoginScreen = () => {
           rules={{
             required: "كلمة السر مطلوبة",
             minLength: {
-              value: 8,
+              value: 6,
               message: "كلمة السر يجب أن تحتوي على 8 أحرف على الأقل",
             },
           }}

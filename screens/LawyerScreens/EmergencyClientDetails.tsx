@@ -4,20 +4,14 @@ import {
   ScrollView,
   Text,
   Alert,
-  Pressable,
   Linking,
 } from "react-native";
 import { Colors } from "../../constants/Color";
-import LawyerCard from "../../components/LawyerCard/LawyerCard";
-import LawyerSummarylist from "../../components/LawyerSummarylist/LawyerSummarylist";
-import { useLayoutEffect, useState } from "react";
-import LawyerRatings from "../../components/LawyerRatings/LawyerRating";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQueries } from "@tanstack/react-query";
 import { Client, EmeregencyCases, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import EmergencyCallBlock from "../../components/EmergencyCallBlock/EmergencyCallBlock";
-import { Ionicons } from "@expo/vector-icons";
-import useEmergencyStore from "../../store/EmergencyStore";
 import EmergencyDetailsBlock from "../../components/EmergencyDetailsBlock/EmergencyDetailsBlock";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import getAge from "../../helpers/getAgeFromDate";
@@ -25,7 +19,9 @@ import { MainButton } from "../../components/Buttons/MainButton";
 
 export default function EmeregencyClientDetails({ route, navigation }) {
   const [loadingCancelEmergency, setLoadingCancelEmergency] = useState(false);
+  const [isServiceDone, setIsServiceDone] = useState(false);
   const service = route.params;
+
   const {
     price,
     id,
@@ -37,16 +33,9 @@ export default function EmeregencyClientDetails({ route, navigation }) {
   } = service;
   console.log("Service Details:", service);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      gestureEnabled: false,
-      headerLeft: () => (
-        <Pressable onPress={() => navigation.popToTop()}>
-          <Ionicons name="close-outline" size={30} color="white" />
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
+  useEffect(() => {
+    setIsServiceDone(service.status === "D");
+  }, [isServiceDone]);
 
   const results = useQueries({
     queries: [
@@ -108,6 +97,7 @@ export default function EmeregencyClientDetails({ route, navigation }) {
             <View style={styles.buttonContainer}>
               <MainButton
                 title="اظهار موقع العميل"
+                disabled={isServiceDone}
                 onPress={() => {
                   // open map with meetingLatitude and meetingLongitude using a map app
                   const url = `https://www.google.com/maps/search/?api=1&query=${meetingLatitude},${meetingLongitude}`;
@@ -120,6 +110,7 @@ export default function EmeregencyClientDetails({ route, navigation }) {
           )}
           <View style={styles.buttonContainer}>
             <MainButton
+              disabled={isServiceDone}
               title="انهاء الطلب"
               onPress={async () => {
                 try {

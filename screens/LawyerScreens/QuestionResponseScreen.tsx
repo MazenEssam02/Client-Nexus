@@ -18,6 +18,7 @@ import { useNavigation, NavigationProp } from "@react-navigation/native"; // Imp
 // Optional: For the "helpful" icon
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+
 // --- Type Definitions (Recommended) ---
 interface Client {
   firstName: string;
@@ -38,12 +39,8 @@ interface QuestionResponseScreenRouteParams {
   params: QuestionData;
 }
 
-// --- RTL Setup (Ensure this is called once, e.g., in App.tsx) ---
-if (!I18nManager.isRTL) {
-  I18nManager.forceRTL(true);
-  // Forcing RTL might require a reload in development.
-  // Consider using a library like 'react-native-restart' if needed for immediate effect.
-}
+
+
 
 // --- Helper Functions ---
 const formatDate = (dateString?: string | Date) => {

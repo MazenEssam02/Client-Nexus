@@ -12,10 +12,13 @@ export const ServiceProvider = {
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
     apiClient.get(`/api/ServiceProvider/Search?searchQuery=${searchQuery}`),
-  getUnansweredQA: () => apiClient.get<{
-    id: string
-  "clientId": string
-}[]>(`/api/qa/all?offset=0&limit=10&onlyUnanswered=true`),
+  getUnansweredQA: () =>
+    apiClient.get<
+      {
+        id: string;
+        clientId: string;
+      }[]
+    >(`/api/qa/all?offset=0&limit=10&onlyUnanswered=true`),
   getQA: (id) => apiClient.get(`/api/qa/provider/${id}`),
   filter: (filterData) => {
     console.log("Filtered data from inside the request", filterData);
@@ -163,4 +166,6 @@ export const Payment = {
       LastName: lastName,
       Phone: phone,
     }),
+  getStatus: (referenceKey) =>
+    apiClient.get(`api/payment/status/${referenceKey}`),
 };

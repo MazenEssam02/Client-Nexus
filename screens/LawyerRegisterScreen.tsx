@@ -359,6 +359,7 @@ const LawyerRegisterScreen = ({ route }) => {
         <View style={styles.mainButtonSaveContainer}>
           <MainButton
             title="حفظ البيانات"
+            loading={isLoading}
             onPress={handleSubmit(handleFormSubmit)}
             disabled={
               isValid ||

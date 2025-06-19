@@ -18,7 +18,6 @@ import { useNavigation, NavigationProp } from "@react-navigation/native"; // Imp
 // Optional: For the "helpful" icon
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 // --- Type Definitions (Recommended) ---
 interface Client {
   firstName: string;
@@ -38,9 +37,6 @@ interface QuestionData {
 interface QuestionResponseScreenRouteParams {
   params: QuestionData;
 }
-
-
-
 
 // --- Helper Functions ---
 const formatDate = (dateString?: string | Date) => {
@@ -140,6 +136,7 @@ export default function QuestionResponseScreen({
             <MainButton
               title={isLoading ? "جاري الإرسال..." : "إرسال الإجابة"}
               onPress={handleSubmit}
+              loading={isLoading}
               disabled={!answer.trim() || isLoading}
             />
           </View>

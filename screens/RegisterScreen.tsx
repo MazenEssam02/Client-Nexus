@@ -360,6 +360,7 @@ const RegisterScreen = () => {
             title="إنشاء حساب جديد"
             onPress={handleSubmit(onSubmit)}
             disabled={!(isValid && acceptedPolicy) || isLoading}
+            loading={isLoading}
           />
         </View>
 

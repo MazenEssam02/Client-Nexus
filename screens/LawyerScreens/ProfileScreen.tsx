@@ -17,9 +17,11 @@ import InfoArea from "../../components/InfoProfile/InfoArea";
 import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
 import { MainButton } from "../../components/Buttons/MainButton";
 import { Payment } from "../../API/https";
+import { useState } from "react";
 
 export default function LawyerProfileScreen({ navigation }) {
   const { user, setIsSubscribed } = useAuthStore();
+  const [loadingSubscription, setLoadingSubscription] = useState(false);
 
   return (
     <ScreensWrapper>
@@ -89,29 +91,30 @@ export default function LawyerProfileScreen({ navigation }) {
               <View style={{ width: "40%", height: 35 }}>
                 <MainButton
                   title={user.isSubscribed ? "الغاء الاشتراك" : "الاشتراك"}
+                  loading={loadingSubscription}
                   onPress={async () => {
                     if (!user.isSubscribed) {
-                      const payRes = await Payment.subscription({
-                        serviceProviderId: user.id,
-                        email: user.email,
-                        phone: "01093922530",
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        subscriptionTier: "Normal",
-                        subscriptionType: "Monthly",
-                      });
-                      console.log("Payment response:", payRes.data);
-                      // open webview for payment
-                      if (payRes.data) {
+                      setLoadingSubscription(true);
+                      try {
+                        const payRes = await Payment.subscription({
+                          serviceProviderId: user.id,
+                          email: user.email,
+                          phone: "01093922530",
+                          firstName: user.firstName,
+                          lastName: user.lastName,
+                          subscriptionTier: "Normal",
+                          subscriptionType: "Monthly",
+                        });
                         navigation.navigate("SubscriptionWebView", {
                           url: `https://accept.paymob.com/unifiedcheckout/?publicKey=${payRes.data.publicKey}&clientSecret=${payRes.data.clientSecret}`,
                         });
-                      } else {
+                      } catch (error) {
                         Alert.alert(
                           "خطأ",
                           "حدث خطأ أثناء الاشتراك. حاول مرة أخرى."
                         );
                       }
+                      setLoadingSubscription(false);
                     } else {
                       Alert.alert(
                         "الغاء الاشتراك",
@@ -130,7 +133,6 @@ export default function LawyerProfileScreen({ navigation }) {
                         ]
                       );
                     }
-                    // setIsSubscribed(!user.isSubscribed);
                   }}
                 />
               </View>

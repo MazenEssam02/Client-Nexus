@@ -118,6 +118,7 @@ export const NewPasswordScreen = ({ route }) => {
                 });
             })}
             disabled={!isValid || isLoading}
+            loading={isLoading}
           />
           {error && (
             <Text

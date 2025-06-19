@@ -89,6 +89,7 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
           <View style={{ width: "100%", alignItems: "center", height: 35 }}>
             <MainButton
               title="قبول الطلب"
+              loading={loading}
               disabled={loading || price === null}
               onPress={async () => {
                 try {

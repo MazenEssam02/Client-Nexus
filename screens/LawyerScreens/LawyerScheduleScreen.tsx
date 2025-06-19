@@ -258,6 +258,7 @@ export default function LawyerScheduleScreen() {
           <View style={{ flex: 1 }}>
             <MainButton
               title="إزالة موعد"
+              loading={isLoadingDelete}
               disabled={!selectedSlot || isLoadingDelete}
               onPress={async () => {
                 setIsLoadingDelete(true);

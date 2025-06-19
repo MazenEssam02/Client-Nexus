@@ -19,12 +19,10 @@ import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import EmergencyModal from "../../components/EmergencyModal/EmergencyModal";
+import { useLocation } from "../../hooks/useLocation";
 
 export default function EmergencyRequests({ navigation }) {
-  const [currentLocation, setCurrentLocation] =
-    useState<Location.LocationObjectCoords | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { loading, error: errorMsg, location: currentLocation } = useLocation();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["EmergencyRequests"],
     queryFn: () =>
@@ -38,29 +36,6 @@ export default function EmergencyRequests({ navigation }) {
   const emergencyRequests = data?.data || [];
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const { status: existingStatus } =
-        await Location.getForegroundPermissionsAsync();
-
-      let finalStatus = existingStatus;
-
-      if (existingStatus !== "granted") {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        setLoading(false);
-        Alert.alert("خطأ", "يرجى السماح بالوصول إلى الموقع");
-        return;
-      }
-      const loc = await Location.getCurrentPositionAsync({});
-      setCurrentLocation(loc.coords);
-      setLoading(false);
-    })();
-  }, []);
-
   if (isLoading || loading) {
     return <LoadingSpinner />;
   }
@@ -69,7 +44,7 @@ export default function EmergencyRequests({ navigation }) {
   }
 
   if (emergencyRequests.length === 0) {
-    return <NoResponse text="مفيش اسألة خلصني" />;
+    return <NoResponse text="لا توجد طلبات طوارئ حالياً" />;
   }
 
   return (
@@ -79,6 +54,7 @@ export default function EmergencyRequests({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PreviewCard
+            key={item.serviceId}
             onPress={() => setSelectedRequest(item)}
             showImage={false}
             name={`${item.clientFirstName} ${item.clientLastName}`}
@@ -91,7 +67,6 @@ export default function EmergencyRequests({ navigation }) {
       <EmergencyModal
         visible={!!selectedRequest}
         onClose={() => setSelectedRequest(null)}
-        onAccept={() => {}}
         name={
           selectedRequest?.clientFirstName +
           " " +
@@ -100,6 +75,7 @@ export default function EmergencyRequests({ navigation }) {
         description={selectedRequest?.description}
         location={selectedRequest?.meetingTextAddress}
         title={selectedRequest?.name}
+        id={selectedRequest?.serviceId}
       />
     </SafeAreaView>
   );

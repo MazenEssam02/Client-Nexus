@@ -12,28 +12,34 @@ import {
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
 import { MainButton } from "../Buttons/MainButton";
+import InfoInput from "../InfoProfile/InfoInput";
+import { LabeledInput } from "../AddressListModal/LabeledInput";
+import { EmeregencyCases } from "../../API/https";
+import { useLocation } from "../../hooks/useLocation";
 
 const screenWidth = Dimensions.get("window").width;
 
 interface CustomModalProps {
   visible: boolean;
   onClose: () => void;
-  onAccept: () => void;
   name: string;
   title: string;
   description: string;
   location: string;
+  id: number;
 }
 
 const EmergencyModal: React.FC<CustomModalProps> = ({
   visible,
   onClose,
-  onAccept,
   name,
   title,
   description,
   location,
+  id,
 }) => {
+  const { loading, error: errorMsg, location: currentLocation } = useLocation();
+  const [price, setPrice] = React.useState(null);
   return (
     <Modal
       transparent={true}
@@ -61,13 +67,48 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
           <View style={styles.locationContainer}>
             <Text style={styles.locationIconPlaceholder}>📍</Text>
             <Text style={styles.locationText}>
-              التجمع الخامس, القاهرة الجديده
+              {location || "الموقع غير متوفر"}
             </Text>
           </View>
 
+          <LabeledInput
+            label="السعر (جنيه)"
+            placeholder="أدخل السعر"
+            keyboardType="numeric"
+            inputStyle={{ textAlign: "right" }}
+            value={price !== null ? price.toString() : ""}
+            onChangeText={(text) =>
+              setPrice(text === "" ? null : parseFloat(text))
+            }
+          />
+
           {/* Accept Button */}
           <View style={{ width: "100%", alignItems: "center", height: 35 }}>
-            <MainButton title="قبول الطلب" onPress={onAccept} />
+            <MainButton
+              title="قبول الطلب"
+              onPress={async () => {
+                try {
+                  // const res = await EmeregencyCases.createOffer(
+                  //   id,
+                  //   price ?? 0,
+                  //   96
+                  // );
+                  const res = await EmeregencyCases.sendLawyerLocation(
+                    currentLocation.latitude,
+                    currentLocation.longitude
+                  );
+                  console.log(
+                    "Offer created:",
+                    JSON.stringify(res.data, null, 2)
+                  );
+                } catch (error) {
+                  console.error(
+                    "Error accepting request:",
+                    JSON.stringify(error, null, 2)
+                  );
+                }
+              }}
+            />
           </View>
         </View>
       </View>

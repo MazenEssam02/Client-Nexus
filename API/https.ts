@@ -120,6 +120,17 @@ export const EmeregencyCases = {
       serviceProviderId: serviceProviderId,
     }),
   endEmergency: (id) => apiClient.patch(`/api/emergency-cases/${id}/status`),
+  enableEmergency: (status = true) => apiClient.put(`/api/emergency-cases/available-lawyer`, {
+    status
+  }),
+  sendLawyerLocation: (latitude, longitude) => apiClient.post(`/api/emergency-cases/providers-locations`, {
+    latitude: latitude,
+    longitude: longitude,
+  }),
+  createOffer: (caseId, price, transportationType) => apiClient.post(`/api/emergency-cases/${caseId}/offers`, {
+    price: price,
+    transportationType: transportationType,
+  }),
 };
 
 export const Filter = {

@@ -31,7 +31,6 @@ export default function EmeregencyClientDetails({ route, navigation }) {
     meetingLatitude,
     meetingLongitude,
   } = service;
-  console.log("Service Details:", service);
 
   useEffect(() => {
     setIsServiceDone(service.status === "D");

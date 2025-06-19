@@ -15,9 +15,13 @@ import ProfilePicturePicker from "../../components/ProfilePicturePicker/ProfileP
 import { useAuthStore } from "../../store/auth";
 import InfoArea from "../../components/InfoProfile/InfoArea";
 import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { Payment } from "../../API/https";
+import { useState } from "react";
 
-export default function LawyerProfileScreen() {
-  const { user } = useAuthStore();
+export default function LawyerProfileScreen({ navigation }) {
+  const { user, setIsSubscribed } = useAuthStore();
+  const [loadingSubscription, setLoadingSubscription] = useState(false);
 
   return (
     <ScreensWrapper>
@@ -35,7 +39,7 @@ export default function LawyerProfileScreen() {
             <View style={styles.optionContainer}>
               <Pressable
                 style={({ pressed }) => [pressed && styles.pressed]}
-                onPress={() => console.log("Edit Profile")}
+                onPress={() => navigation.navigate("Edit")}
               >
                 <Text style={styles.editText}>تعديل</Text>
               </Pressable>
@@ -45,7 +49,7 @@ export default function LawyerProfileScreen() {
               onImageChange={() => {}}
               currentImage={user.mainImage}
             />
-            <View>
+            <View style={{ marginVertical: 10 }}>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>الاسم</Text>
                 <Text style={styles.info}>
@@ -58,11 +62,79 @@ export default function LawyerProfileScreen() {
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>التليفون</Text>
-                <Text style={styles.info}>{user.phoneNumber}</Text>
+                <Text style={styles.info}>
+                  {user.phoneNumber || "01093922530"}
+                </Text>
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>تاريخ الميلاد</Text>
-                <Text style={styles.info}>{user.birthDate}</Text>
+                <Text style={styles.info}>
+                  {user.birthDate || "01/01/2000"}
+                </Text>
+              </View>
+            </View>
+            {/* join subscription button */}
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 20,
+              }}
+            >
+              <View style={styles.DataContainer}>
+                <Text style={styles.title}>الاشتراك</Text>
+                <Text style={styles.info}>
+                  {user.isSubscribed ? "مشترك" : "غير مشترك"}
+                </Text>
+              </View>
+              <View style={{ width: "40%", height: 35 }}>
+                <MainButton
+                  title={user.isSubscribed ? "الغاء الاشتراك" : "الاشتراك"}
+                  loading={loadingSubscription}
+                  onPress={async () => {
+                    if (!user.isSubscribed) {
+                      setLoadingSubscription(true);
+                      try {
+                        const payRes = await Payment.subscription({
+                          serviceProviderId: user.id,
+                          email: user.email,
+                          phone: "01093922530",
+                          firstName: user.firstName,
+                          lastName: user.lastName,
+                          subscriptionTier: "Normal",
+                          subscriptionType: "Monthly",
+                        });
+                        navigation.navigate("SubscriptionWebView", {
+                          url: `https://accept.paymob.com/unifiedcheckout/?publicKey=${payRes.data.publicKey}&clientSecret=${payRes.data.clientSecret}`,
+                        });
+                      } catch (error) {
+                        Alert.alert(
+                          "خطأ",
+                          "حدث خطأ أثناء الاشتراك. حاول مرة أخرى."
+                        );
+                      }
+                      setLoadingSubscription(false);
+                    } else {
+                      Alert.alert(
+                        "الغاء الاشتراك",
+                        "هل أنت متأكد أنك تريد إلغاء الاشتراك؟",
+                        [
+                          {
+                            text: "إلغاء",
+                            style: "cancel",
+                          },
+                          {
+                            text: "نعم",
+                            onPress: async () => {
+                              setIsSubscribed(false);
+                            },
+                          },
+                        ]
+                      );
+                    }
+                  }}
+                />
               </View>
             </View>
             <QuickAccess icon="Exit" title="الخروج" />
@@ -93,11 +165,6 @@ const styles = StyleSheet.create({
     fontFamily: font.title.fontFamily,
     fontSize: font.title.fontSize,
     color: Colors.mainColor,
-  },
-  imageContainer: {
-    marginVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
   },
   scrollContent: {
     flexGrow: 1,

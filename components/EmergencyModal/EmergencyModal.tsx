@@ -81,6 +81,7 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
               </Text>
             </View>
 
+
             <LabeledInput
               label="السعر (جنيه)"
               placeholder="أدخل السعر"
@@ -90,6 +91,7 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
               onChangeText={(text) =>
                 setPrice(text === "" ? null : parseFloat(text))
               }
+
             />
 
             {/* Accept Button */}

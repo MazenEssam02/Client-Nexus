@@ -8,6 +8,8 @@ export const apiClient = axios.create({
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
+  getAppointments: () =>
+    apiClient.get("api/appointments/provider"),
   getFeedbacks: (id) =>
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
@@ -89,12 +91,45 @@ export const Client = {
     apiClient.patch(`api/qa/${id}/mark?isHelpful=${feedback}`),
   getFeedbacks: (id) => apiClient.get(`/api/Feedback/Client/${id}`),
 };
+export const slotTypes = {
+  phone: 80,
+  "in-office": 73,
+  online: 79,
+};
 export const Slots = {
   getWeek: ({ serviceProviderId, startDate, endDate, type }) =>
     apiClient.get(
       `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${type}`
     ),
+  get: async ({ serviceProviderId, startDate, endDate }) => {
+    const allSlots = [];
+    const slotTypesArray = Object.keys(slotTypes);
+    for (const slotType of slotTypesArray) {
+      const res = await apiClient.get(
+        `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${slotTypes[slotType]}`
+      );
+      if (res.data && res.data) {
+        allSlots.push(...res.data);
+      }
+    }
+    return allSlots;
+  },
   getById: (id) => apiClient.get(`/api/slots/${id}`),
+  create: ({
+    date,
+    slotType,
+  }) => apiClient.post(`/api/slots`, {
+    date,
+    slotType,
+  }),
+  generate: ({
+    startDate,
+    endDate,
+  }) => apiClient.post(`/api/slots/generate-slots`, {
+    startDate,
+    endDate,
+  }),
+  delete: (id) => apiClient.delete(`/api/slots/${id}`),
 };
 export const Appointments = {
   bookAppointment: (slotId) =>
@@ -171,6 +206,23 @@ export const Payment = {
       LastName: lastName,
       Phone: phone,
     }),
+    subscription: ({
+  serviceProviderId,
+  subscriptionType,
+  subscriptionTier,
+  email,
+  firstName,
+  lastName,
+  phone,
+}) => apiClient.post(`/api/payment/subscription`, {
+  serviceProviderId,
+  subscriptionType,
+  subscriptionTier,
+  email,
+  firstName,
+  lastName,
+  phone
+}),
   getStatus: (referenceKey) =>
     apiClient.get(`api/payment/status/${referenceKey}`),
 };

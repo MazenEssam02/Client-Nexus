@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,27 +11,33 @@ import {
 } from "react-native";
 import { Controller, useForm, SubmitHandler, set } from "react-hook-form";
 
-import { font } from "../constants/Font";
-import { Colors } from "../constants/Color";
-import { MainButton } from "../components/Buttons/MainButton";
-import { TextAreaInput } from "../components/TextAreaInput/TextAreaInput";
-import { RadioButtonGroup } from "../components/RadioButton/RadioButtonGroup";
+import { font } from "../../constants/Font";
+import { Colors } from "../../constants/Color";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { TextAreaInput } from "../../components/TextAreaInput/TextAreaInput";
+import { RadioButtonGroup } from "../../components/RadioButton/RadioButtonGroup";
 import {
   FileUploadButton,
   SelectedAsset,
-} from "../components/FileUploadButton/FileUploadButton";
+} from "../../components/FileUploadButton/FileUploadButton";
 import {
   Address,
   AddressListModal,
-} from "../components/AddressListModal/AddressListModal";
-import { LoginIllustration } from "../components/Icons/LoginIllustration";
-import { LoginInput } from "../components/LoginInput/LoginInput";
-import { apiClient } from "../API/https";
+} from "../../components/AddressListModal/AddressListModal";
+import { LoginIllustration } from "../../components/Icons/LoginIllustration";
+import { LoginInput } from "../../components/LoginInput/LoginInput";
+import { apiClient } from "../../API/https";
 import { useQuery } from "@tanstack/react-query";
 import Dropdown from "react-native-input-select";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "../../store/auth";
+import { GenderPicker } from "../../components/GenderPicker/GenderPicker";
+import DatePickerInput from "../../components/DatePickerInput/DatePickerInput";
 
 interface LawyerRegisterFormData {
+  fullName: string;
+  email: string;
+  birthdate: Date;
+  phone: string;
   name: string;
   yearsOfExperience: string;
   officeConsultationPrice: string;
@@ -40,15 +46,17 @@ interface LawyerRegisterFormData {
   workType: "private" | "company";
 }
 
-const LawyerRegisterScreen = ({ route }) => {
-  const [selectedSpecializations, setSelectedSpecializations] = useState<
-    {
-      id: number;
-      name: string;
-    }[]
-  >([]);
-  const { register, isLoading, error } = useAuthStore();
-  const commonFormData = route.params.data as {
+const LawyerEditScreen = ({ route, navigation }) => {
+  const { user, isLoading, error } = useAuthStore();
+  const commonFormData = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "lawyer",
+    birthDate: "",
+    phoneNumber: "",
+    password: "",
+  } as {
     firstName: string;
     lastName: string;
     email: string;
@@ -78,10 +86,29 @@ const LawyerRegisterScreen = ({ route }) => {
           res.data.data.filter((item) => item.serviceProviderTypeId === 1)
         ),
   });
+  const [selectedSpecializations, setSelectedSpecializations] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    if (specializationsData && specializationsData.length > 0) {
+      setSelectedSpecializations([specializationsData[0]]);
+    }
+  }, [specializationsData]);
 
   const [isAddressModalVisible, setIsAddressModalVisible] =
     useState<boolean>(false);
-  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([
+    {
+      id: "1",
+      cityId: 1,
+      detailedAddress: "عنوان 1",
+      stateId: 1,
+    },
+  ]);
   const {
     control,
     handleSubmit,
@@ -90,12 +117,16 @@ const LawyerRegisterScreen = ({ route }) => {
     watch,
   } = useForm<LawyerRegisterFormData>({
     defaultValues: {
-      name: "",
-      yearsOfExperience: "",
-      details: "",
+      fullName: user.firstName + " " + user.lastName,
+      email: user.email,
+      birthdate: new Date("2000-01-01"), // Default date, can be changed
+      phone: "01093922530",
+      name: "مكتب النجاح",
+      yearsOfExperience: "5",
+      details: "محامي متخصص في القضايا المدنية",
       workType: "private",
-      officeConsultationPrice: "",
-      phoneConsultationPrice: "",
+      officeConsultationPrice: "100",
+      phoneConsultationPrice: "50",
     },
     mode: "onChange",
   });
@@ -105,17 +136,7 @@ const LawyerRegisterScreen = ({ route }) => {
     data
   ) => {
     console.log("Registering user", data);
-    register({
-      ...commonFormData,
-      addresses: addresses,
-      idImage: idCardPic,
-      nationalIdImage: nationalIdPic,
-      yearsOfExperience: parseInt(data.yearsOfExperience),
-      specializations: selectedSpecializations.map((spec) => spec.id),
-      description: data.details,
-      officeConsultationPrice: parseInt(data.officeConsultationPrice),
-      telephoneConsultationPrice: parseInt(data.phoneConsultationPrice),
-    });
+    navigation.goBack();
   };
 
   const handleRemoveAddress = (addressId: string) => {
@@ -127,6 +148,7 @@ const LawyerRegisterScreen = ({ route }) => {
   const handleAddNewAddressFromModal = (newAddress: Address) => {
     setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
   };
+  const [isMale, setIsMale] = useState<boolean>(true);
 
   return (
     <KeyboardAvoidingView
@@ -139,44 +161,94 @@ const LawyerRegisterScreen = ({ route }) => {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {__DEV__ && (
-          // button to fill the form with test data
-          <TouchableOpacity
-            onPress={async () => {
-              setValue("name", "مكتب النجاح");
-              setValue("yearsOfExperience", "5");
-              setValue("details", "محامي متخصص في القضايا المدنية");
-              setValue("workType", "private");
-              setValue("officeConsultationPrice", "100");
-              setValue("phoneConsultationPrice", "50");
-              setSelectedSpecializations(specializationsData.slice(0, 2));
-              setAddresses([
-                {
-                  id: "1",
-                  cityId: 1,
-                  detailedAddress: "عنوان 1",
-                  stateId: 1,
-                },
-                {
-                  id: "2",
-                  cityId: 1,
-                  detailedAddress: "عنوان 2",
-                  stateId: 1,
-                },
-              ]);
-            }}
-            style={{
-              backgroundColor: Colors.mainColor,
-              padding: 10,
-              borderRadius: 5,
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ color: "#fff" }}>ملئ البيانات التجريبية</Text>
-          </TouchableOpacity>
-        )}
-        <LoginIllustration style={styles.illustration} />
         <Text style={styles.title}>أدخل معلومات المحامي</Text>
+
+        <Controller
+          control={control}
+          name="fullName"
+          rules={{
+            required: "مطلوب اسم المستخدم الكامل",
+            minLength: {
+              value: 3,
+              message: "اسم المستخدم الكامل يجب أن يكون 3 أحرف على الأقل",
+            },
+            maxLength: {
+              value: 50,
+              message: "اسم المستخدم الكامل يجب أن يكون أقل من 50 حرف",
+            },
+            validate: (value) =>
+              value.trim().split(" ").length > 1 ||
+              "اسم المستخدم الكامل يجب أن يحتوي على اسمين على الأقل",
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="اسم المستخدم الكامل"
+              value={value}
+              onChangeText={onChange}
+              error={errors.fullName?.message}
+              placeholderTextColor={Colors.gray500}
+            />
+          )}
+        />
+
+        {/* Email */}
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            required: "البريد الإلكتروني مطلوب",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "معذراً البريد غير صحيح!",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="البريد الإلكتروني"
+              keyboardType="email-address"
+              value={value}
+              onChangeText={onChange}
+              placeholderTextColor={Colors.gray500}
+              error={errors.email?.message}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="birthdate"
+          rules={{ required: "تاريخ الميلاد مطلوب" }}
+          render={({ field: { onChange, value } }) => (
+            <DatePickerInput
+              date={value}
+              onDateChange={onChange}
+              placeholder="تاريخ الميلاد"
+            />
+          )}
+        />
+
+        {/* Phone */}
+        <Controller
+          control={control}
+          name="phone"
+          rules={{
+            required: "رقم الهاتف مطلوب",
+            pattern: {
+              value: /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+              message: "معذرةً الرقم غير صحيح!",
+            },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <LoginInput
+              placeholder="رقم الهاتف"
+              keyboardType="phone-pad"
+              value={value}
+              onChangeText={onChange}
+              placeholderTextColor={Colors.gray500}
+              error={errors.phone?.message}
+            />
+          )}
+        />
 
         <Controller
           control={control}
@@ -344,7 +416,15 @@ const LawyerRegisterScreen = ({ route }) => {
             />
           )}
         />
-
+        <View style={styles.genderContainer}>
+          <Text style={styles.genderLabel}>النوع</Text>
+          <GenderPicker value={isMale} onChange={setIsMale} />
+        </View>
+        <FileUploadButton
+          label="صورة الحساب:"
+          onFileSelected={(asset) => {}}
+          selectedFileName={null}
+        />
         <FileUploadButton
           label="صورة الكارنيه:"
           onFileSelected={(asset) => setIdCardPic(asset)}
@@ -359,17 +439,7 @@ const LawyerRegisterScreen = ({ route }) => {
         <View style={styles.mainButtonSaveContainer}>
           <MainButton
             title="حفظ البيانات"
-            loading={isLoading}
             onPress={handleSubmit(handleFormSubmit)}
-            disabled={
-              isValid ||
-              Object.keys(errors).length > 0 ||
-              !idCardPic ||
-              !nationalIdPic ||
-              !selectedSpecializations.length ||
-              !addresses.length ||
-              isLoading
-            }
           />
           {error && (
             <Text
@@ -396,7 +466,7 @@ const LawyerRegisterScreen = ({ route }) => {
   );
 };
 
-export default LawyerRegisterScreen;
+export default LawyerEditScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -408,6 +478,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     paddingBottom: 40,
+    backgroundColor: Colors.background,
   },
   illustration: {
     alignSelf: "center",
@@ -451,5 +522,15 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 36,
     marginTop: 20,
+  },
+  genderContainer: {
+    width: "100%",
+    marginBottom: 8,
+  },
+  genderLabel: {
+    ...font.subtitle,
+    lineHeight: 22,
+    marginBottom: 8,
+    alignSelf: "flex-end",
   },
 });

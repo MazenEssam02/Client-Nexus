@@ -15,6 +15,7 @@ export type User = {
   authToken: string;
   id: number;
   mainImage?: string | null;
+  isSubscribed?: boolean; // Optional, for client type
 };
 
 export type SocialAuth = "google" | "facebook" | "apple";
@@ -53,6 +54,7 @@ type AuthStore = {
     }[];
   }) => Promise<void>;
   logout: () => void;
+  setIsSubscribed: (status: boolean) => void;
 };
 
 export const useAuthStore = create<AuthStore>()(persist(
@@ -326,6 +328,9 @@ export const useAuthStore = create<AuthStore>()(persist(
       delete apiClient.defaults.headers.common["Authorization"];
     }
   },
+  setIsSubscribed: (status) => set((state) => ({
+    user: state.user ? { ...state.user, isSubscribed: status } : null,
+  })),
 }), {
   name: 'auth-storage',
   storage: createJSONStorage(() => AsyncStorage),

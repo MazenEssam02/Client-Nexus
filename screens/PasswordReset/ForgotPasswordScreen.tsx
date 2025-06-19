@@ -100,6 +100,7 @@ export const ForgotPasswordScreen = () => {
                 });
             })}
             disabled={!isValid || isLoading}
+            loading={isLoading}
           />
           {error && (
             <Text

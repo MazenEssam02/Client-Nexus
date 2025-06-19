@@ -121,6 +121,7 @@ const LoginScreen = () => {
         <View style={styles.buttonContainer}>
           <MainButton
             title="تسجيل دخول"
+            loading={isLoading}
             onPress={handleSubmit(onSubmit)}
             disabled={!isValid || isLoading}
           />

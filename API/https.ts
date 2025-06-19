@@ -89,12 +89,46 @@ export const Client = {
     apiClient.patch(`api/qa/${id}/mark?isHelpful=${feedback}`),
   getFeedbacks: (id) => apiClient.get(`/api/Feedback/Client/${id}`),
 };
+export const slotTypes = {
+  phone: 80,
+  "in-office": 73,
+  online: 79,
+};
 export const Slots = {
   getWeek: ({ serviceProviderId, startDate, endDate, type }) =>
     apiClient.get(
       `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${type}`
     ),
+  get: async ({ serviceProviderId, startDate, endDate }) => {
+    const allSlots = [];
+    const slotTypesArray = Object.keys(slotTypes);
+    for (const slotType of slotTypesArray) {
+      const res = await apiClient.get(
+        `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${slotTypes[slotType]}`
+      );
+      console.log("Response from get slots:", res.data);
+      if (res.data && res.data) {
+        allSlots.push(...res.data);
+      }
+    }
+    return allSlots;
+  },
   getById: (id) => apiClient.get(`/api/slots/${id}`),
+  create: ({
+    date,
+    slotType,
+  }) => apiClient.post(`/api/slots`, {
+    date,
+    slotType,
+  }),
+  generate: ({
+    startDate,
+    endDate,
+  }) => apiClient.post(`/api/slots/generate-slots`, {
+    startDate,
+    endDate,
+  }),
+  delete: (id) => apiClient.delete(`/api/slots/${id}`),
 };
 export const Appointments = {
   bookAppointment: (slotId) =>

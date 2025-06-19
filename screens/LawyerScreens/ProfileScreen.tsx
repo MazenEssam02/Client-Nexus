@@ -15,9 +15,11 @@ import ProfilePicturePicker from "../../components/ProfilePicturePicker/ProfileP
 import { useAuthStore } from "../../store/auth";
 import InfoArea from "../../components/InfoProfile/InfoArea";
 import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
+import { MainButton } from "../../components/Buttons/MainButton";
+import { Payment } from "../../API/https";
 
 export default function LawyerProfileScreen({ navigation }) {
-  const { user } = useAuthStore();
+  const { user, setIsSubscribed } = useAuthStore();
 
   return (
     <ScreensWrapper>
@@ -69,6 +71,70 @@ export default function LawyerProfileScreen({ navigation }) {
                 </Text>
               </View>
             </View>
+            {/* join subscription button */}
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 20,
+              }}
+            >
+              <View style={styles.DataContainer}>
+                <Text style={styles.title}>الاشتراك</Text>
+                <Text style={styles.info}>
+                  {user.isSubscribed ? "مشترك" : "غير مشترك"}
+                </Text>
+              </View>
+              <View style={{ width: "40%", height: 35 }}>
+                <MainButton
+                  title={user.isSubscribed ? "الغاء الاشتراك" : "الاشتراك"}
+                  onPress={async () => {
+                    if (!user.isSubscribed) {
+                      const payRes = await Payment.subscription({
+                        serviceProviderId: user.id,
+                        email: user.email,
+                        phone: "01093922530",
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        subscriptionTier: "Normal",
+                        subscriptionType: "Monthly",
+                      });
+                      console.log("Payment response:", payRes.data);
+                      // open webview for payment
+                      if (payRes.data) {
+                        navigation.navigate("SubscriptionWebView", {
+                          url: `https://accept.paymob.com/unifiedcheckout/?publicKey=${payRes.data.publicKey}&clientSecret=${payRes.data.clientSecret}`,
+                        });
+                      } else {
+                        Alert.alert(
+                          "خطأ",
+                          "حدث خطأ أثناء الاشتراك. حاول مرة أخرى."
+                        );
+                      }
+                    } else {
+                      Alert.alert(
+                        "الغاء الاشتراك",
+                        "هل أنت متأكد أنك تريد إلغاء الاشتراك؟",
+                        [
+                          {
+                            text: "إلغاء",
+                            style: "cancel",
+                          },
+                          {
+                            text: "نعم",
+                            onPress: async () => {
+                              setIsSubscribed(false);
+                            },
+                          },
+                        ]
+                      );
+                    }
+                    // setIsSubscribed(!user.isSubscribed);
+                  }}
+                />
+              </View>
+            </View>
             <QuickAccess icon="Exit" title="الخروج" />
           </View>
         </ScrollView>
@@ -97,11 +163,6 @@ const styles = StyleSheet.create({
     fontFamily: font.title.fontFamily,
     fontSize: font.title.fontSize,
     color: Colors.mainColor,
-  },
-  imageContainer: {
-    marginVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
   },
   scrollContent: {
     flexGrow: 1,

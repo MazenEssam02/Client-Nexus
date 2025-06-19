@@ -59,6 +59,7 @@ import SuccessScreen from "./screens/SuccessScreen";
 import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
 import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
 import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
+import SubscriptionWebView from "./screens/SubscriptionWebView";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -569,6 +570,23 @@ function AuthenticatedStackLawyer() {
         component={LawyerRatingsScreen}
         options={({ navigation }) => ({
           title: "تقييمات الزائريين",
+          presentation: "modal",
+          headerLeft: () => (
+            <Ionicons
+              name="close-outline"
+              size={30}
+              color="white"
+              onPress={navigation.goBack}
+            />
+          ),
+        })}
+      />
+
+      <Stack.Screen
+        name="SubscriptionWebView"
+        component={SubscriptionWebView}
+        options={({ navigation }) => ({
+          title: "اكمل عملية الدفع",
           presentation: "modal",
           headerLeft: () => (
             <Ionicons

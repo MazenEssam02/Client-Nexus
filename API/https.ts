@@ -206,6 +206,23 @@ export const Payment = {
       LastName: lastName,
       Phone: phone,
     }),
+    subscription: ({
+  serviceProviderId,
+  subscriptionType,
+  subscriptionTier,
+  email,
+  firstName,
+  lastName,
+  phone,
+}) => apiClient.post(`/api/payment/subscription`, {
+  serviceProviderId,
+  subscriptionType,
+  subscriptionTier,
+  email,
+  firstName,
+  lastName,
+  phone
+}),
   getStatus: (referenceKey) =>
     apiClient.get(`api/payment/status/${referenceKey}`),
 };

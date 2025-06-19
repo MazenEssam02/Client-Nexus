@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import ScreensWrapper from "../ScreensWrapper/ScreensWrapper";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { Client, EmeregencyCases, ServiceProvider } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
@@ -23,24 +23,52 @@ import { useLocation } from "../../hooks/useLocation";
 
 export default function EmergencyRequests({ navigation }) {
   const { loading, error: errorMsg, location: currentLocation } = useLocation();
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["EmergencyRequests"],
-    queryFn: () =>
-      EmeregencyCases.getAvailableEmergencies(
-        currentLocation?.longitude,
-        currentLocation?.latitude
-      ),
-    enabled: !loading,
-    refetchInterval: 3000,
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["EmergencyRequests"],
+        queryFn: () =>
+          EmeregencyCases.getAvailableEmergencies(
+            currentLocation?.longitude,
+            currentLocation?.latitude
+          ),
+        enabled: !loading,
+        refetchInterval: 3000,
+      },
+      {
+        queryKey: ["EmergencyAppointments"],
+        queryFn: EmeregencyCases.getEmergencies,
+      },
+    ],
   });
-  const emergencyRequests = data?.data || [];
+  const isLoading = results.some((result) => result.isLoading);
+  const isError = results.some((result) => result.isError);
+  const [emergencyRequestsResponse, curEmegencies] = results;
+  const emergencyRequests = emergencyRequestsResponse?.data?.data || [];
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   if (isLoading || loading) {
     return <LoadingSpinner />;
   }
   if (isError || errorMsg) {
-    return <IsError error={error || errorMsg} />;
+    return (
+      <IsError
+        error={results.find((result) => result.isError)?.error || errorMsg}
+      />
+    );
+  }
+
+  const hasOngoingEmergency = (curEmegencies?.data.data).some(
+    (item) => item.status === "I"
+  );
+  if (hasOngoingEmergency) {
+    (navigation as any).navigate("LawyerTabs", {
+      screen: "Schedule",
+      params: {
+        screen: "EmergencySchedule",
+      },
+    });
+    return null;
   }
 
   if (emergencyRequests.length === 0) {

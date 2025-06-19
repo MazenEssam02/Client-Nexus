@@ -16,6 +16,7 @@ import InfoInput from "../InfoProfile/InfoInput";
 import { LabeledInput } from "../AddressListModal/LabeledInput";
 import { EmeregencyCases } from "../../API/https";
 import { useLocation } from "../../hooks/useLocation";
+import { useNavigation } from "@react-navigation/native";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -38,8 +39,10 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
   location,
   id,
 }) => {
-  const { loading, error: errorMsg, location: currentLocation } = useLocation();
+  const navigation = useNavigation();
+  const { location: currentLocation } = useLocation();
   const [price, setPrice] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
   return (
     <Modal
       transparent={true}
@@ -86,26 +89,36 @@ const EmergencyModal: React.FC<CustomModalProps> = ({
           <View style={{ width: "100%", alignItems: "center", height: 35 }}>
             <MainButton
               title="قبول الطلب"
+              disabled={loading || price === null}
               onPress={async () => {
                 try {
-                  // const res = await EmeregencyCases.createOffer(
-                  //   id,
-                  //   price ?? 0,
-                  //   96
-                  // );
-                  const res = await EmeregencyCases.sendLawyerLocation(
+                  setLoading(true);
+                  await EmeregencyCases.enableEmergency();
+                  await EmeregencyCases.sendLawyerLocation(
                     currentLocation.latitude,
                     currentLocation.longitude
                   );
-                  console.log(
-                    "Offer created:",
-                    JSON.stringify(res.data, null, 2)
+                  const res = await EmeregencyCases.createOffer(
+                    id,
+                    price ?? 0,
+                    98
                   );
+                  console.log("Offer created:", JSON.stringify(res, null, 2));
+                  setLoading(false);
+                  (navigation as any).navigate("LawyerTabs", {
+                    screen: "Schedule",
+                    params: {
+                      screen: "EmergencySchedule",
+                    },
+                  });
                 } catch (error) {
                   console.error(
                     "Error accepting request:",
                     JSON.stringify(error, null, 2)
                   );
+                  alert("حدث خطأ أثناء قبول الطلب. يرجى المحاولة مرة أخرى.");
+                  setLoading(false);
+                  onClose();
                 }
               }}
             />

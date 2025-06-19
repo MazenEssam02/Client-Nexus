@@ -14,15 +14,10 @@ import { font } from "../../constants/Font";
 import ProfilePicturePicker from "../../components/ProfilePicturePicker/ProfilePicturePicker";
 import { useAuthStore } from "../../store/auth";
 import InfoArea from "../../components/InfoProfile/InfoArea";
-import CheckBox from "react-native-check-box";
 import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
-import { EmeregencyCases } from "../../API/https";
-import { AxiosError } from "axios";
-import { useState } from "react";
 
 export default function LawyerProfileScreen() {
   const { user } = useAuthStore();
-  const [activeEmergency, setActiveEmergency] = useState(false);
 
   return (
     <ScreensWrapper>
@@ -68,33 +63,6 @@ export default function LawyerProfileScreen() {
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>تاريخ الميلاد</Text>
                 <Text style={styles.info}>{user.birthDate}</Text>
-              </View>
-            </View>
-            <View style={styles.settingsContainer}>
-              <Text style={styles.settingsTitle}>الاعدادات</Text>
-              <View style={styles.emergencyRequestsContainer}>
-                <Text>تفعيل الطلبات العاجلة</Text>
-                <CheckBox
-                  onClick={async () => {
-                    console.log("Toggle Emergency Requests");
-                    setActiveEmergency(!activeEmergency);
-                    try {
-                      const res = await EmeregencyCases.enableEmergency();
-                      console.log(
-                        "Emergency requests toggled:",
-                        JSON.stringify(res.data, null, 2)
-                      );
-                    } catch (error) {
-                      console.log(
-                        "Error toggling emergency requests:",
-                        JSON.stringify(error, null, 2)
-                      );
-                    }
-                  }}
-                  isChecked={activeEmergency}
-                  checkBoxColor={Colors.mainColor}
-                  style={{ flexDirection: "row-reverse" }}
-                />
               </View>
             </View>
             <QuickAccess icon="Exit" title="الخروج" />
@@ -153,24 +121,5 @@ const styles = StyleSheet.create({
     fontFamily: font.title.fontFamily,
     fontSize: font.title.fontSize,
     color: Colors.mainColor,
-  },
-  settingsContainer: {
-    width: "100%",
-    marginTop: 8,
-    marginBottom: 20,
-    // alignItems: "flex-end",
-  },
-  settingsTitle: {
-    ...font.Caption,
-    fontSize: font.subtitle.fontSize,
-    color: Colors.SecondaryColor,
-    marginBottom: 10,
-    marginLeft: "auto",
-  },
-  emergencyRequestsContainer: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
   },
 });

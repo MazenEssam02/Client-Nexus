@@ -53,6 +53,7 @@ import QuestionResponseScreen from "./screens/LawyerScreens/QuestionResponseScre
 import QuestionsListPrev from "./screens/LawyerScreens/QuestionsListPrev";
 import LawyerProfileScreen from "./screens/LawyerScreens/ProfileScreen";
 import EmergencyRequests from "./screens/LawyerScreens/EmergencyRequests";
+import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -371,6 +372,31 @@ function AuthenticatedStackClient() {
     </Stack.Navigator>
   );
 }
+function LawyerScheduleStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="MainSchedule"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="EmergencySchedule"
+        component={EmergencyScheduleScreen}
+        options={{ title: "الطلبات العاجلة" }}
+      />
+      <TopTab.Screen
+        name="MainSchedule"
+        component={LawyerScheduleScreen}
+        options={{ title: "مواعيدى" }}
+      />
+    </TopTab.Navigator>
+  );
+}
 function LawyerTabs() {
   return (
     <Tab.Navigator
@@ -401,7 +427,7 @@ function LawyerTabs() {
       />
       <Tab.Screen
         name="Schedule"
-        component={ScheduleStack}
+        component={LawyerScheduleStack}
         options={{
           title: "مواعيدى",
           tabBarLabel: "مواعيدى",

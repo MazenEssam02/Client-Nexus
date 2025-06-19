@@ -20,7 +20,7 @@ import ScheduleLawyerCard from "../../components/ScheduleCard/ScheduleLawyerCard
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import timeZoneConverter from "../../utils/timeZoneConverter";
 
-const weekday = [
+export const weekday = [
   "الاحد",
   "الاثنين",
   "الثلاثاء",
@@ -29,6 +29,19 @@ const weekday = [
   "الجمعة",
   "السبت",
 ];
+
+export const appointmentStatus = {
+  80: "تحت المراجعة",
+  73: "قيد التنفيذ",
+  68: "تم",
+  67: "ملغي",
+};
+
+export const appointmentType = {
+  80: "هاتف",
+  73: "في المكتب",
+  79: "عبر الإنترنت",
+};
 
 export default function AllLawyerAppointments() {
   const { data, isLoading, isError, error } = useQuery({
@@ -81,11 +94,14 @@ export default function AllLawyerAppointments() {
                 weekday[new Date(item.date).getDay()]
               }
               desc={
-                item.slotType === 80
-                  ? "هاتف"
-                  : item.slotType === 73
-                  ? "في المكتب"
-                  : "عبر الإنترنت"
+                "الحالة: " +
+                (appointmentStatus[item.status] ??
+                  (new Date(item.date) > new Date()
+                    ? appointmentStatus[73]
+                    : appointmentStatus[68])) +
+                "\n" +
+                "النوع: " +
+                (appointmentType[item.slotType] ?? "مجهول")
               }
               showImage
             />

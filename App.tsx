@@ -398,6 +398,31 @@ function LawyerScheduleStack() {
     </TopTab.Navigator>
   );
 }
+function LawyerQAStack() {
+  return (
+    <TopTab.Navigator
+      id={undefined}
+      initialRouteName="LawyerQA"
+      screenOptions={() => ({
+        tabBarStyle: { backgroundColor: Colors.mainColor },
+        tabBarActiveTintColor: "white",
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        tabBarLabelStyle: [font.Caption],
+      })}
+    >
+      <TopTab.Screen
+        name="LawyerQA"
+        component={QuestionsList}
+        options={{ title: "الأسئلة الحالية" }}
+      />
+      <TopTab.Screen
+        name="LawyerQAPrev"
+        component={QuestionsListPrev}
+        options={{ title: "الأسئلة السابقة" }}
+      />
+    </TopTab.Navigator>
+  );
+}
 function LawyerTabs() {
   return (
     <Tab.Navigator
@@ -497,12 +522,7 @@ function AuthenticatedStackLawyer() {
       />
       <Stack.Screen
         name="LawyerQA"
-        component={QuestionsList}
-        options={{ title: "الاسئلة القانونية" }}
-      />
-      <Stack.Screen
-        name="LawyerQAPrev"
-        component={QuestionsListPrev}
+        component={LawyerQAStack}
         options={{ title: "الاسئلة القانونية" }}
       />
       <Stack.Screen

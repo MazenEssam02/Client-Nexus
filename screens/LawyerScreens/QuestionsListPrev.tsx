@@ -54,12 +54,6 @@ export default function QuestionsListPrev({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopNav
-        leftText="الأسئلة السابقة"
-        rightText="الأسئلة الحالية"
-        activeTab="left"
-        onRightTabPress={() => navigation.navigate("LawyerQA" as never)}
-      />
       <FlatList
         data={QuestionsList}
         keyExtractor={(item) => item.id}

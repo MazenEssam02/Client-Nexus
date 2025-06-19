@@ -411,14 +411,14 @@ function LawyerQAStack() {
       })}
     >
       <TopTab.Screen
-        name="LawyerQA"
-        component={QuestionsList}
-        options={{ title: "الأسئلة الحالية" }}
-      />
-      <TopTab.Screen
         name="LawyerQAPrev"
         component={QuestionsListPrev}
         options={{ title: "الأسئلة السابقة" }}
+      />
+      <TopTab.Screen
+        name="LawyerQA"
+        component={QuestionsList}
+        options={{ title: "الأسئلة الحالية" }}
       />
     </TopTab.Navigator>
   );

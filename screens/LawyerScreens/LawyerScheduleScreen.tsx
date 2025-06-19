@@ -12,7 +12,7 @@ import {
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useAuthStore } from "../../store/auth";
-import { apiClient, Slots } from "../../API/https";
+import { apiClient, Client, ServiceProvider, Slots } from "../../API/https";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
@@ -88,12 +88,33 @@ export default function LawyerScheduleScreen() {
             startDate: firstDayOfMonth.toISOString(),
             endDate: lastDayOfMonth.toISOString(),
           }),
+        refetchInterval: 10000, // Refetch every 10 seconds
+      },
+      {
+        queryKey: ["appointments", firstDayOfMonth],
+        queryFn: async () => {
+          const appointmentsRes = await ServiceProvider.getAppointments();
+          const appointments = appointmentsRes.data.filter(
+            (item) => item.slotDate
+          );
+          const fullItems = await Promise.all(
+            appointments.map(async (item) => {
+              const client = await Client.get(item.clientId);
+              return {
+                ...item,
+                client: client.data.data,
+              };
+            })
+          );
+          return fullItems;
+        },
       },
     ],
   });
   const isLoading = results.some((result) => result.isLoading);
   const isError = results.some((result) => result.isError);
-  const [slotsData] = results;
+  const [slotsData, appointmentsData] = results;
+  console.log(JSON.stringify(appointmentsData.data, null, 2));
   const [selectedSlot, setSelectedSlot] = useState(null);
   const slots = slotsData.data;
   const todaySlots = slots?.filter((slot) => {
@@ -115,15 +136,6 @@ export default function LawyerScheduleScreen() {
   }, {});
   const [showAddSlotModal, setShowAddSlotModal] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
-
-  console.log(
-    "Fetched slots:",
-    slots,
-    "for date:",
-    firstDayOfMonth.toISOString(),
-    "to",
-    lastDayOfMonth.toISOString()
-  );
 
   if (isError) {
     return <IsError error={results.find((result) => result.isError)?.error} />;

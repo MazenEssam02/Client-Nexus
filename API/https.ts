@@ -8,6 +8,8 @@ export const apiClient = axios.create({
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
+  getAppointments: () =>
+    apiClient.get("api/appointments/provider"),
   getFeedbacks: (id) =>
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
@@ -106,7 +108,6 @@ export const Slots = {
       const res = await apiClient.get(
         `/api/slots?serviceProviderId=${serviceProviderId}&startDate=${startDate}&endDate=${endDate}&type=${slotTypes[slotType]}`
       );
-      console.log("Response from get slots:", res.data);
       if (res.data && res.data) {
         allSlots.push(...res.data);
       }

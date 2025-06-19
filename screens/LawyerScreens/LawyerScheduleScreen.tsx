@@ -20,6 +20,7 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import { MainButton } from "../../components/Buttons/MainButton";
 import AddSlotModal from "../../components/AddSlotModal/AddSlotModal";
 import timeZoneConverter from "../../utils/timeZoneConverter";
+import IsLoading from "../../components/IsLoading/IsLoading";
 
 LocaleConfig.locales["ar"] = {
   monthNames: [
@@ -189,7 +190,7 @@ export default function LawyerScheduleScreen({ navigation }) {
           المواعيد المتاحة
         </Text>
         {isLoading ? (
-          <LoadingSpinner backgroundColor="white" />
+          <IsLoading />
         ) : todaySlots.length > 0 ? (
           <View
             style={{

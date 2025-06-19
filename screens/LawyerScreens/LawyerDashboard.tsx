@@ -80,7 +80,7 @@ export default function LawyerDashboard({ navigation }) {
           />
           <MainLogo />
         </View>
-        <Pressable onPress={() => console.log("Profile Pressed")}>
+        {/* <Pressable onPress={() => console.log("Profile Pressed")}>
           <Text
             style={{
               ...font.subtitle,
@@ -95,7 +95,7 @@ export default function LawyerDashboard({ navigation }) {
           >
             يرجي العلم ان حسابك مازال تحت المراجعة
           </Text>
-        </Pressable>
+        </Pressable> */}
         <View style={styles.TopContainer}>
           <View style={styles.userInfoContainer}>
             <Text style={styles.nameText}>

@@ -58,7 +58,7 @@ import SuccessScreen from "./screens/SuccessScreen";
 
 import LawyerScheduleScreen from "./screens/LawyerScreens/LawyerScheduleScreen";
 import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDetails";
-
+import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -558,6 +558,11 @@ function AuthenticatedStackLawyer() {
         name="Notification"
         component={NotificationScreen}
         options={{ title: "التنبيهات" }}
+      />
+      <Stack.Screen
+        name="Edit"
+        component={LawyerEditScreen}
+        options={{ title: "تعديل الملف الشخصى" }}
       />
       <Stack.Screen
         name="LawyerRatingScreen"

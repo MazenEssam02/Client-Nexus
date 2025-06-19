@@ -16,7 +16,7 @@ import { useAuthStore } from "../../store/auth";
 import InfoArea from "../../components/InfoProfile/InfoArea";
 import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
 
-export default function LawyerProfileScreen() {
+export default function LawyerProfileScreen({ navigation }) {
   const { user } = useAuthStore();
 
   return (
@@ -35,7 +35,7 @@ export default function LawyerProfileScreen() {
             <View style={styles.optionContainer}>
               <Pressable
                 style={({ pressed }) => [pressed && styles.pressed]}
-                onPress={() => console.log("Edit Profile")}
+                onPress={() => navigation.navigate("Edit")}
               >
                 <Text style={styles.editText}>تعديل</Text>
               </Pressable>
@@ -45,7 +45,7 @@ export default function LawyerProfileScreen() {
               onImageChange={() => {}}
               currentImage={user.mainImage}
             />
-            <View>
+            <View style={{ marginVertical: 10 }}>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>الاسم</Text>
                 <Text style={styles.info}>
@@ -58,11 +58,15 @@ export default function LawyerProfileScreen() {
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>التليفون</Text>
-                <Text style={styles.info}>{user.phoneNumber}</Text>
+                <Text style={styles.info}>
+                  {user.phoneNumber || "01093922530"}
+                </Text>
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>تاريخ الميلاد</Text>
-                <Text style={styles.info}>{user.birthDate}</Text>
+                <Text style={styles.info}>
+                  {user.birthDate || "01/01/2000"}
+                </Text>
               </View>
             </View>
             <QuickAccess icon="Exit" title="الخروج" />

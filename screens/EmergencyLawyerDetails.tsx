@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Text,
-  Pressable,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Text, Pressable } from "react-native";
 import { Colors } from "../constants/Color";
 import LawyerCard from "../components/LawyerCard/LawyerCard";
 import LawyerSummarylist from "../components/LawyerSummarylist/LawyerSummarylist";
@@ -22,15 +16,17 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
   let phone = null;
   let price = 0;
   let id = 0;
+  let status = null;
   let title = "";
   let description = "";
   if (route?.params) {
-    ({ price, id, title, description } = route.params);
+    ({ price, id, title, description, status } = route.params);
   } else {
     const { emergencyDetails } = useEmergencyStore.getState();
-    console.log("emergencyDetails", emergencyDetails);
+    // console.log("emergencyDetails", emergencyDetails);
     ({ title, description, price, phone, id } = emergencyDetails);
   }
+
   // const handleBack = () => {
   //   Alert.alert(
   //     "الرجوع",
@@ -97,7 +93,13 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
         showsVerticalScrollIndicator={false}
       >
         <EmergencyDetailsBlock title={title} description={description} />
-        {<EmergencyCallBlock price={price} lawyerPhone={phone} />}
+        {
+          <EmergencyCallBlock
+            price={price}
+            lawyerPhone={phone}
+            status={status}
+          />
+        }
         <LawyerCard
           name={
             providerDetailsData.firstName + " " + providerDetailsData.lastName

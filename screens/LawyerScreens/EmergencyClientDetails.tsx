@@ -81,7 +81,7 @@ export default function EmeregencyClientDetails({ route, navigation }) {
         {
           <EmergencyCallBlock
             price={price}
-            lawyerPhone={service.phone ?? null}
+            lawyerPhone={clientDetailsData.phoneNumber ?? null}
           />
         }
         <PreviewCard

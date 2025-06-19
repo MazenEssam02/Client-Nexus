@@ -36,7 +36,7 @@ const Questions = () => {
     return <IsError error={error} />;
   }
   if (data.length === 0) {
-    return <NoResponse text="مفيش اسألة خلصني" />;
+    return <NoResponse text="لا يوجد اسئلة " />;
   }
   if (data.length > 0) {
     return (
@@ -44,6 +44,7 @@ const Questions = () => {
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
+          inverted
           renderItem={({ item }) => <QuestionCard {...item} />}
           contentContainerStyle={styles.list}
         />

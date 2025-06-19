@@ -46,6 +46,7 @@ export default function EmergencyRequests({ navigation }) {
   const [emergencyRequestsResponse, curEmegencies] = results;
   const emergencyRequests = emergencyRequestsResponse?.data?.data || [];
   const [selectedRequest, setSelectedRequest] = useState(null);
+  // console.log(emergencyRequests);
 
   if (isLoading || loading) {
     return <LoadingSpinner />;
@@ -58,28 +59,28 @@ export default function EmergencyRequests({ navigation }) {
     );
   }
 
-  const hasOngoingEmergency = (curEmegencies?.data.data).some(
-    (item) => item.status === "I"
-  );
-  if (hasOngoingEmergency) {
-    (navigation as any).navigate("LawyerTabs", {
-      screen: "Schedule",
-      params: {
-        screen: "EmergencySchedule",
-      },
-    });
-    return null;
-  }
+  // const hasOngoingEmergency = (curEmegencies?.data.data).some(
+  //   (item) => item.status === "I"
+  // );
+  // if (hasOngoingEmergency) {
+  //   (navigation as any).navigate("LawyerTabs", {
+  //     screen: "Schedule",
+  //     params: {
+  //       screen: "EmergencySchedule",
+  //     },
+  //   });
+  //   return null;
+  // }
 
   if (emergencyRequests.length === 0) {
-    return <NoResponse text="لا توجد طلبات طوارئ حالياً" />;
+    return <NoResponse text="لا توجد طلبات عاجلة حالياً" />;
   }
-
+  console.log(emergencyRequests);
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={emergencyRequests}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.serviceId}
         renderItem={({ item }) => (
           <PreviewCard
             key={item.serviceId}

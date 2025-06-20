@@ -9,7 +9,9 @@ export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
   getAppointments: () =>
-    apiClient.get("api/appointments/provider"),
+    apiClient.get("api/appointments/provider?offset=0&limit=100"),
+  deleteAppointment: (id) =>
+    apiClient.delete(`/api/appointments/${id}`),
   getFeedbacks: (id) =>
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>

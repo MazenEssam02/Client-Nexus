@@ -20,6 +20,12 @@ import { Calendar, LocaleConfig } from "react-native-calendars";
 import { MainButton } from "../../components/Buttons/MainButton";
 import AddSlotModal from "../../components/AddSlotModal/AddSlotModal";
 import timeZoneConverter from "../../utils/timeZoneConverter";
+import {
+  appointmentStatus,
+  appointmentType,
+  weekday,
+} from "./AllLawyerAppointments";
+import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import IsLoading from "../../components/IsLoading/IsLoading";
 
 LocaleConfig.locales["ar"] = {
@@ -93,16 +99,16 @@ export default function LawyerScheduleScreen({ navigation }) {
         refetchInterval: 10000, // Refetch every 10 seconds
       },
       {
-        queryKey: ["appointments", firstDayOfMonth],
+        queryKey: ["appointments"],
         queryFn: async () => {
           const appointmentsRes = await ServiceProvider.getAppointments();
-          const appointments = appointmentsRes.data.filter(
-            (item) => item.slotDate
-          );
+          const appointments = appointmentsRes.data;
           const fullItems = await Promise.all(
             appointments.map(async (item) => {
               const client = await Client.get(item.clientId);
+              const slot = await Slots.getById(item.slotId);
               return {
+                ...slot.data,
                 ...item,
                 client: client.data.data,
               };
@@ -116,10 +122,12 @@ export default function LawyerScheduleScreen({ navigation }) {
   const isLoading = results.some((result) => result.isLoading);
   const isError = results.some((result) => result.isError);
   const [slotsData, appointmentsData] = results;
-  console.log(JSON.stringify(appointmentsData.data, null, 2));
+  console.log(JSON.stringify(appointmentsData?.data ?? "", null, 2));
   const [selectedSlot, setSelectedSlot] = useState(null);
   const slots = slotsData.data;
-  const todaySlots = slots?.filter((slot) => {
+  const allItems = slots &&
+    appointmentsData.data && [...slots, ...appointmentsData.data];
+  const todaySlots = allItems?.filter((slot) => {
     const slotDate = new Date(slot.date);
     return (
       slotDate.getFullYear() === new Date(selectedDate).getFullYear() &&
@@ -127,7 +135,7 @@ export default function LawyerScheduleScreen({ navigation }) {
       slotDate.getDate() === new Date(selectedDate).getDate()
     );
   });
-  const daysHaveSlots = slots?.reduce((acc, slot) => {
+  const daysHaveSlots = allItems?.reduce((acc, slot) => {
     const slotDate = new Date(slot.date).toISOString().split("T")[0];
     acc[slotDate] = {
       selected: true,
@@ -159,7 +167,6 @@ export default function LawyerScheduleScreen({ navigation }) {
           borderWidth: 1,
           borderColor: Colors.mainColor,
         }}
-        minDate={new Date().toISOString().split("T")[0]}
         theme={{
           arrowColor: Colors.mainColor,
           todayTextColor: Colors.mainColor,
@@ -233,7 +240,7 @@ export default function LawyerScheduleScreen({ navigation }) {
                     : "عبر الإنترنت"}
                 </Text>
                 <Text style={{ color: "white" }}>
-                  {slot.status === 65 ? "متاح" : "غير متاح"}
+                  {!("client" in slot) ? "متاح" : "محجوز"}
                 </Text>
               </Pressable>
             ))}
@@ -250,6 +257,7 @@ export default function LawyerScheduleScreen({ navigation }) {
         >
           <View style={{ flex: 1 }}>
             <MainButton
+              disabled={new Date(selectedDate) < new Date()}
               title="إضافة موعد"
               onPress={() => setShowAddSlotModal(true)}
             />
@@ -258,14 +266,25 @@ export default function LawyerScheduleScreen({ navigation }) {
             <MainButton
               title="إزالة موعد"
               loading={isLoadingDelete}
-              disabled={!selectedSlot || isLoadingDelete}
+              disabled={
+                !selectedSlot ||
+                isLoadingDelete ||
+                new Date(selectedDate) < new Date()
+              }
               onPress={async () => {
                 setIsLoadingDelete(true);
                 try {
+                  if ("client" in selectedSlot) {
+                    Alert.alert("يرجي التواصل مع مسؤول لإلغاء هذا الحجز");
+                    return;
+                  }
                   await Slots.delete(selectedSlot.id);
                   setSelectedSlot(null);
                   await queryClient.invalidateQueries({
                     queryKey: ["slots", firstDayOfMonth],
+                  });
+                  await queryClient.invalidateQueries({
+                    queryKey: ["appointments"],
                   });
                 } catch (apiError: any) {
                   console.error("Error deleting slot:", apiError);
@@ -281,6 +300,40 @@ export default function LawyerScheduleScreen({ navigation }) {
             />
           </View>
         </View>
+        {selectedSlot && "client" in selectedSlot && (
+          <View>
+            <PreviewCard
+              name={
+                selectedSlot.client.firstName +
+                " " +
+                selectedSlot.client.lastName
+              }
+              img={selectedSlot.client.mainImage}
+              title={
+                timeZoneConverter(selectedSlot.date) +
+                "  " +
+                new Date(selectedSlot.date).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }) +
+                "\n" +
+                weekday[new Date(selectedSlot.date).getDay()]
+              }
+              desc={
+                "الحالة: " +
+                (appointmentStatus[selectedSlot.status] ??
+                  (new Date(selectedSlot.date) > new Date()
+                    ? appointmentStatus[73]
+                    : appointmentStatus[68])) +
+                "\n" +
+                "النوع: " +
+                (appointmentType[selectedSlot.slotType] ?? "مجهول")
+              }
+              showImage
+            />
+          </View>
+        )}
         <AddSlotModal
           visible={showAddSlotModal}
           date={new Date(selectedDate)}

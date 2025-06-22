@@ -16,8 +16,14 @@ export default function AskQuestionBlock({ navigation }) {
           title="اسأل الآن"
           onPress={() => {
             navigation.navigate("QuickAccess", {
-              screen: "Questions",
+              screen: "Profile",
             });
+            // Then push Questions after a short delay
+            setTimeout(() => {
+              navigation.navigate("QuickAccess", {
+                screen: "Questions",
+              });
+            }, 10);
           }}
         />
       </View>
@@ -49,7 +55,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignSelf: "center",
-    height: 26,
-    width: 80,
+    height: 32,
+    width: 85,
   },
 });

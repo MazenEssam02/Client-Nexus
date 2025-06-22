@@ -35,7 +35,9 @@ export default function QuickButton({
         <LogoPicker />
       </View>
 
-      <Text style={[font.Caption, styles.titleText]}>{title}</Text>
+      <Text numberOfLines={1} style={[font.Caption, styles.titleText]}>
+        {title}
+      </Text>
     </Pressable>
   );
 }

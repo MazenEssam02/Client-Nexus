@@ -11,7 +11,7 @@ import ScheduleLawyerCard from "../components/ScheduleCard/ScheduleLawyerCard";
 import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import { useQuery } from "@tanstack/react-query";
-import { Client } from "../API/https";
+import { Client, slotTypes } from "../API/https";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../components/IsError/IsError";
 import timeZoneConverter from "../utils/timeZoneConverter";
@@ -36,8 +36,13 @@ export default function ScheduleScreen() {
       time: "",
       type: "",
       image: "",
+      isEnded: false,
+      slotType: "",
     },
   ]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const [refreshing, setRefreshing] = useState(false);
   const {
     data: Appointments,
@@ -59,6 +64,7 @@ export default function ScheduleScreen() {
     await refetch();
     setRefreshing(false);
   }, []);
+  
   useEffect(() => {
     if (Appointments?.data) {
       setTransactions(
@@ -77,9 +83,12 @@ export default function ScheduleScreen() {
               ? "مقابلة اونلاين"
               : "مقابلة هاتفية",
           mainImage: Appointment.serviceProviderMainImage,
+          status: Appointment.status,
+          isEnded:
+            new Date(Appointment.slotDate) < today || Appointment.status === 68,
         }))
       );
-      console.log(transactions);
+      // console.log(transactions);
     }
   }, [Appointments]);
   if (isLoading) {

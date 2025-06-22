@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 import { ActivityIndicator, Text } from "react-native";
 import { Colors } from "./constants/Color";
@@ -40,7 +41,6 @@ import ApplicationsScreen from "./screens/AdminPanel/ApplicationsScreen";
 import LawyerRequestScreen from "./screens/AdminPanel/LawyerRequestScreen";
 import ReportListScreen from "./screens/AdminPanel/ReportListScreen";
 import ReportDetailsScreen from "./screens/AdminPanel/ReportDetailScreen";
-import PaymentHistoryScreen from "./screens/PaymentHistoryScreen";
 import Article from "./screens/AdminPanel/Article";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { QueryClient } from "@tanstack/react-query";
@@ -292,20 +292,19 @@ function UserQuickAccess() {
         component={QuestionDetails}
         options={{ title: "تفاصيل السؤال" }}
       />
-      <Stack.Screen
-        name="Payment History"
-        component={PaymentHistoryScreen}
-        options={{ title: "معاملاتي" }}
-      />
+   
     </Stack.Navigator>
   );
 }
+
 function UserTabs() {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       id={undefined}
       initialRouteName="HomeStack"
       screenOptions={() => ({
+        paddingBottom: insets.bottom,
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
         headerTitleAlign: "center",

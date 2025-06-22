@@ -4,6 +4,10 @@ import {
   Cairo_400Regular,
   useFonts,
 } from "@expo-google-fonts/cairo";
+import { Dimensions } from "react-native";
+const { width } = Dimensions.get("window");
+
+const scaleFont = (size: number) => (width / 375) * size;
 
 export function useLoadFonts() {
   const [fontsLoaded] = useFonts({
@@ -18,26 +22,26 @@ export function useLoadFonts() {
 export const font = {
   headline: {
     fontFamily: "Cairo_600SemiBold",
-    fontSize: 18,
+    fontSize: scaleFont(18),
   },
   title: {
     fontFamily: "Cairo_600SemiBold",
-    fontSize: 14,
+    fontSize: scaleFont(14),
   },
   subtitle: {
     fontFamily: "Cairo_400Regular",
-    fontSize: 12,
+    fontSize: scaleFont(12),
   },
   body: {
     fontFamily: "Cairo_400Regular",
-    fontSize: 14,
+    fontSize: scaleFont(14),
   },
   Button: {
     fontFamily: "Cairo_700Bold",
-    fontSize: 14,
+    fontSize: scaleFont(14),
   },
   Caption: {
     fontFamily: "Cairo_700Bold",
-    fontSize: 12,
+    fontSize: scaleFont(12),
   },
 };

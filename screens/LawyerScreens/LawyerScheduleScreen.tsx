@@ -27,6 +27,7 @@ import {
 } from "./AllLawyerAppointments";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import IsLoading from "../../components/IsLoading/IsLoading";
+import ArCalendar from "../../components/ArCalendar/ArCalendar";
 
 LocaleConfig.locales["ar"] = {
   monthNames: [
@@ -136,7 +137,7 @@ export default function LawyerScheduleScreen({ navigation }) {
     );
   });
   const daysHaveSlots = allItems?.reduce((acc, slot) => {
-    const slotDate = new Date(slot.date).toISOString().split("T")[0];
+    const slotDate = slot.date.split("T")[0];
     acc[slotDate] = {
       selected: true,
       selectedColor: Colors.SecondaryColorLight,
@@ -144,6 +145,7 @@ export default function LawyerScheduleScreen({ navigation }) {
     };
     return acc;
   }, {});
+
   const [showAddSlotModal, setShowAddSlotModal] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
@@ -157,7 +159,7 @@ export default function LawyerScheduleScreen({ navigation }) {
       bounces={false}
       showsVerticalScrollIndicator={false}
     >
-      <Calendar
+      <ArCalendar
         onDayPress={(day) => {
           console.log("Selected day:", day.dateString);
           setSelectedSlot(null); // Reset selected slot when date changes
@@ -171,6 +173,7 @@ export default function LawyerScheduleScreen({ navigation }) {
           arrowColor: Colors.mainColor,
           todayTextColor: Colors.mainColor,
         }}
+        firstDay={6}
         markedDates={{
           ...daysHaveSlots,
           [selectedDate]: {

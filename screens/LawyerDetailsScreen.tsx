@@ -103,7 +103,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
           rate={lawyer.rate}
           speciality={lawyer.main_Specialization}
           gender={lawyer.gender}
-          address={lawyer.city}
+          address={lawyer.addresses[0].cityName}
           imageURL={lawyer.mainImage}
           style={styles.card}
           isLawyerDetailsCard={true}

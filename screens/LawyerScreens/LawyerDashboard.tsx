@@ -29,6 +29,7 @@ import { QuestionCardLawyer } from "../../components/PreviewCard/QuestionCardLaw
 export default function LawyerDashboard({ navigation }) {
   usePushNotifications(navigation);
   const { user } = useAuthStore();
+  console.log(user.id);
   const results = useQueries({
     queries: [
       {
@@ -51,12 +52,15 @@ export default function LawyerDashboard({ navigation }) {
           );
           return fullItems;
         },
+        enabled: !!user?.id, // only run when user.id exists
       },
     ],
   });
   const isLoading = results.some((result) => result.isLoading);
+  console.log(isLoading);
   const isError = results.some((result) => result.isError);
   const [lawyerRes, providerFeedbacks, providerQA] = results;
+  console.log(LawyerQA);
   if (isLoading) {
     return <LoadingSpinner />;
   }

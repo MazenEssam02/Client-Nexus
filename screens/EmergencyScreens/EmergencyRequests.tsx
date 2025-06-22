@@ -53,6 +53,7 @@ export default function EmergencyRequests({ navigation }) {
       gestureEnabled: false,
       headerLeft: () => (
         <Ionicons
+          style={{ marginLeft: 10 }}
           name="close-outline"
           size={30}
           color="white"

@@ -62,15 +62,11 @@ export default function LawyerProfileScreen({ navigation }) {
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>التليفون</Text>
-                <Text style={styles.info}>
-                  {user.phoneNumber || "01093922530"}
-                </Text>
+                <Text style={styles.info}>{user.phoneNumber}</Text>
               </View>
               <View style={styles.DataContainer}>
                 <Text style={styles.title}>تاريخ الميلاد</Text>
-                <Text style={styles.info}>
-                  {user.birthDate || "01/01/2000"}
-                </Text>
+                <Text style={styles.info}>{user.birthDate}</Text>
               </View>
             </View>
             {/* join subscription button */}

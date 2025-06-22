@@ -119,7 +119,7 @@ export const useAuthStore = create<AuthStore>()(persist(
             birthDate: string;
             firstName: string;
             lastName: string;
-            phoneNumber: string;
+            phonenumber: string;
             id: number;
             mainImage: string | null;
           }
@@ -130,7 +130,7 @@ export const useAuthStore = create<AuthStore>()(persist(
           firstName: userData.firstName,
           lastName: userData.lastName,
           birthDate: userData.birthDate ?? "",
-          phoneNumber: userData.phoneNumber ?? "",
+          phoneNumber: userData.phonenumber ?? "",
           email: userEmail,
           type: "lawyer",
           authToken: token,
@@ -219,7 +219,7 @@ export const useAuthStore = create<AuthStore>()(persist(
             birthDate: string;
             firstName: string;
             lastName: string;
-            phoneNumber: string;
+            phonenumber: string;
             id: number;
             mainImage: string | null;
           }
@@ -229,7 +229,7 @@ export const useAuthStore = create<AuthStore>()(persist(
             firstName,
             lastName,
             birthDate,
-            phoneNumber,
+            phoneNumber: userData.phonenumber,
             email: userEmail,
             type: "lawyer",
             authToken: token,
@@ -313,7 +313,7 @@ export const useAuthStore = create<AuthStore>()(persist(
     }
     catch (error) {
       console.log(JSON.stringify(error, null, 2));
-      set({ error: "خطأ في التسجيل", isLoading: false });
+      set({ error: "خطأ في الاايميل او كلمة المرور", isLoading: false });
       throw error;
     }
   },
@@ -349,7 +349,8 @@ export const useAuthStore = create<AuthStore>()(persist(
               if (state.user.type === "client") {
                 await apiClient.get("api/client");
               } else {
-                await apiClient.get("api/ServiceProvider");
+                const res = await apiClient.get("api/ServiceProvider");
+                console.log("ServiceProvider data:", res.data);
               }
             } catch (error) {
               console.log(JSON.stringify(error, null, 2));

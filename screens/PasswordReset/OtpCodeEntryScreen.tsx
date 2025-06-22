@@ -59,7 +59,7 @@ export const OtpCodeEntryScreen = ({ route }) => {
 
         {/* Heading Text */}
         <Text style={styles.heading}>
-          ادخل الرمز الذي قمنا بإرساله الي رقم الهاتف المسجل لدينا
+          ادخل الرمز الذي قمنا بإرساله الي البريد الإلكتروني المسجل لدينا
         </Text>
 
         {/* Code Input Fields */}

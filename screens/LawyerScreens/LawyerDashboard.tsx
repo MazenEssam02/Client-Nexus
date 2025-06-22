@@ -14,7 +14,7 @@ import MainLogo from "../../components/Icons/MainLogo";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Client, ServiceProvider } from "../../API/https";
+import { Client, ServiceProvider, Slots } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
@@ -54,13 +54,24 @@ export default function LawyerDashboard({ navigation }) {
         },
         enabled: !!user?.id, // only run when user.id exists
       },
+      {
+        queryKey: ["slotsOfWeek"],
+        queryFn: () =>
+          Slots.get({
+            serviceProviderId: user.id,
+            startDate: new Date().toISOString().split("T"),
+            endDate: new Date(new Date().setDate(new Date().getDate() + 7))
+              .toISOString()
+              .split("T"),
+          }),
+        refetchInterval: 10000, // Refetch every 10 seconds
+      },
     ],
   });
   const isLoading = results.some((result) => result.isLoading);
   console.log(isLoading);
   const isError = results.some((result) => result.isError);
-  const [lawyerRes, providerFeedbacks, providerQA] = results;
-  console.log(LawyerQA);
+  const [lawyerRes, providerFeedbacks, providerQA, slotsOfWeek] = results;
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -68,6 +79,7 @@ export default function LawyerDashboard({ navigation }) {
     return <IsError error={results.find((result) => result.isError)?.error} />;
   }
   const lawyer = lawyerRes.data.data.data;
+  console.log("LawyerDashboard", slotsOfWeek.data);
 
   return (
     <ScreensWrapper>
@@ -84,22 +96,51 @@ export default function LawyerDashboard({ navigation }) {
           />
           <MainLogo />
         </View>
-        {/* <Pressable onPress={() => console.log("Profile Pressed")}>
-          <Text
-            style={{
-              ...font.subtitle,
-              backgroundColor: "white",
-              padding: 4,
-              textAlign: "right",
-              borderRadius: 5,
-              borderColor: Colors.mainColor,
-              borderWidth: 1,
-              marginBottom: 10,
+        {!lawyer.isApproved && (
+          <Pressable onPress={() => {}}>
+            <Text
+              style={{
+                ...font.subtitle,
+                backgroundColor: "white",
+                padding: 4,
+                textAlign: "right",
+                borderRadius: 5,
+                borderColor: Colors.mainColor,
+                borderWidth: 1,
+                marginBottom: 10,
+              }}
+            >
+              يرجي العلم ان حسابك مازال تحت المراجعة
+            </Text>
+          </Pressable>
+        )}
+        {slotsOfWeek.data.length === 0 && (
+          <Pressable
+            onPress={() => {
+              navigation.navigate("LawyerTabs" as never, {
+                screen: "Schedule",
+                params: {
+                  screen: "MainSchedule",
+                },
+              });
             }}
           >
-            يرجي العلم ان حسابك مازال تحت المراجعة
-          </Text>
-        </Pressable> */}
+            <Text
+              style={{
+                ...font.subtitle,
+                backgroundColor: "white",
+                padding: 4,
+                textAlign: "right",
+                borderRadius: 5,
+                borderColor: Colors.mainColor,
+                borderWidth: 1,
+                marginBottom: 10,
+              }}
+            >
+              يرجى العلم انك لم تقم باضافة مواعيد متاحة بعد, اضف مواعيدك الان
+            </Text>
+          </Pressable>
+        )}
         <View style={styles.TopContainer}>
           <View style={styles.userInfoContainer}>
             <Text style={styles.nameText}>
@@ -159,37 +200,51 @@ export default function LawyerDashboard({ navigation }) {
             >
               الاسئلة المجابة
             </Text>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("LawyerQA" as never, {
-                  screen: "LawyerQAPrev",
-                });
-              }}
-            >
-              <Text
-                style={{
-                  ...font.subtitle,
-                  color: Colors.mainColor,
-                  textAlign: "right",
+            {providerQA.data.length > 3 && (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("LawyerQA" as never, {
+                    screen: "LawyerQAPrev",
+                  });
                 }}
               >
-                عرض الكل
-              </Text>
-            </Pressable>
+                <Text
+                  style={{
+                    ...font.subtitle,
+                    color: Colors.mainColor,
+                    textAlign: "right",
+                  }}
+                >
+                  عرض الكل
+                </Text>
+              </Pressable>
+            )}
           </View>
-          {providerQA?.data.map((item, index) => (
-            <View key={item.id}>
-              <QuestionCardLawyer {...item} />
-              <View
-                style={{
-                  height: 1,
-                  width: "100%",
-                  backgroundColor: Colors.gray700,
-                  opacity: index === providerQA.data.length - 1 ? 0 : 0.2,
-                }}
-              />
-            </View>
-          ))}
+          {providerQA.data.length ? (
+            providerQA?.data.map((item, index) => (
+              <View key={item.id}>
+                <QuestionCardLawyer {...item} />
+                <View
+                  style={{
+                    height: 1,
+                    width: "100%",
+                    backgroundColor: Colors.gray700,
+                    opacity: index === providerQA.data.length - 1 ? 0 : 0.2,
+                  }}
+                />
+              </View>
+            ))
+          ) : (
+            <Text
+              style={{
+                textAlign: "center",
+                marginVertical: 4,
+                ...font.title,
+              }}
+            >
+              لا توجد أسئلة مجابة
+            </Text>
+          )}
         </View>
       </ScrollView>
     </ScreensWrapper>

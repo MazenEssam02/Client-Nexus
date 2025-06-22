@@ -25,7 +25,7 @@ export default function QuestionsListPrev({ navigation }) {
   const {
     user: { id },
   } = useAuthStore();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["AnsweredQuestions"],
     queryFn: async () => {
       const response = await ServiceProvider.getQA(id);
@@ -49,7 +49,7 @@ export default function QuestionsListPrev({ navigation }) {
   }
 
   if (QuestionsList.length === 0) {
-    return <NoResponse text="مفيش اسألة خلصني" />;
+    return <NoResponse text="لا توجد اسئلة مجابة حاليا" />;
   }
 
   return (
@@ -59,6 +59,8 @@ export default function QuestionsListPrev({ navigation }) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <QuestionCardLawyer {...item} />}
         contentContainerStyle={styles.list}
+        refreshing={isLoading}
+        onRefresh={refetch}
       />
     </SafeAreaView>
   );

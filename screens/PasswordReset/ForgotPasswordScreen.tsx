@@ -46,7 +46,7 @@ export const ForgotPasswordScreen = () => {
 
         {/* Heading Text */}
         <Text style={styles.heading}>
-          لا تقلق ، ما عليك سوى كتابة رقم هاتفك وسنرسل لك رمز التحقق
+          لا تقلق ، ما عليك سوى كتابة البريد الإلكتروني وسنرسل لك رمز التحقق
         </Text>
 
         {/* Phone Input */}

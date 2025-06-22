@@ -38,6 +38,7 @@ export default function MapScreen({ navigation }) {
         <Ionicons
           name="save"
           size={24}
+          style={{ marginRight: 10 }}
           color={"white"}
           onPress={savePickedLocationHandler}
         />
@@ -69,11 +70,7 @@ export default function MapScreen({ navigation }) {
   }, []);
 
   if (loading) {
-    return (
-     
-        <LoadingSpinner />
-      
-    );
+    return <LoadingSpinner />;
   }
   if (errorMsg) {
     return (

@@ -51,7 +51,12 @@ export default function EmeregencyLawyerDetails({ route, navigation }) {
       gestureEnabled: false,
       headerLeft: () => (
         <Pressable onPress={() => navigation.popToTop()}>
-          <Ionicons name="close-outline" size={30} color="white" />
+          <Ionicons
+            style={{ marginLeft: 10 }}
+            name="close-outline"
+            size={30}
+            color="white"
+          />
         </Pressable>
       ),
     });

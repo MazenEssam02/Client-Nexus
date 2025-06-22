@@ -28,7 +28,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
   const profileData = useProfileStore((state) => state.profileData);
   const lawyer = route.params.lawyer;
   const [type, setType] = useState(
-    route.params.type == undefined ? true : route.params.type
+    route.params.type == undefined ? 73 : route.params.type
   ); //true is in person , false is phone
   const [favorite, setFavorite] = useState(false);
 
@@ -52,6 +52,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
             }
             setFavorite((prev) => !prev);
           }}
+          style={{ marginRight: 10 }}
         >
           <Favourite stroke="white" fill={favorite ? "white" : "none"} />
         </TouchableOpacity>
@@ -102,7 +103,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
           rate={lawyer.rate}
           speciality={lawyer.main_Specialization}
           gender={lawyer.gender}
-          address={lawyer.city}
+          address={lawyer.addresses[0].cityName}
           imageURL={lawyer.mainImage}
           style={styles.card}
           isLawyerDetailsCard={true}

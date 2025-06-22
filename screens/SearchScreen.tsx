@@ -9,7 +9,7 @@ import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../components/IsError/IsError";
 
 export default function SearchScreen({ navigation, route }) {
-  const type = route.params === undefined ? true : route.params.type;
+  const type = route.params === undefined ? 73 : route.params.type;
   const [input, setInput] = useState("");
   const {
     data: specialities,

@@ -100,7 +100,18 @@ export default function LawyerRatings({
           />
         </View>
         {isDisabled || !feedbacks.length ? (
-          ""
+          <Text
+            style={{
+              textAlign: "center",
+              marginVertical: 4,
+              width: "100%",
+              ...font.title,
+            }}
+          >
+            {lawyerView
+              ? "لا يوجد تقييمات بعد"
+              : "لا يوجد تقييمات لهذا المحامي بعد"}
+          </Text>
         ) : (
           <View style={styles.buttonContainer}>
             <MainButton

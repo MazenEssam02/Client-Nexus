@@ -19,6 +19,7 @@ import IsError from "../../components/IsError/IsError";
 import ScheduleLawyerCard from "../../components/ScheduleCard/ScheduleLawyerCard";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import timeZoneConverter from "../../utils/timeZoneConverter";
+import NoResponse from "../../components/NoResponse/NoResponse";
 
 export const weekday = [
   "الاحد",
@@ -69,7 +70,9 @@ export default function AllLawyerAppointments() {
   if (isError) {
     return <IsError error={error} />;
   }
-  console.log(JSON.stringify(data, null, 2));
+  if (data.length === 0) {
+    return <NoResponse text="لا توجد مواعيد حاليا" />;
+  }
 
   return (
     <ScreensWrapper>

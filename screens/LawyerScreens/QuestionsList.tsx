@@ -34,7 +34,7 @@ export default function QuestionsList({ navigation }) {
   }
 
   if (QuestionsList.length === 0) {
-    return <NoResponse text="مفيش اسألة خلصني" />;
+    return <NoResponse text="لا توجد اسئلة غير مجابة حاليا" />;
   }
 
   return (

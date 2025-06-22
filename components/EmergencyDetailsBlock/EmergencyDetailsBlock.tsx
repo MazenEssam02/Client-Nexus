@@ -1,6 +1,5 @@
 import { StyleSheet, View, Text, Alert, Linking } from "react-native";
 import { Colors } from "../../constants/Color";
-import { BookingPicker } from "../BookingPicker/BookingPicker";
 import { font } from "../../constants/Font";
 import { MainButton } from "../Buttons/MainButton";
 

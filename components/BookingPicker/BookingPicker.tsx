@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { font } from "../../constants/Font";
+import { Colors } from "../../constants/Color";
 
 // Pass `value` as a boolean (true => offline, false => online)
 // and `onChange` as a callback that receives true/false
@@ -12,38 +13,58 @@ export const BookingPicker = ({ value, onChange, setSlot }) => {
   }
   return (
     <View style={styles.container}>
-      {/* Left half => أنثى */}
       <TouchableOpacity
         style={[
           styles.segment,
-          !value ? styles.selectedSegment : styles.unselectedSegment,
+          value === 79 ? styles.selectedSegment : styles.unselectedSegment,
         ]}
-        onPress={() => pressHandler(false)}
+        onPress={() => pressHandler(79)}
         activeOpacity={0.9}
       >
         <Text
           style={[
             styles.segmentText,
-            !value ? styles.selectedText : styles.unselectedText,
+            value === 79 ? styles.selectedText : styles.unselectedText,
+          ]}
+        >
+          اونلاين
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          {
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderColor: Colors.mainColor,
+          },
+          styles.segment,
+          value === 80 ? styles.selectedSegment : styles.unselectedSegment,
+        ]}
+        onPress={() => pressHandler(80)}
+        activeOpacity={0.9}
+      >
+        <Text
+          style={[
+            styles.segmentText,
+            value === 80 ? styles.selectedText : styles.unselectedText,
           ]}
         >
           استشارة هاتفية
         </Text>
       </TouchableOpacity>
 
-      {/* Right half => ذكر */}
       <TouchableOpacity
         style={[
           styles.segment,
-          value ? styles.selectedSegment : styles.unselectedSegment,
+          value === 73 ? styles.selectedSegment : styles.unselectedSegment,
         ]}
-        onPress={() => pressHandler(true)}
+        onPress={() => pressHandler(73)}
         activeOpacity={0.9}
       >
         <Text
           style={[
             styles.segmentText,
-            value ? styles.selectedText : styles.unselectedText,
+            value === 73 ? styles.selectedText : styles.unselectedText,
           ]}
         >
           استشارة مكتبية
@@ -58,7 +79,7 @@ const styles = StyleSheet.create({
     // Container with 2 segments side by side
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: "#A77B52", // example brown color
+    borderColor: Colors.mainColor, // example brown color
     borderRadius: 20,
     overflow: "hidden", // so the corners are rounded
     width: "100%",

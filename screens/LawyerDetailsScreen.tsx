@@ -28,7 +28,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
   const profileData = useProfileStore((state) => state.profileData);
   const lawyer = route.params.lawyer;
   const [type, setType] = useState(
-    route.params.type == undefined ? true : route.params.type
+    route.params.type == undefined ? 73 : route.params.type
   ); //true is in person , false is phone
   const [favorite, setFavorite] = useState(false);
 

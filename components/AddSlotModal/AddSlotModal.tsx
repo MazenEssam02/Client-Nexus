@@ -155,7 +155,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
           {showTimePicker && (
             <DateTimePicker
               testID="timePicker"
-              themeVariant="dark" // <-- iOS only prop
+              themeVariant="light" // <-- iOS only prop
               value={selectedDate} // Use selectedDate to pre-fill time part
               mode="time"
               is24Hour={false}

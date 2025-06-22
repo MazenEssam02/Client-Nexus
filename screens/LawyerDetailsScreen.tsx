@@ -52,6 +52,7 @@ export default function LawyerDetailsScreen({ route, navigation }) {
             }
             setFavorite((prev) => !prev);
           }}
+          style={{ marginRight: 10 }}
         >
           <Favourite stroke="white" fill={favorite ? "white" : "none"} />
         </TouchableOpacity>

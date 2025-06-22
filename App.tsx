@@ -1,7 +1,9 @@
 import { StatusBar } from "expo-status-bar";
+import "react-native-gesture-handler";
+import { enableScreens } from "react-native-screens";
 import { ActivityIndicator, Text } from "react-native";
 import { Colors } from "./constants/Color";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -65,9 +67,9 @@ import AllLawyerAppointments from "./screens/LawyerScreens/AllLawyerAppointments
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const TopTab = createMaterialTopTabNavigator();
-
+enableScreens();
 SplashScreen.preventAutoHideAsync().catch(console.warn);
 function ScheduleStack() {
   return (
@@ -99,7 +101,6 @@ function HomeStack() {
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
@@ -166,6 +167,7 @@ function HomeStack() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -182,6 +184,7 @@ function HomeStack() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -198,6 +201,7 @@ function HomeStack() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={() => navigation.navigate("Home")}
@@ -214,6 +218,7 @@ function HomeStack() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -230,6 +235,7 @@ function HomeStack() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -246,7 +252,6 @@ function UserQuickAccess() {
       id={undefined}
       initialRouteName="Profile"
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
@@ -355,13 +360,11 @@ function AuthenticatedStackClient() {
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
         headerTitleAlign: "center",
         headerTintColor: "white",
-        contentStyle: { backgroundColor: "#282c34" },
       }}
     >
       <Stack.Screen
@@ -531,13 +534,13 @@ function AuthenticatedStackLawyer() {
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
+        // headerBackButtonMenuEnabled: false,
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,
         headerTitleAlign: "center",
         headerTintColor: "white",
-        contentStyle: { backgroundColor: "#282c34" },
+        // contentStyle: { backgroundColor: "#282c34" },
       }}
     >
       <Stack.Screen
@@ -583,6 +586,7 @@ function AuthenticatedStackLawyer() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -600,6 +604,7 @@ function AuthenticatedStackLawyer() {
           headerLeft: () => (
             <Ionicons
               name="close-outline"
+              style={{ marginLeft: 10 }}
               size={30}
               color="white"
               onPress={navigation.goBack}
@@ -624,7 +629,8 @@ function UnAuthenticatedStack() {
     <Stack.Navigator
       id={undefined}
       screenOptions={{
-        headerBackButtonMenuEnabled: false,
+        // headerBackButtonMenuEnabled: false,
+
         headerBackButtonDisplayMode: "minimal",
         headerStyle: { backgroundColor: Colors.mainColor },
         headerTitleStyle: font.headline,

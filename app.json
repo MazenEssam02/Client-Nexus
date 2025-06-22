@@ -4,13 +4,13 @@
     "slug": "Client-Nexus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Main-splash-logo.png",
+    "icon": "./assets/Main-icon-logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/Main-splash-logo.png",
+      "image": "./assets/Main-icon-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#B47947"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true
@@ -18,8 +18,8 @@
     "android": {
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Main-splash-logo.png",
-        "backgroundColor": "#B47947"
+        "foregroundImage": "./assets/Main-icon-logo.png",
+        "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.ClientNexus"
     },

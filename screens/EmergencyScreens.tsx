@@ -2,11 +2,11 @@ import { Colors } from "../constants/Color";
 import { font } from "../constants/Font";
 import EmergencyForm from "./EmergencyScreens/EmergencyForm";
 import EmergencyRequests from "./EmergencyScreens/EmergencyRequests";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import EmergencyLawyerDetails from "./EmergencyLawyerDetails";
 import { Pressable } from "react-native";
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 export default function EmergencyScreens({ navigation }) {
   return (
     <Stack.Navigator
@@ -33,8 +33,8 @@ export default function EmergencyScreens({ navigation }) {
               }}
             >
               <Ionicons
-                name="chevron-back-outline"
-                style={{ marginLeft: -10 }}
+                style={{ marginLeft: 10 }}
+                name="close-outline"
                 size={30}
                 color="white"
               />

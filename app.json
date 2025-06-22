@@ -4,11 +4,11 @@
     "slug": "Client-Nexus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Main-splash-logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-logo.png",
+      "image": "./assets/Main-splash-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#B47947"
     },
@@ -18,7 +18,7 @@
     "android": {
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/Main-splash-logo.png",
         "backgroundColor": "#B47947"
       },
       "package": "com.anonymous.ClientNexus"
@@ -42,6 +42,6 @@
         "projectId": "83564128-6039-450e-9db9-4b8e66756ad1"
       }
     },
-    "owner": "mazenessam02"
+    "owner": "client_nexus_team"
   }
 }

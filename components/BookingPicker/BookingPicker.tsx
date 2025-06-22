@@ -49,7 +49,7 @@ export const BookingPicker = ({ value, onChange, setSlot }) => {
             value === 80 ? styles.selectedText : styles.unselectedText,
           ]}
         >
-          استشارة هاتفية
+          هاتف
         </Text>
       </TouchableOpacity>
 
@@ -67,7 +67,7 @@ export const BookingPicker = ({ value, onChange, setSlot }) => {
             value === 73 ? styles.selectedText : styles.unselectedText,
           ]}
         >
-          استشارة مكتبية
+          مكتب
         </Text>
       </TouchableOpacity>
     </View>

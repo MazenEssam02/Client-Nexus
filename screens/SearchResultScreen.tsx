@@ -113,6 +113,7 @@ export default function SearchResultScreen({ route, navigation }) {
   // if (filterIsError && searchText) {
   //   return <IsError error={filterError} />;
   // }
+  // console.log(lawyersToDisplay[0].addresses[0]);
   return (
     <>
       {modalVisible && (
@@ -149,7 +150,7 @@ export default function SearchResultScreen({ route, navigation }) {
               speciality={lawyer.main_Specialization}
               gender={lawyer.gender}
               vezita={lawyer.office_consultation_price}
-              address={lawyer.city}
+              address={lawyer.addresses[0].cityName}
               imageURL={lawyer.mainImage}
               onPress={() =>
                 navigation.navigate(

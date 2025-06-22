@@ -64,9 +64,7 @@ export default function HomeScreen({ navigation }) {
           <QuickButton
             title={"مكالمة محامى"}
             iconName={"Call"}
-            onPress={() =>
-              navigation.navigate("Search" as never, { type: false })
-            }
+            onPress={() => navigation.navigate("Search" as never, { type: 80 })}
           />
         </View>
         <SearchBlock />

@@ -12,8 +12,8 @@ import { Appointments } from "../../API/https";
 import IsError from "../IsError/IsError";
 
 export default function BookingBlock({ type, onChange, lawyer, navigation }) {
-  //type: 73->offline 80-> online
-  const typeNo = type ? 73 : 80;
+  //type: 73->offline 79->online 80-> call 
+  
   const [slot, setSlot] = useState(null);
   const { mutate: bookAppointment, reset: resetBookMutation } = useMutation({
     mutationFn: Appointments.bookAppointment,
@@ -48,7 +48,7 @@ export default function BookingBlock({ type, onChange, lawyer, navigation }) {
   });
   const onSubmitHandler = () => {
     if (slot) {
-      if (!type) {
+      if (type!==73) {
         navigation.navigate("WebView", {
           lawyer: lawyer,
           amount: lawyer.telephone_consultation_price,
@@ -64,7 +64,7 @@ export default function BookingBlock({ type, onChange, lawyer, navigation }) {
         <BookingPicker value={type} onChange={onChange} setSlot={setSlot} />
       </View>
 
-      {type ? (
+      {type===73 ? (
         <View style={{ width: "100%" }}>
           <View style={styles.bookInfoOuterContainer}>
             <View style={styles.bookInfoInnerContainer}>
@@ -98,7 +98,7 @@ export default function BookingBlock({ type, onChange, lawyer, navigation }) {
       <View style={{ flex: 1, width: "100%" }}>
         <BookingSlotsPicker
           setSlot={setSlot}
-          typeNo={typeNo}
+          typeNo={type}
           spId={lawyer.id}
         />
       </View>

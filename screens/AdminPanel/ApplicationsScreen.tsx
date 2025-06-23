@@ -19,16 +19,34 @@ type Application = {
   description: string;
   gender: 70 | 77;
   imageIDUrl: string;
-  addresses: [{any}];
-  
+  addresses: [{
+    detailedAddress: string;
+    cityId: number;
+    stateId: number;
+    cityName: string;
+    stateName: string;
+  }];
+  rate: number;
+  mainImage: string;
+  imageNationalIDUrl: string;
+  yearsOfExperience: number;
+  specializationName: string[];
+  office_consultation_price: number;
+  telephone_consultation_price: number;
+  main_Specialization: string;
+  phonenumber: number | null;
+  isApproved: boolean;
+  isFeatured: boolean;
+  subscriptionStatus: number;
+  subType: number;
+  subscriptionExpiryDate: null
 };
 const ApplicationsScreen = ({ navigation }) => {
   const [applications, setApplications] = useState<Application[]>([]);
   const {
     data: Applications,
     isLoading: isGetLoading,
-    isError: isGetError,
-    error: getError,
+    isError: isGetError,    error: getError,
   } = useQuery({
     queryKey: ["Applications"],
     queryFn: ServiceProvider.getApplications,
@@ -36,7 +54,7 @@ const ApplicationsScreen = ({ navigation }) => {
   useEffect(() => {
     if (Applications?.data) {
       console.log(Applications.data.data);
-      Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , name: `${Application.firstName} ${Application.}`}]));
+      Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , `}]));
     }
   }, [applications]);
   const requests = [

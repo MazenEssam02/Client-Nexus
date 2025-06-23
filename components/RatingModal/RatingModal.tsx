@@ -44,7 +44,7 @@ const RatingModal = ({ modalVisible, modalHandler, onRating }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.handle} />
-            <Text style={styles.title}>تقييم</Text>
+            <Text style={styles.title}>تقييمك للمحامى</Text>
             <View style={styles.starContainer}>
               <StarRating
                 setRating={handleRatingChange}

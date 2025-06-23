@@ -131,10 +131,10 @@ export const Appointments = {
   bookAppointment: (slotId) =>
     apiClient.post(`/api/appointments`, { slotId: slotId }),
   getById: (id) => apiClient.get(`/api/appointments/${id}`),
-  cancelAppointment: (id) =>
+  finishAppointment: ({ id, status, reason }) =>
     apiClient.put(`/api/appointments/${id}`, {
-      status: 67,
-      reason: "الغاء",
+      status: status,
+      reason: reason,
     }),
 };
 

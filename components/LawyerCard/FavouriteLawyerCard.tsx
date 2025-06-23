@@ -60,9 +60,9 @@ const FavouriteLawyerCard = ({
                 </Text>
               )}
             </View>
-            <View style={styles.vezitaContainer}>
+            {/* <View style={styles.vezitaContainer}>
               <RateHandler style={styles.rate} />
-            </View>
+            </View> */}
           </View>
           {/* {editable && (
             <View style={styles.overlay}>

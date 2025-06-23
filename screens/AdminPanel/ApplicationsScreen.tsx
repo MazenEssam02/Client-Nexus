@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,36 @@ import {
 import { Ionicons } from "@expo/vector-icons"; // or use any icon library
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-
+import { useQuery } from "@tanstack/react-query";
+import { ServiceProvider } from "../../API/https";
+type Application = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  birthdate: string;
+  description: string;
+  gender: 70 | 77;
+  imageIDUrl: string;
+  addresses: [{any}];
+  
+};
 const ApplicationsScreen = ({ navigation }) => {
+  const [applications, setApplications] = useState<Application[]>([]);
+  const {
+    data: Applications,
+    isLoading: isGetLoading,
+    isError: isGetError,
+    error: getError,
+  } = useQuery({
+    queryKey: ["Applications"],
+    queryFn: ServiceProvider.getApplications,
+  });
+  useEffect(() => {
+    if (Applications?.data) {
+      console.log(Applications.data.data);
+      Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , name: `${Application.firstName} ${Application.}`}]));
+    }
+  }, [applications]);
   const requests = [
     { id: "1", name: "عبدالكريم محمود" },
     { id: "2", name: "عبدالكريم محمود" },

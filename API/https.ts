@@ -7,6 +7,8 @@ export const apiClient = axios.create({
 
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
+  getApplications: () =>
+    apiClient.get("/api/ServiceProvider/GetAll?isApproved=false"),
   getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
   getAppointments: () =>
     apiClient.get("api/appointments/provider?offset=0&limit=100"),
@@ -115,22 +117,17 @@ export const Slots = {
     return allSlots;
   },
   getById: (id) => apiClient.get(`/api/slots/${id}`),
-  create: ({
-    date,
-    slotType,
-    duration
-  }) => apiClient.post(`/api/slots`, {
-    date,
-    slotType,
-    slotDuration: duration
-  }),
-  generate: ({
-    startDate,
-    endDate,
-  }) => apiClient.post(`/api/slots/generate-slots`, {
-    startDate,
-    endDate,
-  }),
+  create: ({ date, slotType, duration }) =>
+    apiClient.post(`/api/slots`, {
+      date,
+      slotType,
+      slotDuration: duration,
+    }),
+  generate: ({ startDate, endDate }) =>
+    apiClient.post(`/api/slots/generate-slots`, {
+      startDate,
+      endDate,
+    }),
   delete: (id) => apiClient.delete(`/api/slots/${id}`),
 };
 export const Appointments = {
@@ -140,7 +137,7 @@ export const Appointments = {
   cancelAppointment: (id) =>
     apiClient.put(`/api/appointments/${id}`, {
       status: 67,
-      reason: "None"
+      reason: "None",
     }),
 };
 

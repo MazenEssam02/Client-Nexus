@@ -64,6 +64,7 @@ import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDeta
 import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 import SubscriptionWebView from "./screens/SubscriptionWebView";
 import AllLawyerAppointments from "./screens/LawyerScreens/AllLawyerAppointments";
+import LawyerGenerateSlots from "./screens/LawyerScreens/LawyerGenerateSlots";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -585,6 +586,15 @@ function AuthenticatedStackLawyer() {
         component={EmergencyScreensLawyer}
         options={{
           title: "تفاصيل الطلب",
+          // headerShown: false,
+          // gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="LawyerGenerateSlots"
+        component={LawyerGenerateSlots}
+        options={{
+          title: "توليد المواعيد",
           // headerShown: false,
           // gestureEnabled: false,
         }}

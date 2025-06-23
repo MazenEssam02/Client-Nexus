@@ -127,6 +127,7 @@ export default function LawyerScheduleScreen({ navigation }) {
           );
           return fullItems;
         },
+        refetchInterval: 10000, // Refetch every 10 seconds
       },
     ],
   });
@@ -303,7 +304,12 @@ export default function LawyerScheduleScreen({ navigation }) {
                 setIsLoadingDelete(true);
                 try {
                   if (selectedSlot && "client" in selectedSlot) {
-                    await Appointments.cancelAppointment(selectedSlot.id);
+                    await Appointments.finishAppointment({
+                      id: selectedSlot.id,
+                      status: 67, // Cancelled status
+                      reason: "تم إلغاء الموعد من قبل المحامي",
+                    });
+                    await Slots.delete(selectedSlot.slotId);
                   } else {
                     await Slots.delete(selectedSlot.id);
                   }
@@ -364,6 +370,36 @@ export default function LawyerScheduleScreen({ navigation }) {
               }
               showImage
             />
+            {"client" in selectedSlot &&
+              [73, 80].includes(selectedSlot.status) && (
+                <View style={{ height: 35, marginTop: -20 }}>
+                  <MainButton
+                    title="إنهاء الموعد"
+                    disabled={
+                      new Date(selectedSlot.date + "Z").getTime() > Date.now()
+                    }
+                    onPress={async () => {
+                      try {
+                        await Appointments.finishAppointment({
+                          id: selectedSlot.id,
+                          status: 68, // Finished status
+                          reason: "تم إنهاء الموعد من قبل المحامي",
+                        });
+                        setSelectedSlot(null);
+                        await queryClient.invalidateQueries({
+                          queryKey: ["appointments"],
+                        });
+                      } catch (error) {
+                        console.error(
+                          "Error finishing appointment:",
+                          JSON.stringify(error, null, 2)
+                        );
+                        Alert.alert("خطأ", "فشل إنهاء الموعد. حاول مرة أخرى.");
+                      }
+                    }}
+                  />
+                </View>
+              )}
           </View>
         )}
         <AddSlotModal
@@ -375,12 +411,29 @@ export default function LawyerScheduleScreen({ navigation }) {
           }}
         />
       </View>
+      {/* add a generate schedule button */}
       <View
         style={{
           height: 50,
           backgroundColor: "white",
           paddingHorizontal: 10,
-          paddingVertical: 10,
+          paddingTop: 10,
+        }}
+      >
+        <MainButton
+          title="توليد المواعيد"
+          onPress={() => {
+            setSelectedSlot(null);
+            navigation.navigate("LawyerGenerateSlots");
+          }}
+        />
+      </View>
+      <View
+        style={{
+          height: 50,
+          backgroundColor: "white",
+          paddingHorizontal: 10,
+          paddingTop: 10,
         }}
       >
         <MainButton

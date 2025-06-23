@@ -3,9 +3,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 
 // Eastern Arabic Numeral Formatter
-const easternArabicNumeralFormatter = new Intl.NumberFormat("ar-u-nu-arab", {
-  useGrouping: false,
-});
+export const easternArabicNumeralFormatter = new Intl.NumberFormat(
+  "ar-u-nu-arab",
+  {
+    useGrouping: false,
+  }
+);
 
 // Custom Day Component
 const ArCustomDay = (props) => {

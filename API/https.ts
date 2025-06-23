@@ -120,9 +120,11 @@ export const Slots = {
   create: ({
     date,
     slotType,
+    duration
   }) => apiClient.post(`/api/slots`, {
     date,
     slotType,
+    slotDuration: duration
   }),
   generate: ({
     startDate,
@@ -137,6 +139,11 @@ export const Appointments = {
   bookAppointment: (slotId) =>
     apiClient.post(`/api/appointments`, { slotId: slotId }),
   getById: (id) => apiClient.get(`/api/appointments/${id}`),
+  cancelAppointment: (id) =>
+    apiClient.put(`/api/appointments/${id}`, {
+      status: 67,
+      reason: "None"
+    }),
 };
 
 export const EmeregencyCases = {

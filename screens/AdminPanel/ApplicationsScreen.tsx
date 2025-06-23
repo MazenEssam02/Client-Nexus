@@ -36,7 +36,7 @@ const ApplicationsScreen = ({ navigation }) => {
   useEffect(() => {
     if (Applications?.data) {
       console.log(Applications.data.data);
-      Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , name: `${Application.firstName} ${Application.}`}]));
+      // Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , name: `${Application.firstName} ${Application}`}]));
     }
   }, [applications]);
   const requests = [

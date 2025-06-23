@@ -126,7 +126,7 @@ export default function ProfileScreen() {
     clientFormData.append("lastName", formData.name.split(" ")[1] || "");
     clientFormData.append("birthDate", formData.birthday);
     clientFormData.append("phoneNumber", formData.mobile);
-    clientFormData.append("newPassword", "123456789"); // Must be removed y Sara Argoooooki
+    // clientFormData.append("newPassword", "123456789"); // Must be removed y Sara Argoooooki
 
     // Conditionally add newPassword
 

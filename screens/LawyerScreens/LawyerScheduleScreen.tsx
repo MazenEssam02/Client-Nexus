@@ -12,14 +12,22 @@ import {
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useAuthStore } from "../../store/auth";
-import { apiClient, Client, ServiceProvider, Slots } from "../../API/https";
+import {
+  apiClient,
+  Appointments,
+  Client,
+  ServiceProvider,
+  Slots,
+} from "../../API/https";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 import { MainButton } from "../../components/Buttons/MainButton";
 import AddSlotModal from "../../components/AddSlotModal/AddSlotModal";
-import timeZoneConverter from "../../utils/timeZoneConverter";
+import timeZoneConverter, {
+  convertDurationToReadableFormat,
+} from "../../utils/timeZoneConverter";
 import {
   appointmentStatus,
   appointmentType,
@@ -27,6 +35,9 @@ import {
 } from "./AllLawyerAppointments";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import IsLoading from "../../components/IsLoading/IsLoading";
+import ArCalendar, {
+  easternArabicNumeralFormatter,
+} from "../../components/ArCalendar/ArCalendar";
 
 LocaleConfig.locales["ar"] = {
   monthNames: [
@@ -122,11 +133,14 @@ export default function LawyerScheduleScreen({ navigation }) {
   const isLoading = results.some((result) => result.isLoading);
   const isError = results.some((result) => result.isError);
   const [slotsData, appointmentsData] = results;
-  console.log(JSON.stringify(appointmentsData?.data ?? "", null, 2));
+
   const [selectedSlot, setSelectedSlot] = useState(null);
   const slots = slotsData.data;
   const allItems = slots &&
     appointmentsData.data && [...slots, ...appointmentsData.data];
+
+  console.log(JSON.stringify(allItems, null, 2));
+
   const todaySlots = allItems?.filter((slot) => {
     const slotDate = new Date(slot.date);
     return (
@@ -136,7 +150,7 @@ export default function LawyerScheduleScreen({ navigation }) {
     );
   });
   const daysHaveSlots = allItems?.reduce((acc, slot) => {
-    const slotDate = new Date(slot.date).toISOString().split("T")[0];
+    const slotDate = slot.date.split("T")[0];
     acc[slotDate] = {
       selected: true,
       selectedColor: Colors.SecondaryColorLight,
@@ -144,6 +158,7 @@ export default function LawyerScheduleScreen({ navigation }) {
     };
     return acc;
   }, {});
+
   const [showAddSlotModal, setShowAddSlotModal] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
@@ -157,7 +172,7 @@ export default function LawyerScheduleScreen({ navigation }) {
       bounces={false}
       showsVerticalScrollIndicator={false}
     >
-      <Calendar
+      <ArCalendar
         onDayPress={(day) => {
           console.log("Selected day:", day.dateString);
           setSelectedSlot(null); // Reset selected slot when date changes
@@ -171,6 +186,7 @@ export default function LawyerScheduleScreen({ navigation }) {
           arrowColor: Colors.mainColor,
           todayTextColor: Colors.mainColor,
         }}
+        firstDay={6}
         markedDates={{
           ...daysHaveSlots,
           [selectedDate]: {
@@ -220,7 +236,7 @@ export default function LawyerScheduleScreen({ navigation }) {
                     padding: 10,
                     borderRadius: 5,
                     marginVertical: 5,
-                    width: 100,
+                    width: 120,
                     alignItems: "flex-end",
                   },
                 ]}
@@ -231,6 +247,11 @@ export default function LawyerScheduleScreen({ navigation }) {
               >
                 <Text style={{ color: "white" }}>
                   {timeZoneConverter(slot.date)}
+                </Text>
+                {/*slotDuration, format: 00:30:00 */}
+                {/* convert to Arabic numerals */}
+                <Text style={{ color: "white" }}>
+                  المدة: {convertDurationToReadableFormat(slot.slotDuration)}
                 </Text>
                 <Text style={{ color: "white" }}>
                   {slot.slotType === 80
@@ -264,21 +285,28 @@ export default function LawyerScheduleScreen({ navigation }) {
           </View>
           <View style={{ flex: 1 }}>
             <MainButton
-              title="إزالة موعد"
+              title={
+                selectedSlot && "client" in selectedSlot
+                  ? "الغاء الحجز"
+                  : "حذف الموعد"
+              }
               loading={isLoadingDelete}
               disabled={
                 !selectedSlot ||
                 isLoadingDelete ||
-                new Date(selectedDate) < new Date()
+                new Date(selectedDate + "Z") < new Date() ||
+                (selectedSlot &&
+                  "client" in selectedSlot &&
+                  [68, 67].includes(selectedSlot.status))
               }
               onPress={async () => {
                 setIsLoadingDelete(true);
                 try {
-                  if ("client" in selectedSlot) {
-                    Alert.alert("يرجي التواصل مع مسؤول لإلغاء هذا الحجز");
-                    return;
+                  if (selectedSlot && "client" in selectedSlot) {
+                    await Appointments.cancelAppointment(selectedSlot.id);
+                  } else {
+                    await Slots.delete(selectedSlot.id);
                   }
-                  await Slots.delete(selectedSlot.id);
                   setSelectedSlot(null);
                   await queryClient.invalidateQueries({
                     queryKey: ["slots", firstDayOfMonth],
@@ -287,11 +315,15 @@ export default function LawyerScheduleScreen({ navigation }) {
                     queryKey: ["appointments"],
                   });
                 } catch (apiError: any) {
-                  console.error("Error deleting slot:", apiError);
+                  console.error(
+                    "Error deleting slot:",
+                    JSON.stringify(apiError, null, 2)
+                  );
+                  // print error message
+                  console.error("Error message:", apiError.message);
                   Alert.alert(
                     "خطأ",
-                    apiError.message ||
-                      "فشل إنشاء الفترة الزمنية. حاول مرة أخرى."
+                    "فشل إلغاء الفترة الزمنية. حاول مرة أخرى."
                   );
                 } finally {
                   setIsLoadingDelete(false);
@@ -354,6 +386,7 @@ export default function LawyerScheduleScreen({ navigation }) {
         <MainButton
           title="جميع المواعيد"
           onPress={() => {
+            setSelectedSlot(null);
             navigation.navigate("LawyerBookedAppointments", {
               appointments: appointmentsData.data,
             });

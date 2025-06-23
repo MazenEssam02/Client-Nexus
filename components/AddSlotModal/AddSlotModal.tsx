@@ -7,13 +7,13 @@ import {
   StyleSheet,
   Platform,
   ActivityIndicator,
-  Alert, // For showing errors/success
+  Alert,
 } from "react-native";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { Colors } from "../../constants/Color"; // Assuming you have this
-import { font } from "../../constants/Font"; // Assuming you have this
+import { Colors } from "../../constants/Color";
+import { font } from "../../constants/Font";
 import { Slots, slotTypes } from "../../API/https";
 import { useQueryClient } from "@tanstack/react-query";
 import Dropdown from "react-native-input-select";
@@ -22,7 +22,7 @@ interface AddSlotModalProps {
   date: Date;
   visible: boolean;
   onClose: () => void;
-  onSubmit: (timestamp: string) => Promise<void>; // Returns a promise to handle loading
+  onSubmit: (timestamp: string) => Promise<void>;
 }
 
 const AddSlotModal: React.FC<AddSlotModalProps> = ({
@@ -31,12 +31,18 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const queryClient = useQueryClient();
+  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const [selectedDate, setSelectedDate] = useState<Date>(date);
   const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [type, setType] = useState<number | null>(80);
+
+  // Keep seconds internally, user never edits them
+  const [durationHours, setDurationHours] = useState<number>(0);
+  const [durationMinutes, setDurationMinutes] = useState<number>(0);
+  const durationSeconds = 0; // Always 0 internally
 
   // Reset state when modal becomes visible
   useEffect(() => {
@@ -45,50 +51,56 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
       setIsLoading(false);
       setError(null);
       setShowTimePicker(false);
+
+      setDurationHours(0);
+      setDurationMinutes(0);
     }
-  }, [visible]);
+  }, [visible, date]);
 
   const handleTimeChange = (event: DateTimePickerEvent, time: Date): void => {
     setShowTimePicker(Platform.OS === "ios");
     if (time) {
       const currentTime = time || date;
-      // Combine selected date with selected time
       const newDateTime = new Date(date);
       newDateTime.setHours(currentTime.getHours());
       newDateTime.setMinutes(currentTime.getMinutes());
       newDateTime.setSeconds(currentTime.getSeconds());
       setSelectedDate(newDateTime);
-      if (Platform.OS === "android") {
-        setShowTimePicker(false); // Close after selection on Android
-      }
 
+      if (Platform.OS === "android") {
+        setShowTimePicker(false);
+      }
       if (time < new Date()) {
-        // If the selected time is in the past, show an error
         setError("الوقت المختار يجب أن يكون في المستقبل.");
         return;
       } else {
-        setError(null); // Clear error if time is valid
+        setError(null);
       }
     } else {
-      setShowTimePicker(false); // User cancelled on Android
+      setShowTimePicker(false);
     }
   };
-  const [type, setType] = useState<number | null>(80);
 
   const handleSubmit = async () => {
     setIsLoading(true);
     setError(null);
+
+    // Combine duration fields into one string (internally keep seconds)
+    const duration = `${String(durationHours).padStart(2, "0")}:${String(
+      durationMinutes
+    ).padStart(2, "0")}:${String(durationSeconds).padStart(2, "0")}`;
+
     try {
-      console.log("Submitting slot with timestamp:", selectedDate);
       await Slots.create({
         date: selectedDate,
         slotType: type || 80,
+        duration,
       });
       await queryClient.invalidateQueries({
         queryKey: ["slots", firstDayOfMonth],
       });
       Alert.alert("نجاح", "تم إنشاء الفترة الزمنية بنجاح.");
-      onClose(); // Close modal on success
+      onClose();
     } catch (apiError: any) {
       setError("فشل إنشاء الفترة الزمنية. حاول مرة أخرى.");
     } finally {
@@ -99,6 +111,38 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
   const openTimePicker = () => {
     setShowTimePicker(true);
   };
+
+  // Increment and decrement minutes in steps of 5
+  const incrementMinutes = () => {
+    let newMinutes = durationMinutes + 5;
+    if (newMinutes >= 60) newMinutes = 0;
+    setDurationMinutes(newMinutes);
+  };
+
+  const decrementMinutes = () => {
+    let newMinutes = durationMinutes - 5;
+    if (newMinutes < 0) newMinutes = 55;
+    setDurationMinutes(newMinutes);
+  };
+
+  // Increment and decrement hours
+  const incrementHours = () => {
+    let newHours = durationHours + 1;
+    if (newHours > 23) newHours = 0;
+    setDurationHours(newHours);
+  };
+
+  const decrementHours = () => {
+    let newHours = durationHours - 1;
+    if (newHours < 0) newHours = 23;
+    setDurationHours(newHours);
+  };
+
+  const isSubmitDisabled =
+    isLoading ||
+    !!error ||
+    !type ||
+    (durationHours === 0 && durationMinutes === 0);
 
   return (
     <Modal
@@ -116,7 +160,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
           <Text style={styles.label}>التاريخ والوقت المختار:</Text>
           <TouchableOpacity
             style={styles.dateDisplayTouchable}
-            onPress={openTimePicker} // Open date picker first
+            onPress={openTimePicker}
             disabled={isLoading}
           >
             <Text style={styles.dateDisplay}>
@@ -151,20 +195,62 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
             }}
           />
 
-          {/* Time Picker */}
           {showTimePicker && (
             <DateTimePicker
               testID="timePicker"
-              themeVariant="light" // <-- iOS only prop
-              value={selectedDate} // Use selectedDate to pre-fill time part
+              themeVariant="light"
+              value={selectedDate}
               mode="time"
               is24Hour={false}
-              minuteInterval={15}
+              minuteInterval={5}
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={handleTimeChange}
               timeZoneName="Africa/Cairo"
             />
           )}
+
+          <Text style={styles.label}>المدة (دقائق : ساعات):</Text>
+          <View style={styles.durationContainer}>
+            <View style={styles.hoursContainer}>
+              <TouchableOpacity
+                style={styles.arrowButton}
+                onPress={incrementHours}
+                disabled={isLoading}
+              >
+                <Text style={styles.arrowText}>+</Text>
+              </TouchableOpacity>
+              <Text style={styles.hoursDisplay}>
+                {durationHours.toString().padStart(2, "0")}
+              </Text>
+              <TouchableOpacity
+                style={styles.arrowButton}
+                onPress={decrementHours}
+                disabled={isLoading}
+              >
+                <Text style={styles.arrowText}>-</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.durationSeparator}>:</Text>
+            <View style={styles.minutesContainer}>
+              <TouchableOpacity
+                style={styles.arrowButton}
+                onPress={incrementMinutes}
+                disabled={isLoading}
+              >
+                <Text style={styles.arrowText}>+</Text>
+              </TouchableOpacity>
+              <Text style={styles.minutesDisplay}>
+                {durationMinutes.toString().padStart(2, "0")}
+              </Text>
+              <TouchableOpacity
+                style={styles.arrowButton}
+                onPress={decrementMinutes}
+                disabled={isLoading}
+              >
+                <Text style={styles.arrowText}>-</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
           {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -177,9 +263,13 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
               <Text style={styles.buttonText}>إلغاء</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.submitButton]}
+              style={[
+                styles.button,
+                styles.submitButton,
+                isSubmitDisabled && styles.cancelButton,
+              ]}
               onPress={handleSubmit}
-              disabled={isLoading || !selectedDate || !!error}
+              disabled={isSubmitDisabled}
             >
               {isLoading ? (
                 <ActivityIndicator size="small" color={"#FFFFFF"} />
@@ -207,7 +297,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 20,
-    alignItems: "stretch", // Changed from 'center' to 'stretch' for full-width elements
+    alignItems: "stretch",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -240,25 +330,6 @@ const styles = StyleSheet.create({
     ...(font.body || { fontSize: 16 }),
     textAlign: "center",
   },
-  pickerButtonsContainer: {
-    flexDirection: "row-reverse", // RTL friendly
-    justifyContent: "space-between",
-    marginBottom: Platform.OS === "ios" ? 0 : 20, // More space if pickers are not inline
-  },
-  pickerButton: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-  },
-  datePickerButton: {
-    backgroundColor: Colors.SecondaryColor || "#5bc0de", // Example color
-    borderColor: Colors.SecondaryColor || "#46b8da",
-    marginRight: Platform.OS === "ios" ? 5 : 0, // Adjust spacing for RTL
-    marginLeft: 5, // LTR: 5px to the right, RTL: 5px to the left
-  },
   errorText: {
     ...(font.Caption || { fontSize: 14 }),
     color: Colors.invalidColor200 || "red",
@@ -267,17 +338,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   actionsContainer: {
-    flexDirection: "row-reverse", // RTL friendly
-    justifyContent: "space-between", // Puts buttons at opposite ends
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
     marginTop: 25,
   },
   button: {
-    flex: 1, // Make buttons take equal width
+    flex: 1,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: 5, // Space between buttons
+    marginHorizontal: 5,
   },
   cancelButton: {
     backgroundColor: "#AAAAAA",
@@ -290,6 +361,52 @@ const styles = StyleSheet.create({
   buttonText: {
     ...(font.Button || { fontSize: 16, fontWeight: "bold" }),
     color: "#FFFFFF",
+  },
+  durationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 15,
+  },
+  durationSeparator: {
+    fontSize: 18,
+    marginHorizontal: 5,
+    color: "#333",
+  },
+  // Hours
+  hoursContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  hoursDisplay: {
+    ...(font.body || { fontSize: 16 }),
+    marginHorizontal: 10,
+    width: 30,
+    textAlign: "center",
+  },
+  // Minutes
+  minutesContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  minutesDisplay: {
+    ...(font.body || { fontSize: 16 }),
+    marginHorizontal: 10,
+    width: 30,
+    textAlign: "center",
+  },
+  arrowButton: {
+    backgroundColor: "#e6e6e6",
+    padding: 5,
+    borderRadius: 4,
+  },
+  arrowText: {
+    ...(font.body || { fontSize: 16 }),
+    textAlign: "center",
+    fontWeight: "bold",
+    paddingHorizontal: 4,
   },
 });
 

@@ -1,22 +1,18 @@
 import {
   View,
   StyleSheet,
-  ScrollView,
-  Pressable,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
   FlatList,
+  Alert,
+  RefreshControl,
 } from "react-native";
+import React, { useState, useCallback } from "react";
 import ScreensWrapper from "../ScreensWrapper/ScreensWrapper";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Client, ServiceProvider, Slots } from "../../API/https";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import IsError from "../../components/IsError/IsError";
-import ScheduleLawyerCard from "../../components/ScheduleCard/ScheduleLawyerCard";
 import { PreviewCard } from "../../components/PreviewCard/PreviewCard";
 import timeZoneConverter from "../../utils/timeZoneConverter";
 import NoResponse from "../../components/NoResponse/NoResponse";
@@ -45,6 +41,9 @@ export const appointmentType = {
 };
 
 export default function AllLawyerAppointments() {
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["appointments"],
     queryFn: async () => {
@@ -55,31 +54,49 @@ export default function AllLawyerAppointments() {
           const client = await Client.get(item.clientId);
           const slot = await Slots.getById(item.slotId);
           return {
+            ...slot.data,
             ...item,
             client: client.data.data,
-            ...slot.data,
           };
         })
       );
       return fullItems;
     },
   });
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Invalidate the "appointments" query so React Query refetches it
+      await queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    } catch (err) {
+      Alert.alert("Error", "Failed to refresh appointments. Please try again.");
+    } finally {
+      setRefreshing(false);
+    }
+  }, [queryClient]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
   if (isError) {
     return <IsError error={error} />;
   }
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     return <NoResponse text="لا توجد مواعيد حاليا" />;
   }
-
+  console.log(data[0].status);
   return (
     <ScreensWrapper>
       <FlatList
         data={data.sort(
-          (b, a) => new Date(a.date).getTime() - new Date(b.date).getTime()
+          (b: any, a: any) =>
+            new Date(a.date).getTime() - new Date(b.date).getTime()
         )}
+        keyExtractor={(item: any) => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item }) => (
           <View>
             <PreviewCard
@@ -99,7 +116,7 @@ export default function AllLawyerAppointments() {
               desc={
                 "الحالة: " +
                 (appointmentStatus[item.status] ??
-                  (new Date(item.date) > new Date()
+                  (new Date(item.date + "Z").getTime() > Date.now()
                     ? appointmentStatus[73]
                     : appointmentStatus[68])) +
                 "\n" +
@@ -110,33 +127,20 @@ export default function AllLawyerAppointments() {
             />
           </View>
         )}
-        keyExtractor={(item) => item.id}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
       />
     </ScreensWrapper>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
     marginInline: 30,
   },
-  keyboardContainer: {
-    flex: 1,
-    minHeight: "100%",
-  },
   pressed: {
     opacity: 0.3,
-  },
-  optionContainer: {
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-  },
-  editText: {
-    fontFamily: font.title.fontFamily,
-    fontSize: font.title.fontSize,
-    color: Colors.mainColor,
   },
   scrollContent: {
     flexGrow: 1,

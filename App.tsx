@@ -108,36 +108,6 @@ function HomeStack() {
         headerTintColor: "white",
       }}
     >
-      {/*<Stack.Screen
-        name="Admin"
-        component={AdminScreen}
-        options={{ title: "صفحة المتحكم" }}
-      />
-      <Stack.Screen
-        name="Applications"
-        component={ApplicationsScreen}
-        options={{ title: "طلبات الانضمام" }}
-      />
-      <Stack.Screen
-        name="Application Details"
-        component={LawyerRequestScreen}
-        options={{ title: "طلب انضمام" }}
-      />
-      <Stack.Screen
-        name="Report List"
-        component={ReportListScreen}
-        options={{ title: "البلاغات" }}
-      />
-      <Stack.Screen
-        name="Report Detail"
-        component={ReportDetailsScreen}
-        options={{ title: "تفاصيل البلاغ" }}
-      />
-      <Stack.Screen
-        name="Article"
-        component={Article}
-        options={{ title: "التحكم في المقالات" }}
-      /> */}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -292,7 +262,6 @@ function UserQuickAccess() {
         component={QuestionDetails}
         options={{ title: "تفاصيل السؤال" }}
       />
-   
     </Stack.Navigator>
   );
 }
@@ -623,6 +592,53 @@ function AuthenticatedStackLawyer() {
     </Stack.Navigator>
   );
 }
+function AuthenticatedStackAdmin() {
+  return (
+    <Stack.Navigator
+      id={undefined}
+      screenOptions={{
+        // headerBackButtonMenuEnabled: false,
+
+        headerBackButtonDisplayMode: "minimal",
+        headerStyle: { backgroundColor: Colors.mainColor },
+        headerTitleStyle: font.headline,
+        headerTitleAlign: "center",
+        headerTintColor: "white",
+      }}
+    >
+      <Stack.Screen
+        name="Admin"
+        component={AdminScreen}
+        options={{ title: "صفحة المتحكم" }}
+      />
+      <Stack.Screen
+        name="Applications"
+        component={ApplicationsScreen}
+        options={{ title: "طلبات الانضمام" }}
+      />
+      <Stack.Screen
+        name="Application Details"
+        component={LawyerRequestScreen}
+        options={{ title: "طلب انضمام" }}
+      />
+      <Stack.Screen
+        name="Report List"
+        component={ReportListScreen}
+        options={{ title: "البلاغات" }}
+      />
+      <Stack.Screen
+        name="Report Detail"
+        component={ReportDetailsScreen}
+        options={{ title: "تفاصيل البلاغ" }}
+      />
+      <Stack.Screen
+        name="Article"
+        component={Article}
+        options={{ title: "التحكم في المقالات" }}
+      />
+    </Stack.Navigator>
+  );
+}
 function UnAuthenticatedStack() {
   return (
     <Stack.Navigator
@@ -698,6 +714,8 @@ export default function App() {
           {user ? (
             user.type === "client" ? (
               <AuthenticatedStackClient />
+            ) : user.type === "admin" ? (
+              <AuthenticatedStackAdmin />
             ) : (
               <AuthenticatedStackLawyer />
             )

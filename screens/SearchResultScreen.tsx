@@ -1,5 +1,21 @@
 import { View, StyleSheet, FlatList } from "react-native";
-
+const specialities = [
+  "جنائى",
+  "مدنى",
+  "اسرة",
+  "عسكرى",
+  "تجارى",
+  "الأحوال الشخصية",
+  "الشركات",
+  "الجرائم الإلكترونية",
+  "عام",
+  "العمل والتوظيف",
+  "القوانين الدولية",
+  "التأمين",
+  "الملكية الفكرية",
+  "القوانين البحرية",
+  "القوانين البيئية",
+];
 import { Colors } from "../constants/Color";
 import SearchBar from "../components/SearchBar/SearchBar";
 import FilterIcon from "../components/FilterIcon/FilterIcon";
@@ -25,11 +41,14 @@ export default function SearchResultScreen({ route, navigation }) {
     city: "",
     specializationName: "",
   });
+  console.log(searchText);
+  console.log(filterData);
   const {
     data: searchResultsData,
     isLoading: searchIsLoading,
     isError: searchIsError,
     error: searchError,
+    refetch: refetchSearch,
   } = useQuery({
     queryKey: ["Lawyers", searchText],
     queryFn: () => ServiceProvider.getBySearch(searchText),
@@ -48,17 +67,40 @@ export default function SearchResultScreen({ route, navigation }) {
     }
   }, [initialSearchText]);
   function handleSearchBar(event) {
-    setSearchText(event.nativeEvent.text);
+    const newSearchText = event.nativeEvent.text;
+    setSearchText(newSearchText);
+    setFilterUsed(false);
+    setFilterData({
+      searchQuery: "",
+      minRate: "",
+      state: "",
+      city: "",
+      specializationName: "",
+    });
+
+    // Trigger refetch if there's text to search
+    if (newSearchText.trim()) {
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        refetchSearch();
+      }, 100);
+    }
   }
   //Handle Filteration Confirmation
   const handleFilterConfirmation = useCallback(
     (filters) => {
+      let filteredSearchText = searchText;
+      let filteredSpecialityText = filters.speciality;
+      if (searchText in specialities) {
+        filteredSearchText = "";
+        filteredSpecialityText = searchText;
+      }
       const data = {
-        searchQuery: searchText,
+        searchQuery: filteredSearchText,
         minRate: filters.rate || "",
         state: filters.region || "",
         city: filters.city || "",
-        specializationName: filters.speciality || "",
+        specializationName: filteredSpecialityText || "",
       };
       setFilterData(data);
       setFilterUsed(true);
@@ -139,31 +181,34 @@ export default function SearchResultScreen({ route, navigation }) {
         ) : (
           ""
         )}
-
-        <FlatList
-          data={lawyersToDisplay}
-          keyExtractor={(lawyer) => lawyer.id.toString()}
-          renderItem={({ item: lawyer }) => (
-            <ResultLawyerCard
-              name={lawyer.firstName + " " + lawyer.lastName}
-              rate={lawyer.rate}
-              speciality={lawyer.main_Specialization}
-              gender={lawyer.gender}
-              vezita={lawyer.office_consultation_price}
-              address={lawyer.addresses[0].cityName}
-              imageURL={lawyer.mainImage}
-              onPress={() =>
-                navigation.navigate(
-                  "LawyerDetails" as never,
-                  {
-                    lawyer: lawyer,
-                    type: route.params.type,
-                  } as never
-                )
-              }
-            />
-          )}
-        />
+        {!noResponseToShow ? (
+          <FlatList
+            data={lawyersToDisplay}
+            keyExtractor={(lawyer) => lawyer.id.toString()}
+            renderItem={({ item: lawyer }) => (
+              <ResultLawyerCard
+                name={lawyer.firstName + " " + lawyer.lastName}
+                rate={lawyer.rate}
+                speciality={lawyer.main_Specialization}
+                gender={lawyer.gender}
+                vezita={lawyer.office_consultation_price}
+                address={lawyer.addresses[0].cityName}
+                imageURL={lawyer.mainImage}
+                onPress={() =>
+                  navigation.navigate(
+                    "LawyerDetails" as never,
+                    {
+                      lawyer: lawyer,
+                      type: route.params.type,
+                    } as never
+                  )
+                }
+              />
+            )}
+          />
+        ) : (
+          ""
+        )}
       </View>
     </>
   );

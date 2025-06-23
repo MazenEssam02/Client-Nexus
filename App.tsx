@@ -65,6 +65,7 @@ import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 import SubscriptionWebView from "./screens/SubscriptionWebView";
 import AllLawyerAppointments from "./screens/LawyerScreens/AllLawyerAppointments";
 import LawyerGenerateSlots from "./screens/LawyerScreens/LawyerGenerateSlots";
+import UpdatePasswordScreen from "./screens/UpdatePasswordScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -366,6 +367,11 @@ function AuthenticatedStackClient() {
           gestureEnabled: false,
         }}
       />
+      <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePasswordScreen}
+        options={{ title: "تحديث كلمة المرور" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -540,6 +546,11 @@ function AuthenticatedStackLawyer() {
         name="LawyerBookedAppointments"
         component={AllLawyerAppointments}
         options={{ title: "المواعيد المحجوزة" }}
+      />
+      <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePasswordScreen}
+        options={{ title: "تحديث كلمة المرور" }}
       />
       <Stack.Screen
         name="Edit"

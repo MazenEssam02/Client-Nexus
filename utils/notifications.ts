@@ -36,7 +36,7 @@
 //   }
 // };
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
+import { Platform, PermissionsAndroid } from "react-native";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 
@@ -44,6 +44,19 @@ export async function registerForPushNotificationsAsync() {
   let token;
 
   if (Platform.OS === "android") {
+    // Request Android 13+ notification permission manually
+    if (Platform.Version >= 33) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        alert("يرجى السماح بالتنبيهات من إعدادات النظام!");
+        return;
+      }
+    }
+
+    // Set notification channel
     await Notifications.setNotificationChannelAsync("default", {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
@@ -75,7 +88,6 @@ export async function registerForPushNotificationsAsync() {
       if (!projectId) throw new Error("Project ID not found");
 
       token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-      // console.log("Expo Push Token:", token);
     } catch (error) {
       console.error("Error getting Expo push token:", error);
       token = "";

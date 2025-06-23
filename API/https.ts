@@ -10,8 +10,7 @@ export const ServiceProvider = {
   getById: (id) => apiClient.get(`/api/ServiceProvider/?id=${id}`),
   getAppointments: () =>
     apiClient.get("api/appointments/provider?offset=0&limit=100"),
-  deleteAppointment: (id) =>
-    apiClient.delete(`/api/appointments/${id}`),
+  deleteAppointment: (id) => apiClient.delete(`/api/appointments/${id}`),
   getFeedbacks: (id) =>
     apiClient.get(`/api/Feedback/provider/${id}?pageNumber=1&pageSize=20`),
   getBySearch: (searchQuery) =>
@@ -78,8 +77,7 @@ export const Client = {
       throw error;
     }
   },
-  getAppointments: () =>
-    apiClient.get("api/appointments/client?offset=0&limit=10"),
+  getAppointments: () => apiClient.get("api/appointments/client?offset=0"),
   getAllQuestions: () =>
     apiClient.get("api/qa/all?offset=0&limit=10&onlyUnanswered=false"),
   submitQA: (description) =>
@@ -215,23 +213,24 @@ export const Payment = {
       LastName: lastName,
       Phone: phone,
     }),
-    subscription: ({
-  serviceProviderId,
-  subscriptionType,
-  subscriptionTier,
-  email,
-  firstName,
-  lastName,
-  phone,
-}) => apiClient.post(`/api/payment/subscription`, {
-  serviceProviderId,
-  subscriptionType,
-  subscriptionTier,
-  email,
-  firstName,
-  lastName,
-  phone
-}),
+  subscription: ({
+    serviceProviderId,
+    subscriptionType,
+    subscriptionTier,
+    email,
+    firstName,
+    lastName,
+    phone,
+  }) =>
+    apiClient.post(`/api/payment/subscription`, {
+      serviceProviderId,
+      subscriptionType,
+      subscriptionTier,
+      email,
+      firstName,
+      lastName,
+      phone,
+    }),
   getStatus: (referenceKey) =>
     apiClient.get(`api/payment/status/${referenceKey}`),
 };

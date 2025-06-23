@@ -2,6 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import FavouriteLawyerCard from "../LawyerCard/FavouriteLawyerCard";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
+import { MainButton } from "../Buttons/MainButton";
+import { Appointments } from "../../API/https";
 
 const ScheduleLawyerCard = ({ item }) => {
   // console.log(item);
@@ -16,6 +18,29 @@ const ScheduleLawyerCard = ({ item }) => {
       <FavouriteLawyerCard {...item} isDisabled={true} />
       <View style={styles.typeContainer}>
         <Text style={styles.type}>{item.type}</Text>
+        {item.status === 67 ? (
+          <Text style={styles.type}>الغيت</Text>
+        ) : !item.isEnded ? (
+          <View style={styles.buttonContainer}>
+            <MainButton
+              title="الغاء"
+              onPress={async () => {
+                try {
+                  await Appointments.cancelAppointment(item.id);
+                  alert("تم الغاءالطلب بنجاح");
+                } catch (error) {
+                  console.error(
+                    "Error cancelling request:",
+                    JSON.stringify(error, null, 2)
+                  );
+                  alert("حدث خطأ أثناء الغاء الطلب. يرجى المحاولة مرة أخرى.");
+                }
+              }}
+            />
+          </View>
+        ) : (
+          <Text style={styles.type}>انتهت المقابلة</Text>
+        )}
       </View>
     </View>
   );
@@ -62,8 +87,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   typeContainer: {
-    //   alignItems: "center",
-    // backgroundColor: "red",
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    // alignItems: "flex-end",
   },
   time: {
     textAlign: "center",
@@ -74,7 +100,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row-reverse",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     marginTop: 10,
   },
   day: {
@@ -84,6 +110,11 @@ const styles = StyleSheet.create({
   date: {
     ...font.body,
     color: Colors.gray500,
+  },
+  buttonContainer: {
+    // alignSelf: "center",
+    height: 40,
+    width: 80,
   },
 });
 

@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // or use any icon library
+import React, { useLayoutEffect, useState } from "react";
+import { View, StyleSheet, FlatList } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
 import { useQuery } from "@tanstack/react-query";
 import { ServiceProvider } from "../../API/https";
+import { ApplicationRequest } from "../../components/Application/ApplicationRequest";
 type Application = {
   id: number;
   firstName: string;
@@ -18,11 +12,31 @@ type Application = {
   birthdate: string;
   description: string;
   gender: 70 | 77;
-  imageIDUrl: string;
-  addresses: [{any}];
-  
+  imageIDUrl: string | null;
+  addresses: [
+    {
+      detailedAddress: string;
+      cityId: number;
+      stateId: number;
+      cityName: string;
+      stateName: string;
+    }
+  ];
+  rate: number;
+  mainImage: string | null;
+  imageNationalIDUrl: string | null;
+  yearsOfExperience: number;
+  specializationName: string[];
+  office_consultation_price: number;
+  telephone_consultation_price: number;
+  main_Specialization: string;
+  isApproved: boolean;
+  isFeatured: boolean;
+  subscriptionStatus: number;
+  subType: number;
+  subscriptionExpiryDate: null;
 };
-const ApplicationsScreen = ({ navigation }) => {
+const ApplicationsScreen = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const {
     data: Applications,
@@ -33,36 +47,50 @@ const ApplicationsScreen = ({ navigation }) => {
     queryKey: ["Applications"],
     queryFn: ServiceProvider.getApplications,
   });
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (Applications?.data) {
       console.log(Applications.data.data);
-      // Applications.data.data.map(Application => setApplications(prev=> [...prev , {id : Application.id , name: `${Application.firstName} ${Application}`}]));
+      Applications.data.data.map((Application: Application) => {
+        const newApplication: Application = {
+          // id: Application.id,
+          // addresses: Application.addresses,
+          // birthdate: Application.birthdate,
+          // description: Application.description,
+          // firstName: Application.firstName,
+          // gender: Application.gender,
+          // imageIDUrl: Application.imageIDUrl,
+          // imageNationalIDUrl: Application.imageNationalIDUrl,
+          // isApproved: Application.isApproved,
+          // isFeatured: Application.isFeatured,
+          // lastName: Application.lastName,
+          // main_Specialization: Application.main_Specialization,
+          // mainImage: Application.mainImage,
+          // office_consultation_price: Application.office_consultation_price,
+          // rate: Application.rate,
+          // specializationName: Application.specializationName,
+          // subscriptionExpiryDate: Application.subscriptionExpiryDate,
+          // subscriptionStatus: Application.subscriptionStatus,
+          // subType: Application.subType,
+          // telephone_consultation_price: Application.
+          ...Application,
+        };
+        setApplications((prev) => [...prev, newApplication]);
+      });
     }
-  }, [applications]);
+  }, [setApplications, Applications]);
   const requests = [
     { id: "1", name: "عبدالكريم محمود" },
     { id: "2", name: "عبدالكريم محمود" },
     { id: "3", name: "عبدالكريم محمود" },
   ];
-
-  const renderRequest = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() => {
-        navigation.navigate("Application Details", { requestId: item.id });
-      }}
-    >
-      <Text style={styles.name}>طلب من: {item.name}</Text>
-      <Ionicons name="chevron-forward" size={24} color="#fff" />
-    </TouchableOpacity>
-  );
+  console.log(applications);
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={requests}
-        keyExtractor={(item) => item.id}
-        renderItem={renderRequest}
+        data={applications}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <ApplicationRequest item={item} />}
         contentContainerStyle={styles.listContent}
       />
     </View>

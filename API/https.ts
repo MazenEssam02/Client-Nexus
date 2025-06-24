@@ -4,7 +4,9 @@ export const apiClient = axios.create({
   baseURL: "https://clientnexus.runasp.net",
   timeout: 10000,
 });
-
+export const Admin = {
+  approveServiceProvider: (id) => apiClient.put(`api/Admin/approve/${id}`),
+};
 export const ServiceProvider = {
   getAll: () => apiClient.get("/api/ServiceProvider"),
   getApplications: () =>
@@ -136,10 +138,8 @@ export const Appointments = {
   getById: (id) => apiClient.get(`/api/appointments/${id}`),
   finishAppointment: ({ id, status, reason }) =>
     apiClient.put(`/api/appointments/${id}`, {
-
       status: status,
       reason: reason,
-
     }),
 };
 

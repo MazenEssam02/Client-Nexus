@@ -5,8 +5,8 @@ import { font } from "../../constants/Font";
 
 const AdminScreen = ({ navigation }) => {
   const data = [
-    { id: 1, title: "طلبات انضمام المحامين", notifications: 12, icon: "🔔" },
-    { id: 2, title: "البلاغات المتواجدة", notifications: 5, icon: "📢" },
+    { id: 1, title: "طلبات انضمام المحامين", notifications: 0, icon: "🔔" },
+    { id: 2, title: "البلاغات المتواجدة", notifications: 0, icon: "📢" },
     { id: 3, title: "تعديل المقالات", notifications: 0, icon: "📝" },
   ];
   function navigationHandler(id) {

@@ -106,7 +106,7 @@ const ChatBotScreen = ({ navigation }) => {
         suggestion: data.suggestion,
         sender: "bot",
       };
-      console.log(data.refined_answer?.answer);
+      // console.log(data.suggestion);
 
       setMessages((prev) => [...prev, botResponse]);
     },
@@ -199,7 +199,7 @@ const ChatBotScreen = ({ navigation }) => {
           )}
           {item.sender === "bot" &&
             Array.isArray(item.suggestion?.lawyers) &&
-            item.suggestion.lawyers.length > 0 && (
+            (item.suggestion.lawyers.length > 0 || item.suggestion.text) && (
               <Pressable
                 style={[
                   { marginTop: 10, flex: 1 },
@@ -208,7 +208,7 @@ const ChatBotScreen = ({ navigation }) => {
                 ]}
               >
                 <Text style={styles.messageText}>{item.suggestion.text}</Text>
-                {item.suggestion.lawyers.map((lawyer, index) => (
+                {item.suggestion?.lawyers.map((lawyer, index) => (
                   <View key={index} style={{ flex: 1 }}>
                     <ResultLawyerCard
                       name={lawyer.firstName + " " + lawyer.lastName}

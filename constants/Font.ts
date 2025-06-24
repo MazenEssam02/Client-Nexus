@@ -7,7 +7,7 @@ import {
 import { Dimensions } from "react-native";
 const { width } = Dimensions.get("window");
 
-const scaleFont = (size: number) => (width / 375) * size;
+const scaleFont = (size: number) => (width < 375 ? (width / 375) * size : size);
 
 export function useLoadFonts() {
   const [fontsLoaded] = useFonts({

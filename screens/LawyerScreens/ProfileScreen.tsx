@@ -18,10 +18,12 @@ import QuickAccess from "../../components/QuickAccessProfile/QuickAccess";
 import { MainButton } from "../../components/Buttons/MainButton";
 import { Payment } from "../../API/https";
 import { useState } from "react";
+import { PrivacyPolicyModal } from "../../components/PrivacyPolicyModal/PrivacyPolicyModal";
 
 export default function LawyerProfileScreen({ navigation }) {
   const { user, setIsSubscribed } = useAuthStore();
   const [loadingSubscription, setLoadingSubscription] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   return (
     <ScreensWrapper>
@@ -133,9 +135,49 @@ export default function LawyerProfileScreen({ navigation }) {
                 />
               </View>
             </View>
+            <QuickAccess
+              icon="edit"
+              title="تعديل كلمة المرور"
+              onPress={() => navigation.navigate("UpdatePassword")}
+            />
+            <QuickAccess
+              icon="myQuestions"
+              title="اسئلتي"
+              onPress={() =>
+                navigation.navigate("LawyerQA" as never, {
+                  screen: "LawyerQAPrev",
+                })
+              }
+            />
+            <QuickAccess
+              icon="allQuestions"
+              title="كل الاسئلة"
+              onPress={() => navigation.navigate("LawyerQA")}
+            />
+            <QuickAccess
+              icon="schedule"
+              title="مواعيدي"
+              onPress={() => {
+                navigation.navigate("LawyerTabs" as never, {
+                  screen: "Schedule",
+                  params: {
+                    screen: "MainSchedule",
+                  },
+                });
+              }}
+            />
+            <QuickAccess
+              icon="conditions"
+              title="الشروط و الاحكام"
+              onPress={() => setModalVisible(true)}
+            />
             <QuickAccess icon="Exit" title="الخروج" />
           </View>
         </ScrollView>
+        <PrivacyPolicyModal
+          isModalVisible={isModalVisible}
+          setModalVisible={setModalVisible}
+        />
       </KeyboardAvoidingView>
     </ScreensWrapper>
   );

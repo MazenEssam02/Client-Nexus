@@ -7,50 +7,76 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import { Colors } from "../../constants/Color";
 import { font } from "../../constants/Font";
+import { Admin } from "../../API/https";
 
-const LawyerRequestScreen = ({ route }) => {
-  const { requestId } = route.params;
+const LawyerRequestScreen = ({ route, navigation }) => {
+  const { requestItem } = route.params;
+  function decline() {
+    navigation.goBack();
+  }
+  async function approve(id) {
+    try {
+      const response = await Admin.approveServiceProvider(id);
+      if (response.data.success) {
+        Alert.alert("تم الموافقة بنجاح");
+        navigation.goBack();
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert("حاول مرة اخري");
+      navigation.goBack();
+    }
+  }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
-        <Text style={styles.header}>طلب رقم {requestId}</Text>
+        <Text style={styles.header}>طلب رقم {requestItem.id}</Text>
 
         <View style={styles.profileSection}>
           <View style={styles.infoBlock}>
             <Text style={styles.label}>الاسم:</Text>
-            <Text style={styles.value}>عبدالكريم محمود</Text>
+            <Text style={styles.value}>
+              {requestItem.firstName} {requestItem.lastName}
+            </Text>
           </View>
           <View style={styles.infoBlock}>
             <Text style={styles.label}>عنوان:</Text>
-            <Text style={styles.value}>--- </Text>
+            <Text style={styles.value}>{requestItem.addresses.cityName} </Text>
           </View>
           <View style={styles.infoBlock}>
             <Text style={styles.label}>التخصص:</Text>
-            <Text style={styles.value}>جنائي</Text>
+            <Text style={styles.value}>{requestItem.main_Specialization}</Text>
           </View>
           <View style={styles.infoBlock}>
             <Text style={styles.label}>سنين الخبرة:</Text>
-            <Text style={styles.value}>5 سنوات</Text>
+            <Text style={styles.value}>
+              {requestItem.yearsOfExperience} سنوات
+            </Text>
           </View>
-          <View style={styles.infoBlock}>
+          {/* <View style={styles.infoBlock}>
             <Text style={styles.label}>تاريخ الطلب:</Text>
             <Text style={styles.value}>2024-07-15 | 7:30</Text>
-          </View>
+          </View> */}
         </View>
         <TextInput
           placeholder="تفاصيل عن الطلب..."
           multiline
           numberOfLines={5}
           style={styles.textInput}
+          value={requestItem.description}
         />
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.rejectButton}>
+          <TouchableOpacity style={styles.rejectButton} onPress={decline}>
             <Text style={styles.buttonText}>رفض الطلب</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.acceptButton}>
+          <TouchableOpacity
+            style={styles.acceptButton}
+            onPress={() => approve(requestItem.id)}
+          >
             <Text style={styles.buttonText}>تأكيد الطلب</Text>
           </TouchableOpacity>
         </View>
@@ -100,6 +126,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     padding: 10,
     backgroundColor: "#fff",
+    textAlign: "right",
   },
   buttonRow: {
     flexDirection: "row",

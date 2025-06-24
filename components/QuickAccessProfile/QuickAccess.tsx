@@ -12,7 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import Favourite from "../Icons/Favourite";
 import Payment from "../Icons/Payment";
 import { useAuthStore } from "../../store/auth";
-const QuickAccess = ({ icon, title }) => {
+import { EditSmall } from "../Icons/EditSmall";
+const QuickAccess = ({ icon, title, onPress = null }) => {
   const { logout } = useAuthStore();
   const [exitHandler, setExitHandler] = useState(false);
   const navigation = useNavigation();
@@ -25,6 +26,8 @@ const QuickAccess = ({ icon, title }) => {
     switch (icon) {
       case "favourite":
         return <Favourite />;
+      case "edit":
+        return <EditSmall />;
       case "myQuestions":
         return <Question />;
       case "allQuestions":
@@ -44,6 +47,10 @@ const QuickAccess = ({ icon, title }) => {
     }
   };
   const navigateHandler = () => {
+    if (onPress) {
+      onPress();
+      return;
+    }
     switch (icon) {
       case "favourite":
         navigation.navigate("Favourite" as never);
@@ -66,7 +73,7 @@ const QuickAccess = ({ icon, title }) => {
         logout();
         break;
       default:
-        navigation.navigate("Home" as never);
+        break;
     }
   };
   return (

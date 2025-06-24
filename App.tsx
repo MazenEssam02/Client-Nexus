@@ -64,6 +64,8 @@ import EmeregencyClientDetails from "./screens/LawyerScreens/EmergencyClientDeta
 import LawyerEditScreen from "./screens/LawyerScreens/LawyerEditScreen";
 import SubscriptionWebView from "./screens/SubscriptionWebView";
 import AllLawyerAppointments from "./screens/LawyerScreens/AllLawyerAppointments";
+import LawyerGenerateSlots from "./screens/LawyerScreens/LawyerGenerateSlots";
+import UpdatePasswordScreen from "./screens/UpdatePasswordScreen";
 
 const queryClient = new QueryClient();
 const Tab = createBottomTabNavigator();
@@ -365,6 +367,11 @@ function AuthenticatedStackClient() {
           gestureEnabled: false,
         }}
       />
+      <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePasswordScreen}
+        options={{ title: "تحديث كلمة المرور" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -541,6 +548,11 @@ function AuthenticatedStackLawyer() {
         options={{ title: "المواعيد المحجوزة" }}
       />
       <Stack.Screen
+        name="UpdatePassword"
+        component={UpdatePasswordScreen}
+        options={{ title: "تحديث كلمة المرور" }}
+      />
+      <Stack.Screen
         name="Edit"
         component={LawyerEditScreen}
         options={{ title: "تعديل الملف الشخصى" }}
@@ -585,6 +597,15 @@ function AuthenticatedStackLawyer() {
         component={EmergencyScreensLawyer}
         options={{
           title: "تفاصيل الطلب",
+          // headerShown: false,
+          // gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="LawyerGenerateSlots"
+        component={LawyerGenerateSlots}
+        options={{
+          title: "توليد المواعيد",
           // headerShown: false,
           // gestureEnabled: false,
         }}

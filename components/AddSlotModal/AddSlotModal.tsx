@@ -139,10 +139,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({
   };
 
   const isSubmitDisabled =
-    isLoading ||
-    !!error ||
-    !type ||
-    (durationHours === 0 && durationMinutes === 0);
+    isLoading || !type || (durationHours === 0 && durationMinutes === 0);
 
   return (
     <Modal

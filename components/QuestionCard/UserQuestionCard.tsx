@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { font } from "../../constants/Font";
 import { Colors } from "../../constants/Color";
+import { MainButton } from "../Buttons/MainButton";
 
 const UserQuestionCard = ({ item }) => {
   const navigation = useNavigation();
@@ -33,14 +34,14 @@ const UserQuestionCard = ({ item }) => {
           </Text>
         </View>
       </View>
-      <Pressable
-        style={styles.detailsButton}
-        onPress={() =>
-          navigation.navigate("QuestionDetails" as never, { Question: item })
-        }
-      >
-        <Text style={styles.detailsButtonText}>تفاصيل السؤال</Text>
-      </Pressable>
+      <View style={styles.detailsButton}>
+        <MainButton
+          title="تفاصيل السؤال"
+          onPress={() => {
+            navigation.navigate("QuestionDetails" as never, { Question: item });
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -91,18 +92,9 @@ const styles = StyleSheet.create({
     marginRight: 25,
   },
   detailsButton: {
-    backgroundColor: Colors.mainColor,
-    width: "40%",
-    paddingVertical: 10,
-    borderRadius: 12,
+    height: 30,
+    width: "50%",
     alignSelf: "center",
-    alignItems: "center",
-    paddingHorizontal: 15,
-  },
-  detailsButtonText: {
-    color: "#fff",
-    fontSize: font.Button.fontSize,
-    fontFamily: font.Button.fontFamily,
   },
 });
 export default UserQuestionCard;

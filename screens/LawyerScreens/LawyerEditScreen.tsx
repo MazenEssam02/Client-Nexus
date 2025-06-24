@@ -26,89 +26,42 @@ import {
 } from "../../components/AddressListModal/AddressListModal";
 import { LoginIllustration } from "../../components/Icons/LoginIllustration";
 import { LoginInput } from "../../components/LoginInput/LoginInput";
-import { apiClient } from "../../API/https";
-import { useQuery } from "@tanstack/react-query";
+import { apiClient, ServiceProvider } from "../../API/https";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Dropdown from "react-native-input-select";
 import { useAuthStore } from "../../store/auth";
 import { GenderPicker } from "../../components/GenderPicker/GenderPicker";
 import DatePickerInput from "../../components/DatePickerInput/DatePickerInput";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import IsError from "../../components/IsError/IsError";
 
 interface LawyerRegisterFormData {
   fullName: string;
   email: string;
   birthdate: Date;
   phone: string;
-  name: string;
   yearsOfExperience: string;
   officeConsultationPrice: string;
   phoneConsultationPrice: string;
   details: string;
-  workType: "private" | "company";
 }
 
 const LawyerEditScreen = ({ route, navigation }) => {
-  const { user, isLoading, error } = useAuthStore();
-  const commonFormData = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    role: "lawyer",
-    birthDate: "",
-    phoneNumber: "",
-    password: "",
-  } as {
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: "lawyer";
-    birthDate: string;
-    phoneNumber: string;
-    password: string;
-    gender: boolean;
-    mainImage: SelectedAsset | null;
-  };
-
-  const [idCardPic, setIdCardPic] = useState<SelectedAsset | null>(null);
-  const [nationalIdPic, setNationalIdPic] = useState<SelectedAsset | null>(
-    null
-  );
-  const { data: specializationsData } = useQuery<
-    {
-      id: number;
-      name: string;
-    }[]
-  >({
-    queryKey: ["specializations"],
-    queryFn: () =>
-      apiClient
-        .get("/api/Specialization/GetAllSpecializations")
-        .then((res) =>
-          res.data.data.filter((item) => item.serviceProviderTypeId === 1)
-        ),
+  const queryClient = useQueryClient();
+  const { user, error, updateUser } = useAuthStore();
+  const {
+    data: userData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["LawyerDashboard"],
+    queryFn: () => ServiceProvider.getById(user.id),
   });
-  const [selectedSpecializations, setSelectedSpecializations] = useState<
-    {
-      id: number;
-      name: string;
-    }[]
-  >([]);
-
-  useEffect(() => {
-    if (specializationsData && specializationsData.length > 0) {
-      setSelectedSpecializations([specializationsData[0]]);
-    }
-  }, [specializationsData]);
+  const [isLoadingChange, setIsLoadingChange] = useState<boolean>(false);
 
   const [isAddressModalVisible, setIsAddressModalVisible] =
     useState<boolean>(false);
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: "1",
-      cityId: 1,
-      detailedAddress: "عنوان 1",
-      stateId: 1,
-    },
-  ]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const {
     control,
     handleSubmit,
@@ -117,26 +70,83 @@ const LawyerEditScreen = ({ route, navigation }) => {
     watch,
   } = useForm<LawyerRegisterFormData>({
     defaultValues: {
-      fullName: user.firstName + " " + user.lastName,
-      email: user.email,
-      birthdate: new Date("2000-01-01"), // Default date, can be changed
-      phone: "01093922530",
-      name: "مكتب النجاح",
-      yearsOfExperience: "5",
-      details: "محامي متخصص في القضايا المدنية",
-      workType: "private",
-      officeConsultationPrice: "100",
-      phoneConsultationPrice: "50",
+      fullName: "",
+      email: "",
+      birthdate: null, // Default date, can be changed
+      phone: "",
+      yearsOfExperience: "",
+      details: "",
+      officeConsultationPrice: "",
+      phoneConsultationPrice: "",
     },
     mode: "onChange",
   });
-  const watchedWorkType = watch("workType");
+  const [profilePic, setProfilePic] = useState<SelectedAsset | null>(null);
 
   const handleFormSubmit: SubmitHandler<LawyerRegisterFormData> = async (
     data
   ) => {
     console.log("Registering user", data);
-    navigation.goBack();
+    const formData = new FormData();
+    formData.append("FirstName", data.fullName.split(" ")[0]);
+    formData.append("LastName", data.fullName.split(" ")[1] || "");
+    formData.append("Email", data.email);
+    formData.append("PhoneNumber", data.phone);
+    formData.append(
+      "BirthDate",
+      data.birthdate?.toISOString().split("T")[0] || ""
+    );
+    formData.append("YearsOfExperience", data.yearsOfExperience);
+    formData.append("Office_consultation_price", data.officeConsultationPrice);
+    formData.append(
+      "Telephone_consultation_price",
+      data.phoneConsultationPrice
+    );
+    formData.append("Description", data.details);
+    console.log("Addresses:", addresses);
+    addresses?.forEach((address, i) => {
+      Object.entries(address).forEach(([key, value]) => {
+        formData.append(`Addresses[${i}][${key}]`, `${value}`);
+      });
+    });
+    if (profilePic) {
+      formData.append("MainImage", profilePic as any);
+    }
+    try {
+      setIsLoadingChange(true);
+      const response = await apiClient.put(`/api/ServiceProvider`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      updateUser({
+        ...user,
+        firstName: data.fullName.split(" ")[0],
+        lastName: data.fullName.split(" ")[1] || "",
+        email: data.email,
+        phoneNumber: data.phone,
+        birthDate: data.birthdate.toISOString().split("T")[0],
+        mainImage: profilePic ? profilePic.uri : user.mainImage,
+      });
+      console.log("User updated successfully", response.data);
+      Alert.alert("نجاح", "تم تحديث بيانات المحامي بنجاح");
+      queryClient.invalidateQueries({ queryKey: ["LawyerDashboard"] });
+      setIsLoadingChange(false);
+      navigation.goBack();
+    } catch (error) {
+      console.error(
+        "Error response:",
+        JSON.stringify(error.response.data, null, 2)
+      );
+      if (error.response?.data?.message) {
+        Alert.alert("خطأ", error.response.data.message);
+      }
+      Alert.alert(
+        "خطأ",
+        "حدث خطأ أثناء تحديث بيانات المحامي. يرجى المحاولة مرة أخرى."
+      );
+      setIsLoadingChange(false);
+    }
   };
 
   const handleRemoveAddress = (addressId: string) => {
@@ -148,7 +158,33 @@ const LawyerEditScreen = ({ route, navigation }) => {
   const handleAddNewAddressFromModal = (newAddress: Address) => {
     setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
   };
-  const [isMale, setIsMale] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (userData?.data?.data) {
+      const lawyerData = userData.data.data;
+      setValue("fullName", lawyerData.firstName + " " + lawyerData.lastName);
+      setValue("email", user.email);
+      setValue("birthdate", new Date(lawyerData.birthDate));
+      setValue("phone", lawyerData.phonenumber);
+      setValue("yearsOfExperience", lawyerData.yearsOfExperience.toString());
+      setValue(
+        "officeConsultationPrice",
+        lawyerData.office_consultation_price.toString()
+      );
+      setValue(
+        "phoneConsultationPrice",
+        lawyerData.telephone_consultation_price.toString()
+      );
+      setValue("details", lawyerData.description || "");
+    }
+  }, [userData]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+  if (isError) {
+    return <IsError error={error} />;
+  }
 
   return (
     <KeyboardAvoidingView
@@ -250,65 +286,12 @@ const LawyerEditScreen = ({ route, navigation }) => {
           )}
         />
 
-        <Controller
-          control={control}
-          name="name"
-          rules={{ required: "الاسم مطلوب" }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <LoginInput
-              placeholder="الاسم"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              error={errors.name?.message}
-              placeholderTextColor={Colors.gray700}
-            />
-          )}
-        />
-
         <View style={styles.addAddressButtonContainer}>
           <MainButton
             title="إضافة عنوان"
             onPress={() => setIsAddressModalVisible(true)}
           />
         </View>
-        <Dropdown
-          placeholder="التخصص (اكتب ثم اضغط إضافة)"
-          options={
-            specializationsData?.map((spec) => ({
-              label: spec.name,
-              value: spec.name,
-            })) || []
-          }
-          selectedValue={selectedSpecializations.map((spec) => spec.name)}
-          isMultiple
-          onValueChange={(value: string | string[]) => {
-            console.log("Selected value:", value);
-            if (Array.isArray(value)) {
-              const selectedSpecs = value.map((val) =>
-                specializationsData.find((spec) => spec.name === val)
-              );
-              setSelectedSpecializations(selectedSpecs);
-            } else {
-              setSelectedSpecializations(
-                specializationsData.filter((spec) => spec.name === value)
-              );
-            }
-          }}
-          primaryColor={Colors.mainColor}
-          isSearchable
-          dropdownIcon={<></>}
-          placeholderStyle={{
-            ...font.title,
-            textAlign: "right",
-            color: Colors.gray700,
-          }}
-          dropdownStyle={{
-            alignItems: "flex-end",
-            borderColor: Colors.SecondaryColorLight,
-            borderRadius: 8,
-          }}
-        />
 
         <Controller
           control={control}
@@ -398,47 +381,18 @@ const LawyerEditScreen = ({ route, navigation }) => {
             />
           )}
         />
-
-        <Controller
-          name="workType"
-          control={control}
-          rules={{ required: "نوع العمل مطلوب" }}
-          render={({ field: { onChange } }) => (
-            <RadioButtonGroup
-              label="نوع العمل:"
-              options={[
-                { label: "عمل خاص", value: "private" },
-                { label: "شركة", value: "company" },
-              ]}
-              selectedValue={watchedWorkType}
-              onSelect={(val) => onChange(val as "private" | "company")}
-              error={errors.workType?.message}
-            />
-          )}
-        />
-        <View style={styles.genderContainer}>
-          <Text style={styles.genderLabel}>النوع</Text>
-          <GenderPicker value={isMale} onChange={setIsMale} />
-        </View>
         <FileUploadButton
           label="صورة الحساب:"
-          onFileSelected={(asset) => {}}
-          selectedFileName={null}
-        />
-        <FileUploadButton
-          label="صورة الكارنيه:"
-          onFileSelected={(asset) => setIdCardPic(asset)}
-          selectedFileName={idCardPic?.name}
-        />
-        <FileUploadButton
-          label="صورة بطاقة الرقم القومي:"
-          onFileSelected={(asset) => setNationalIdPic(asset)}
-          selectedFileName={nationalIdPic?.name}
+          onFileSelected={(setFile) => {
+            setProfilePic(setFile);
+          }}
+          selectedFileName={profilePic?.name}
         />
 
         <View style={styles.mainButtonSaveContainer}>
           <MainButton
             title="حفظ البيانات"
+            loading={isLoadingChange}
             onPress={handleSubmit(handleFormSubmit)}
           />
           {error && (
@@ -471,7 +425,6 @@ export default LawyerEditScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    minHeight: "100%",
   },
   scrollContent: {
     flexGrow: 1,
@@ -520,7 +473,7 @@ const styles = StyleSheet.create({
   },
   mainButtonSaveContainer: {
     width: "100%",
-    height: 36,
+    height: 50,
     marginTop: 20,
   },
   genderContainer: {

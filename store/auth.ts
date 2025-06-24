@@ -52,6 +52,7 @@ type AuthStore = {
   }) => Promise<void>;
   logout: () => void;
   setIsSubscribed: (status: boolean) => void;
+  updateUser: (user: Partial<User>) => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -353,6 +354,10 @@ export const useAuthStore = create<AuthStore>()(
         set((state) => ({
           user: state.user ? { ...state.user, isSubscribed: status } : null,
         })),
+      updateUser: (user) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...user } : null,
+        }))
     }),
     {
       name: "auth-storage",
